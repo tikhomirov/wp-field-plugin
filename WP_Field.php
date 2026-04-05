@@ -2864,4 +2864,6 @@ if (is_admin() && defined('WP_DEBUG') && WP_DEBUG) {
     require_once __DIR__.'/example.php';
     // Load v3.0 demo page
     require_once __DIR__.'/examples/v3-demo.php';
+    // Load Admin Shell UI demo page
+    require_once __DIR__.'/examples/ui-demo.php';
 }

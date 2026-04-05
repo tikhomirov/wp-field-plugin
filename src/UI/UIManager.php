@@ -47,11 +47,11 @@ class UIManager
 
     protected static function enqueueReactAssets(string $pluginUrl, string $pluginPath): void
     {
-        $repeaterJs = $pluginUrl.'assets/dist/repeater.js';
-        $flexibleJs = $pluginUrl.'assets/dist/flexible-content.js';
+        $repeaterJs = $pluginUrl . 'assets/dist/repeater.js';
+        $flexibleJs = $pluginUrl . 'assets/dist/flexible-content.js';
 
-        if (file_exists($pluginPath.'/assets/dist/repeater.js')) {
-            $version = filemtime($pluginPath.'/assets/dist/repeater.js');
+        if (file_exists($pluginPath . '/assets/dist/repeater.js')) {
+            $version = filemtime($pluginPath . '/assets/dist/repeater.js');
             wp_enqueue_script(
                 'wp-field-repeater-react',
                 $repeaterJs,
@@ -61,8 +61,8 @@ class UIManager
             );
         }
 
-        if (file_exists($pluginPath.'/assets/dist/flexible-content.js')) {
-            $version = filemtime($pluginPath.'/assets/dist/flexible-content.js');
+        if (file_exists($pluginPath . '/assets/dist/flexible-content.js')) {
+            $version = filemtime($pluginPath . '/assets/dist/flexible-content.js');
             wp_enqueue_script(
                 'wp-field-flexible-react',
                 $flexibleJs,
@@ -80,11 +80,11 @@ class UIManager
 
     protected static function enqueueVanillaAssets(string $pluginUrl, string $pluginPath): void
     {
-        $repeaterJs = $pluginUrl.'assets/js/repeater.js';
-        $flexibleJs = $pluginUrl.'assets/js/flexible-content.js';
+        $repeaterJs = $pluginUrl . 'assets/js/repeater.js';
+        $flexibleJs = $pluginUrl . 'assets/js/flexible-content.js';
 
-        if (file_exists($pluginPath.'/assets/js/repeater.js')) {
-            $version = filemtime($pluginPath.'/assets/js/repeater.js');
+        if (file_exists($pluginPath . '/assets/js/repeater.js')) {
+            $version = filemtime($pluginPath . '/assets/js/repeater.js');
             wp_enqueue_script(
                 'wp-field-repeater',
                 $repeaterJs,
@@ -94,8 +94,8 @@ class UIManager
             );
         }
 
-        if (file_exists($pluginPath.'/assets/js/flexible-content.js')) {
-            $version = filemtime($pluginPath.'/assets/js/flexible-content.js');
+        if (file_exists($pluginPath . '/assets/js/flexible-content.js')) {
+            $version = filemtime($pluginPath . '/assets/js/flexible-content.js');
             wp_enqueue_script(
                 'wp-field-flexible',
                 $flexibleJs,
@@ -110,10 +110,10 @@ class UIManager
 
     protected static function enqueueCommonStyles(string $pluginUrl, string $pluginPath): void
     {
-        $cssFile = $pluginUrl.'assets/css/wp-field.css';
+        $cssFile = $pluginUrl . 'assets/css/wp-field.css';
 
-        if (file_exists($pluginPath.'/assets/css/wp-field.css')) {
-            $version = filemtime($pluginPath.'/assets/css/wp-field.css');
+        if (file_exists($pluginPath . '/assets/css/wp-field.css')) {
+            $version = filemtime($pluginPath . '/assets/css/wp-field.css');
             wp_enqueue_style(
                 'wp-field-styles',
                 $cssFile,

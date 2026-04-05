@@ -456,15 +456,17 @@
 .wp-field-switcher {
     position: relative;
     display: inline-block;
-    width: 60px;
-    height: 30px;
+    width: 44px;
+    height: 24px;
     cursor: pointer;
+    flex-shrink: 0;
 }
 
 .wp-field-switcher input {
     opacity: 0;
     width: 0;
     height: 0;
+    position: absolute;
 }
 
 .wp-field-switcher-slider {
@@ -473,21 +475,22 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: #ccc;
-    border-radius: 30px;
-    transition: background-color 0.3s;
+    background-color: #d1d5db;
+    border-radius: 24px;
+    transition: background-color 0.2s ease;
 }
 
 .wp-field-switcher-slider::before {
     position: absolute;
     content: "";
-    height: 22px;
-    width: 22px;
-    left: 4px;
-    bottom: 4px;
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
     background-color: white;
     border-radius: 50%;
-    transition: transform 0.3s;
+    transition: transform 0.2s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.06);
 }
 
 .wp-field-switcher input:checked + .wp-field-switcher-slider {
@@ -495,37 +498,18 @@
 }
 
 .wp-field-switcher input:checked + .wp-field-switcher-slider::before {
-    transform: translateX(30px);
+    transform: translateX(20px);
 }
 
+.wp-field-switcher input:focus-visible + .wp-field-switcher-slider {
+    outline: 2px solid #0073aa;
+    outline-offset: 2px;
+}
+
+/* on/off labels hidden by default — prefer clean toggle */
 .wp-field-switcher-on,
 .wp-field-switcher-off {
-    position: absolute;
-    font-size: 10px;
-    font-weight: bold;
-    color: white;
-    top: 50%;
-    transform: translateY(-50%);
-    transition: opacity 0.3s;
-    z-index: 1;
-    pointer-events: none;
-}
-
-.wp-field-switcher-on {
-    left: 8px;
-    opacity: 0;
-}
-
-.wp-field-switcher-off {
-    right: 8px;
-}
-
-.wp-field-switcher input:checked ~ .wp-field-switcher-on {
-    opacity: 1;
-}
-
-.wp-field-switcher input:checked ~ .wp-field-switcher-off {
-    opacity: 0;
+    display: none;
 }
 
 /* ===== Spinner (v2.1) ===== */
@@ -586,7 +570,6 @@
     font-size: 14px;
     outline: none;
     box-sizing: border-box;
-    appearance: textfield;
     -moz-appearance: textfield; /* Скрыть стрелки в Firefox */
 }
 
@@ -1443,6 +1426,11 @@
     line-height: 1.5;
     border: 1px solid #ddd;
     border-radius: 4px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: pre-wrap;
+    max-width: 100%;
+    width: 100%;
 }
 
 .CodeMirror {
@@ -1450,6 +1438,18 @@
     min-height: 300px;
     border: 1px solid #ddd;
     border-radius: 4px;
+    max-width: 100%;
+}
+
+.CodeMirror-scroll {
+    overflow-x: auto;
+    overflow-y: auto;
+}
+
+.CodeMirror.cm-s-default {
+    width: 60vw;
+    position: initial;
+    overflow: auto;
 }
 
 /* ===== Icon Picker (v2.3) ===== */
@@ -1817,201 +1817,6 @@
 .wp-field-backup-status .error {
     color: #dc3545;
     font-weight: 600;
-}
-
-/* ===== WP Packages: Plugin Settings Metabox UI ===== */
-#plugin_metabox .inside {
-    margin: 0;
-    padding: 0;
-}
-
-#plugin_metabox .wp-field-metabox {
-    padding: 16px;
-    background: linear-gradient(180deg, #ffffff 0%, #f7fafc 100%);
-}
-
-#plugin_metabox .wp-field-row {
-    margin-bottom: 12px;
-    padding: 14px 16px;
-    background: #fff;
-    border: 1px solid #e2e8f0;
-    border-radius: 10px;
-    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
-}
-
-#plugin_metabox .wp-field-row:last-child {
-    margin-bottom: 0;
-}
-
-#plugin_metabox .wp-field {
-    margin-bottom: 0;
-}
-
-#plugin_metabox .wp-field > label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: 600;
-    color: #0f172a;
-}
-
-#plugin_metabox .wp-field input[type="text"],
-#plugin_metabox .wp-field input[type="url"],
-#plugin_metabox .wp-field input[type="email"],
-#plugin_metabox .wp-field input[type="number"],
-#plugin_metabox .wp-field textarea,
-#plugin_metabox .wp-field select {
-    display: block;
-    width: 100%;
-    box-sizing: border-box;
-}
-
-#plugin_metabox .wp-field .description {
-    margin-top: 8px;
-    color: #475569;
-    font-style: normal;
-}
-
-#plugin_metabox .wp-field input[type="text"],
-#plugin_metabox .wp-field input[type="url"],
-#plugin_metabox .wp-field input[type="email"],
-#plugin_metabox .wp-field input[type="number"],
-#plugin_metabox .wp-field textarea,
-#plugin_metabox .wp-field select {
-    min-height: 38px;
-    border-color: #cbd5e1;
-    border-radius: 8px;
-}
-
-#plugin_metabox .wp-field input[type="text"]:focus,
-#plugin_metabox .wp-field input[type="url"]:focus,
-#plugin_metabox .wp-field input[type="email"]:focus,
-#plugin_metabox .wp-field input[type="number"]:focus,
-#plugin_metabox .wp-field textarea:focus,
-#plugin_metabox .wp-field select:focus {
-    border-color: #2563eb;
-    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.14);
-}
-
-#plugin_metabox .wp-field-radio-group {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-}
-
-#plugin_metabox .wp-field-radio-group label {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    margin: 0;
-    padding: 8px 12px;
-    background: #f8fafc;
-    border: 1px solid #cbd5e1;
-    border-radius: 999px;
-}
-
-#plugin_metabox .wp-field-fieldset {
-    border-color: #dbe4ef;
-    border-radius: 10px;
-    background: #f8fafc;
-    padding: 14px;
-}
-
-#plugin_metabox .wp-field-fieldset legend {
-    font-size: 13px;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    color: #334155;
-}
-
-#plugin_metabox .wp-field-repeater-item {
-    border-color: #dbe4ef;
-    border-radius: 10px;
-    background: #f8fafc;
-}
-
-#plugin_metabox .wp-field-repeater-row {
-    padding: 10px 0;
-    border-top: 1px solid #e2e8f0;
-}
-
-#plugin_metabox .wp-field-repeater-row:first-child {
-    border-top: 0;
-    padding-top: 0;
-}
-
-#plugin_metabox .wp-field-repeater-actions {
-    margin-top: 8px;
-    display: flex;
-    justify-content: flex-end;
-}
-
-#plugin_metabox .wp-field-repeater-remove,
-#plugin_metabox .wp-field-repeater-item .wp-field-repeater-remove {
-    position: static !important;
-    top: auto;
-    right: auto;
-    background: #fff;
-    color: #475569;
-    border: 1px solid #cbd5e1;
-    border-radius: 8px;
-    padding: 6px 14px;
-    font-size: 13px;
-    cursor: pointer;
-}
-
-#plugin_metabox .wp-field-repeater-remove:hover {
-    background: #f8fafc;
-    color: #1f2937;
-}
-
-#plugin_metabox .wp-field-media-wrapper {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    flex-wrap: nowrap;
-}
-
-#plugin_metabox .wp-field-media-wrapper .wp-field-media-url {
-    flex: 1;
-    min-width: 0;
-    margin-bottom: 0;
-}
-
-#plugin_metabox .wp-field-media-preview {
-    width: 100%;
-    margin-top: 12px;
-}
-
-#plugin_metabox .wp-field-media-preview img {
-    max-width: 120px;
-    border-radius: 6px;
-    border: 1px solid #e2e8f0;
-}
-
-#plugin_metabox .wp-field-repeater-add,
-#plugin_metabox .wp-field-media-button {
-    min-height: 38px;
-    padding: 0 14px;
-    line-height: 36px;
-    border-radius: 8px;
-}
-
-@media (max-width: 782px) {
-    #plugin_metabox .wp-field-metabox {
-        padding: 10px;
-    }
-
-    #plugin_metabox .wp-field-row {
-        padding: 12px;
-    }
-
-    #plugin_metabox .wp-field-radio-group {
-        flex-direction: column;
-    }
-
-    #plugin_metabox .wp-field-radio-group label {
-        border-radius: 8px;
-    }
 }
 
 /* Responsive для полей v2.3 */

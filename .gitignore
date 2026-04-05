@@ -16,12 +16,9 @@ wp-content/themes/twenty*/
 
 # ignore node dependency directories
 node_modules/
-vendor/
 
 # ignore log files and databases
 *.log
 *.sql
 *.sqlite
 .idea
-/.phpunit.cache/
-/.phpunit.result.cache

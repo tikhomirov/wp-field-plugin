@@ -1,0 +1,1088 @@
+/* === WP Field Admin Shell === */
+/* Generic admin UI kit — no plugin-specific branding */
+/* Design: light sidebar with pill active state, SaaS-style layout */
+
+/* ─── CSS custom properties ────────────────────────────────── */
+
+.wp-field-shell {
+  --shell-sidebar-bg: #ffffff;
+  --shell-sidebar-border: #e5e7eb;
+  --shell-sidebar-text: #6b7280;
+  --shell-sidebar-text-hover: #111827;
+  --shell-sidebar-group: #9ca3af;
+  --shell-active-bg: #111827;
+  --shell-active-text: #ffffff;
+  --shell-accent: #111827;
+  --shell-page-bg: #f5f6f8;
+  --shell-card-bg: #ffffff;
+  --shell-card-border: #e5e7eb;
+  --shell-card-radius: 10px;
+  --shell-header-bg: #ffffff;
+  --shell-header-border: #e5e7eb;
+  --shell-text-primary: #111827;
+  --shell-text-secondary: #374151;
+  --shell-text-muted: #6b7280;
+  --shell-text-help: #9ca3af;
+  --shell-input-border: #d1d5db;
+  --shell-input-focus: #111827;
+  --shell-row-divider: #f3f4f6;
+}
+
+/* ─── Root layout ─────────────────────────────────────────── */
+
+.wp-field-shell {
+  display: flex;
+  align-items: flex-start;
+  min-height: calc(100vh - 32px);
+  background: var(--shell-page-bg);
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, sans-serif;
+  margin: -10px -20px 0 -20px;
+}
+
+/* ─── Sidebar ─────────────────────────────────────────────── */
+
+#wp-field-shell-root {
+  width: 220px;
+  min-width: 220px;
+  flex-shrink: 0;
+  position: sticky;
+  top: 32px;
+  height: calc(100vh - 32px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  background: var(--shell-sidebar-bg);
+  border-right: 1px solid var(--shell-sidebar-border);
+}
+
+.wp-field-shell__sidebar {
+  width: 100%;
+  min-height: 100%;
+  background: var(--shell-sidebar-bg);
+  color: var(--shell-sidebar-text);
+  display: flex;
+  flex-direction: column;
+  scrollbar-width: thin;
+  scrollbar-color: #e5e7eb transparent;
+}
+
+.wp-field-shell__sidebar::-webkit-scrollbar {
+  width: 4px;
+}
+.wp-field-shell__sidebar::-webkit-scrollbar-thumb {
+  background: #e5e7eb;
+  border-radius: 2px;
+}
+
+/* ─── Sidebar logo ────────────────────────────────────────── */
+
+.wp-field-shell__logo {
+  padding: 20px 16px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-bottom: 1px solid var(--shell-sidebar-border);
+  margin-bottom: 10px;
+  flex-shrink: 0;
+}
+
+.wp-field-shell__logo-icon {
+  font-size: 20px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.wp-field-shell__logo-text {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--shell-text-primary);
+  letter-spacing: -0.1px;
+  line-height: 1.3;
+  white-space: normal;
+  overflow: hidden;
+  word-break: break-word;
+}
+
+/* ─── Sidebar navigation ──────────────────────────────────── */
+
+.wp-field-shell__nav {
+  display: flex;
+  flex-direction: column;
+  padding: 4px 0 24px;
+  flex: 1;
+}
+
+/* Group header */
+.wp-field-shell__nav-group {
+  padding: 14px 16px 5px;
+  font-size: 10.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--shell-sidebar-group);
+  cursor: default;
+  user-select: none;
+}
+
+.wp-field-shell__nav-group--collapsible {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.wp-field-shell__nav-group--collapsible:hover {
+  color: var(--shell-sidebar-text-hover);
+}
+
+.wp-field-shell__nav-group-arrow {
+  font-size: 9px;
+  transition: transform 0.15s ease;
+  opacity: 0.7;
+}
+
+.wp-field-shell__nav-group-arrow--open {
+  transform: rotate(90deg);
+}
+
+/* Nav item (leaf) — pill style */
+.wp-field-shell__nav-item {
+  display: block;
+  margin: 2px 8px;
+  padding: 8px 12px;
+  color: var(--shell-sidebar-text);
+  text-decoration: none !important;
+  font-size: 13.5px;
+  font-weight: 500;
+  line-height: 1.4;
+  border-left: none;
+  border-radius: 7px;
+  transition:
+    background 0.12s ease,
+    color 0.12s ease;
+  cursor: pointer;
+  box-shadow: none !important;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Hover только для неактивных: иначе белый текст на светло-сером фоне */
+.wp-field-shell__nav-item:not(.wp-field-shell__nav-item--active):hover {
+  background: #f3f4f6;
+  color: var(--shell-sidebar-text-hover);
+  border-left-color: transparent;
+}
+
+.wp-field-shell__nav-item--active {
+  background: var(--shell-active-bg);
+  color: var(--shell-active-text) !important;
+  border-left-color: transparent;
+}
+
+.wp-field-shell__nav-item--active:hover {
+  background: #1f2937;
+  color: #fff !important;
+}
+
+.wp-field-shell__nav-item:focus-visible {
+  outline: 2px solid var(--shell-active-bg);
+  outline-offset: 2px;
+}
+
+/* Child nav item */
+.wp-field-shell__nav-item--child {
+  padding-left: 24px;
+  font-size: 13px;
+}
+
+/* ─── Main content ────────────────────────────────────────── */
+
+.wp-field-shell__main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ─── Header ──────────────────────────────────────────────── */
+
+.wp-field-shell__header {
+  position: sticky;
+  top: 32px;
+  z-index: 99;
+  background: var(--shell-header-bg);
+  border-bottom: 1px solid var(--shell-header-border);
+  padding: 14px 28px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  flex-shrink: 0;
+}
+
+.wp-field-shell__breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+
+.wp-field-shell__breadcrumb-page {
+  font-weight: 600;
+  color: var(--shell-text-secondary);
+}
+
+.wp-field-shell__breadcrumb-sep {
+  color: #d1d5db;
+  font-weight: 400;
+}
+
+.wp-field-shell__breadcrumb-section {
+  color: var(--shell-text-primary);
+  font-weight: 600;
+}
+
+/* ─── Tabs ─────────────────────────────────────────────────── */
+
+.wp-field-shell__tabs {
+  display: flex;
+  gap: 0;
+  border-bottom: 2px solid #f3f4f6;
+  margin: 0 28px 0;
+  flex-shrink: 0;
+  overflow-x: auto;
+}
+
+.wp-field-shell__tab {
+  padding: 11px 18px;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--shell-text-muted);
+  cursor: pointer;
+  border: none;
+  background: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  white-space: nowrap;
+  transition:
+    color 0.12s ease,
+    border-color 0.12s ease;
+  text-decoration: none !important;
+  box-shadow: none !important;
+}
+
+.wp-field-shell__tab:hover {
+  color: var(--shell-text-primary);
+}
+
+.wp-field-shell__tab--active {
+  color: var(--shell-text-primary);
+  border-bottom-color: var(--shell-text-primary);
+  font-weight: 600;
+}
+
+/* ─── Content form ────────────────────────────────────────── */
+
+#wp-field-shell-form {
+  padding: 24px 28px 0;
+  flex: 1;
+}
+
+/* ─── Section panel ───────────────────────────────────────── */
+
+.wp-field-shell-section-panel {
+  animation: wp-field-shell-in 0.16s ease;
+}
+
+@keyframes wp-field-shell-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ─── Card ─────────────────────────────────────────────────── */
+
+.wp-field-shell__card {
+  background: var(--shell-card-bg);
+  border: 1px solid var(--shell-card-border);
+  border-radius: var(--shell-card-radius);
+  overflow: hidden;
+  margin-bottom: 20px;
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.05),
+    0 1px 2px rgba(0, 0, 0, 0.03);
+}
+
+.wp-field-shell__card-header {
+  padding: 18px 24px 17px;
+  border-bottom: 1px solid #f3f4f6;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.wp-field-shell__card-title {
+  margin: 0 !important;
+  padding: 0 !important;
+  font-size: 15px !important;
+  font-weight: 600 !important;
+  color: var(--shell-text-primary) !important;
+  line-height: 1.4 !important;
+  border: none !important;
+  letter-spacing: -0.1px !important;
+}
+
+.wp-field-shell__card-body {
+  padding: 0 24px 24px;
+}
+
+/* ─── form-table inside card ──────────────────────────────── */
+
+.wp-field-shell__card-body .form-table {
+  margin: 0;
+  border: none;
+  width: 100%;
+}
+
+.wp-field-shell__card-body .form-table th {
+  padding: 20px 20px 20px 0;
+  width: 220px;
+  font-weight: 600;
+  color: var(--shell-text-secondary);
+  vertical-align: top;
+  font-size: 13.5px;
+  line-height: 1.4;
+}
+
+.wp-field-shell__card-body .form-table td {
+  padding: 16px 0;
+  vertical-align: top;
+}
+
+.wp-field-shell__card-body .form-table tr {
+  border-bottom: 1px solid var(--shell-row-divider);
+}
+
+.wp-field-shell__card-body .form-table tr:last-child {
+  border-bottom: none;
+}
+
+/* Section sub-headings */
+.wp-field-shell__card-body h2 {
+  font-size: 13.5px !important;
+  font-weight: 600 !important;
+  color: var(--shell-text-secondary) !important;
+  padding: 20px 0 6px !important;
+  margin: 0 0 0 !important;
+  border: none !important;
+  border-bottom: 1px solid var(--shell-row-divider) !important;
+}
+
+.wp-field-shell__card-body h5 {
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  color: var(--shell-text-muted) !important;
+  margin: 14px 0 4px !important;
+}
+
+/* ─── Description / help text ─────────────────────────────── */
+
+.wp-field-shell__card-body p.description,
+.wp-field-shell__card-body .description {
+  margin-top: 6px !important;
+  font-size: 12.5px !important;
+  color: var(--shell-text-help) !important;
+  font-style: normal !important;
+  line-height: 1.5 !important;
+}
+
+/* ─── Input / select / textarea overrides ─────────────────── */
+
+.wp-field-shell__card-body input[type="text"],
+.wp-field-shell__card-body input[type="password"],
+.wp-field-shell__card-body input[type="email"],
+.wp-field-shell__card-body input[type="url"],
+.wp-field-shell__card-body input[type="number"],
+.wp-field-shell__card-body textarea,
+.wp-field-shell__card-body select {
+  border-radius: 6px;
+  border: 1px solid var(--shell-input-border);
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--shell-text-primary);
+  background: #fff;
+  padding: 8px 11px;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+/* Нативный select: явная стрелка (appearance:none убирает системную у других стилей) */
+.wp-field-shell__card-body
+  select:not(.select2-hidden-accessible):not([multiple]) {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 16px;
+  padding-right: 34px;
+}
+
+.wp-field-shell__card-body input[type="text"]:focus,
+.wp-field-shell__card-body input[type="password"]:focus,
+.wp-field-shell__card-body input[type="email"]:focus,
+.wp-field-shell__card-body input[type="url"]:focus,
+.wp-field-shell__card-body input[type="number"]:focus,
+.wp-field-shell__card-body textarea:focus,
+.wp-field-shell__card-body select:focus {
+  border-color: var(--shell-input-focus);
+  box-shadow: 0 0 0 3px rgba(17, 24, 39, 0.12);
+  outline: none;
+}
+
+.wp-field-shell__card-body input.regular-text,
+.wp-field-shell__card-body input[type="text"].regular-text {
+  width: 25em;
+}
+
+.wp-field-shell__card-body label {
+  font-size: 13.5px;
+  color: var(--shell-text-secondary);
+}
+
+/* Switcher accent color */
+.wp-field-shell__card-body
+  .wp-field-switcher
+  input:checked
+  + .wp-field-switcher-slider {
+  background-color: var(--shell-active-bg);
+}
+
+/* ─── Flux-style switcher overrides ──────────────────────── */
+
+.wp-field-shell .wp-field-switcher {
+  width: 44px;
+  height: 24px;
+}
+
+.wp-field-shell .wp-field-switcher-slider {
+  background-color: #d1d5db;
+}
+
+.wp-field-shell .wp-field-switcher-slider::before {
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.15),
+    0 1px 2px rgba(0, 0, 0, 0.06);
+}
+
+.wp-field-shell .wp-field-switcher input:checked + .wp-field-switcher-slider {
+  background-color: var(--shell-active-bg);
+}
+
+.wp-field-shell
+  .wp-field-switcher
+  input:checked
+  + .wp-field-switcher-slider::before {
+  transform: translateX(20px);
+}
+
+.wp-field-shell
+  .wp-field-switcher
+  input:focus-visible
+  + .wp-field-switcher-slider {
+  outline: 2px solid var(--shell-active-bg);
+  outline-offset: 2px;
+}
+
+/* ─── Switch group row layout ─────────────────────────────── */
+/* Switcher + label + description inline row */
+.wp-field-shell__card-body .form-table td label:has(.wp-field-switcher),
+.wp-field-shell__card-body .form-table td > label {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.wp-field-shell__card-body .form-table td .wp-field-switcher {
+  margin-top: 1px;
+}
+
+/* ─── Custom checkbox — Flux style, WP admin override ────── */
+/* !important required: WordPress admin/forms.min.css sets
+   box-shadow, accent-color, and border on :checked state.   */
+
+.wp-field-shell__card-body input[type="checkbox"] {
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  appearance: none !important;
+  accent-color: transparent;
+  width: 16px !important;
+  height: 16px !important;
+  min-width: 16px;
+  min-height: 16px;
+  border: 1.5px solid #d1d5db !important;
+  border-radius: 4px !important;
+  background: #fff !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  cursor: pointer;
+  display: inline-block !important;
+  vertical-align: middle;
+  margin: 0 8px 0 0;
+  flex-shrink: 0;
+  padding: 0 !important;
+  transition:
+    background 0.12s ease,
+    border-color 0.12s ease;
+}
+
+.wp-field-shell__card-body input[type="checkbox"]:hover {
+  border-color: #9ca3af !important;
+  box-shadow: none !important;
+}
+
+.wp-field-shell__card-body input[type="checkbox"]:checked {
+  background-color: #111827 !important;
+  border-color: #111827 !important;
+  box-shadow: none !important;
+  /* SVG checkmark — same approach as Flux UI */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none'%3E%3Cpath d='M3.5 8.5l3 3 6-6' stroke='white' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+  background-size: 13px 13px !important;
+}
+.wp-field-shell__card-body input[type="checkbox"]:checked::before {
+  /* SVG checkmark — same approach as Flux UI */
+  content: none !important;
+}
+
+.wp-field-shell__card-body input[type="checkbox"]:focus,
+.wp-field-shell__card-body input[type="checkbox"]:focus-visible {
+  outline: 2px solid #111827 !important;
+  outline-offset: 2px !important;
+  box-shadow: 0 0 0 3px rgba(17, 24, 39, 0.1) !important;
+}
+
+.wp-field-shell__card-body input[type="checkbox"]:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ─── Custom radio — Flux style, WP admin override ──────── */
+
+.wp-field-shell__card-body input[type="radio"] {
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  appearance: none !important;
+  accent-color: transparent;
+  width: 16px !important;
+  height: 16px !important;
+  min-width: 16px;
+  min-height: 16px;
+  border: 1.5px solid #d1d5db !important;
+  border-radius: 50% !important;
+  background: #fff !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  cursor: pointer;
+  display: inline-block !important;
+  vertical-align: middle;
+  margin: 0 8px 0 0;
+  flex-shrink: 0;
+  padding: 0 !important;
+  transition: border-color 0.12s ease;
+}
+
+.wp-field-shell__card-body input[type="radio"]:hover {
+  border-color: #9ca3af !important;
+  box-shadow: none !important;
+}
+
+.wp-field-shell__card-body input[type="radio"]:checked {
+  border-color: #111827 !important;
+  border-width: 2px !important;
+  box-shadow: none !important;
+  /* SVG filled dot — reliable cross-browser approach */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='3.5' fill='%23111827'/%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+  background-size: 16px 16px !important;
+}
+
+.wp-field-shell__card-body input[type="radio"]:focus,
+.wp-field-shell__card-body input[type="radio"]:focus-visible {
+  outline: 2px solid #111827 !important;
+  outline-offset: 2px !important;
+  box-shadow: 0 0 0 3px rgba(17, 24, 39, 0.1) !important;
+}
+
+.wp-field-shell__card-body input[type="radio"]:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ─── Checkbox / radio group labels ──────────────────────── */
+
+.wp-field-shell__card-body .wp-field-checkbox-group label,
+.wp-field-shell__card-body .wp-field-radio-group label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+  font-size: 13.5px;
+  color: var(--shell-text-secondary);
+  cursor: pointer;
+  line-height: 1.4;
+}
+
+.wp-field-shell__card-body .wp-field-checkbox-group label input,
+.wp-field-shell__card-body .wp-field-radio-group label input {
+  margin: 0;
+}
+
+/* Inline label (next to native input in form-table td) */
+.wp-field-shell__card-body .form-table td > label {
+  gap: 8px;
+  font-size: 13.5px;
+  color: var(--shell-text-secondary);
+  cursor: pointer;
+  line-height: 1.5;
+}
+
+/* ─── Button styles (Flux) ────────────────────────────────── */
+
+/* Default/outline button */
+.wp-field-shell__card-body .button,
+.wp-field-shell__card-body .button-secondary,
+.wp-field-shell__action-bar .button,
+.wp-field-shell__action-bar .button-secondary {
+  background: #fff !important;
+  border: 1px solid #d1d5db !important;
+  color: var(--shell-text-primary) !important;
+  border-radius: 7px !important;
+  font-size: 13.5px !important;
+  font-weight: 500 !important;
+  height: 36px;
+  line-height: 34px;
+  padding: 0 14px !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+  transition:
+    background 0.12s ease,
+    border-color 0.12s ease !important;
+  text-decoration: none !important;
+}
+
+.wp-field-shell__card-body .button:hover,
+.wp-field-shell__card-body .button-secondary:hover,
+.wp-field-shell__action-bar .button:hover,
+.wp-field-shell__action-bar .button-secondary:hover {
+  background: #f9fafb !important;
+  border-color: #9ca3af !important;
+  color: var(--shell-text-primary) !important;
+}
+
+.wp-field-shell__card-body .button:focus-visible,
+.wp-field-shell__action-bar .button:focus-visible {
+  outline: 2px solid var(--shell-active-bg) !important;
+  outline-offset: 2px !important;
+  box-shadow: none !important;
+}
+
+/* Danger / remove button */
+.wp-field-shell__card-body .button.button-link-delete,
+.wp-field-shell__card-body .button.button-link-delete:hover {
+  color: #ef4444 !important;
+  border-color: transparent !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+/* ─── Select / dropdown appearance fix ───────────────────── */
+
+.wp-field-shell__card-body select {
+  min-height: 36px;
+  line-height: 1.4;
+}
+
+/* ─── Focus ring consistency ──────────────────────────────── */
+
+.wp-field-shell__card-body input[type="text"]:focus-visible,
+.wp-field-shell__card-body input[type="password"]:focus-visible,
+.wp-field-shell__card-body input[type="email"]:focus-visible,
+.wp-field-shell__card-body input[type="url"]:focus-visible,
+.wp-field-shell__card-body input[type="number"]:focus-visible,
+.wp-field-shell__card-body textarea:focus-visible,
+.wp-field-shell__card-body select:focus-visible {
+  outline: none;
+  border-color: var(--shell-input-focus);
+  box-shadow: 0 0 0 3px rgba(17, 24, 39, 0.1);
+}
+
+/* ─── Switch group: label + description below ─────────────── */
+/* When a description follows the label in the same td cell */
+.wp-field-shell__card-body .form-table td .description {
+  display: block;
+  margin-top: 5px !important;
+}
+
+/* Pairs of: [toggle] [label-text] — keep on same row */
+.wp-field-shell__card-body .form-table td fieldset label {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 12px;
+  line-height: 1.5;
+  font-size: 13.5px;
+  color: var(--shell-text-secondary);
+}
+
+.wp-field-shell__card-body .form-table td fieldset label span {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.wp-field-shell__card-body .form-table td fieldset label .description {
+  margin-top: 2px !important;
+  font-size: 12.5px !important;
+}
+
+/* ─── Notice / callout inside card ───────────────────────── */
+.wp-field-shell__card-body .wp-field-notice {
+  border-radius: 8px;
+  border-left-width: 3px;
+  font-size: 13.5px;
+  padding: 12px 16px;
+}
+
+/* ─── Alerts / inline notices ─────────────────────────────── */
+
+.wp-field-alert {
+  --wp-field-alert-bg: #f8fafc;
+  --wp-field-alert-border: #cbd5e1;
+  --wp-field-alert-title: #0f172a;
+  --wp-field-alert-text: #334155;
+  display: block;
+  padding: 14px 16px;
+  border: 1px solid var(--wp-field-alert-border);
+  border-left-width: 4px;
+  border-radius: 10px;
+  background: var(--wp-field-alert-bg);
+  color: var(--wp-field-alert-text);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+}
+
+.wp-field-alert--neutral {
+  --wp-field-alert-bg: #f8fafc;
+  --wp-field-alert-border: #cbd5e1;
+  --wp-field-alert-title: #0f172a;
+  --wp-field-alert-text: #334155;
+}
+
+.wp-field-alert--success {
+  --wp-field-alert-bg: #f0fdf4;
+  --wp-field-alert-border: #86efac;
+  --wp-field-alert-title: #166534;
+  --wp-field-alert-text: #166534;
+}
+
+.wp-field-alert--warning {
+  --wp-field-alert-bg: #fffbeb;
+  --wp-field-alert-border: #fcd34d;
+  --wp-field-alert-title: #92400e;
+  --wp-field-alert-text: #78350f;
+}
+
+.wp-field-alert--error {
+  --wp-field-alert-bg: #fef2f2;
+  --wp-field-alert-border: #fca5a5;
+  --wp-field-alert-title: #991b1b;
+  --wp-field-alert-text: #7f1d1d;
+}
+
+.wp-field-alert__title {
+  margin: 0 0 8px;
+  font-size: 13.5px;
+  font-weight: 700;
+  line-height: 1.45;
+  color: var(--wp-field-alert-title);
+}
+
+.wp-field-alert__body {
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--wp-field-alert-text);
+}
+
+.wp-field-alert__body > :first-child {
+  margin-top: 0;
+}
+
+.wp-field-alert__body > :last-child {
+  margin-bottom: 0;
+}
+
+.wp-field-alert__body p,
+.wp-field-alert__body ul,
+.wp-field-alert__body ol {
+  margin: 0 0 10px;
+}
+
+.wp-field-alert__body ul,
+.wp-field-alert__body ol {
+  padding-left: 18px;
+}
+
+.wp-field-alert__body li + li {
+  margin-top: 4px;
+}
+
+.wp-field-alert__body strong {
+  color: var(--wp-field-alert-title);
+}
+
+.wp-field-alert__body code {
+  display: inline-block;
+  padding: 1px 6px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(148, 163, 184, 0.32);
+  color: inherit;
+  font-size: 12px;
+}
+
+/* ─── Button Set (Flux-style pill group) ─────────────────── */
+.wp-field-shell .wp-field-button-set-item span {
+  border-radius: 6px;
+  border-color: #d1d5db;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--shell-text-secondary);
+  padding: 7px 14px;
+  transition:
+    background 0.12s ease,
+    border-color 0.12s ease,
+    color 0.12s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.wp-field-shell .wp-field-button-set-item span:hover {
+  border-color: #9ca3af;
+  background: #f9fafb;
+}
+
+.wp-field-shell .wp-field-button-set-item input:checked + span {
+  background: var(--shell-active-bg);
+  border-color: var(--shell-active-bg);
+  color: #fff;
+  box-shadow: none;
+}
+
+/* ─── Action bar ──────────────────────────────────────────── */
+
+.wp-field-shell__action-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 24px;
+  background: var(--shell-card-bg);
+  border: 1px solid var(--shell-card-border);
+  border-radius: var(--shell-card-radius);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  position: sticky;
+  bottom: 0;
+  z-index: 50;
+  margin: 0 0 6px;
+}
+
+/* Override WP default button to match dark pill style */
+.wp-field-shell__action-bar-save.button-primary {
+  background: var(--shell-active-bg) !important;
+  border-color: var(--shell-active-bg) !important;
+  color: #fff !important;
+  border-radius: 7px !important;
+  font-size: 13.5px !important;
+  font-weight: 500 !important;
+  min-width: 130px;
+  height: 36px;
+  line-height: 34px;
+  padding: 0 18px !important;
+  box-shadow: none !important;
+  transition: opacity 0.15s ease !important;
+}
+
+.wp-field-shell__action-bar-save.button-primary:hover {
+  background: #232c39 !important;
+  border-color: #232c39 !important;
+  opacity: 1 !important;
+  color: #fff !important;
+}
+
+/* ─── WP Notice ───────────────────────────────────────────── */
+
+.wp-field-shell-notice {
+  margin: 0 0 16px !important;
+  border-radius: 8px !important;
+  font-size: 13.5px !important;
+  border-left-width: 3px !important;
+}
+
+/* ─── Select2 (WooCommerce wc-enhanced-select) ────────────── */
+/* Выпадающий список рендерится в body; стили подключаются только на странице с этим файлом. */
+
+.wp-field-shell .select2-container--default .select2-selection--single,
+.wp-field-shell .select2-container--default .select2-selection--multiple {
+  border-color: var(--shell-input-border);
+  border-radius: 6px;
+  min-height: 38px;
+}
+
+.wp-field-shell
+  .select2-container--default.select2-container--focus
+  .select2-selection--single,
+.wp-field-shell
+  .select2-container--default.select2-container--open
+  .select2-selection--single,
+.wp-field-shell
+  .select2-container--default.select2-container--focus
+  .select2-selection--multiple,
+.wp-field-shell
+  .select2-container--default.select2-container--open
+  .select2-selection--multiple {
+  border-color: var(--shell-input-focus);
+  box-shadow: 0 0 0 3px rgba(17, 24, 39, 0.08);
+}
+
+/* Без var(): контейнер результатов в body, вне .wp-field-shell */
+.select2-container--default
+  .select2-results__option--highlighted[aria-selected],
+.select2-container--default .select2-results__option--highlighted {
+  background-color: #111827 !important;
+  color: #fff !important;
+}
+
+.select2-container--default .select2-results__option[aria-selected="true"] {
+  background-color: #e5e7eb !important;
+  color: #111827 !important;
+}
+
+.select2-container--default .select2-search--dropdown .select2-search__field {
+  border-color: #d1d5db;
+  border-radius: 6px;
+}
+
+.select2-container--default
+  .select2-search--dropdown
+  .select2-search__field:focus {
+  border-color: #111827;
+  outline: none;
+}
+
+/* ─── Responsive ──────────────────────────────────────────── */
+
+@media (max-width: 960px) {
+  #wp-field-shell-root {
+    width: 200px;
+    min-width: 200px;
+  }
+  .wp-field-shell__card-body .form-table th {
+    width: 180px;
+  }
+}
+
+@media (max-width: 782px) {
+  .wp-field-shell {
+    flex-direction: column;
+    margin: -10px -10px 0;
+  }
+
+  #wp-field-shell-root {
+    width: 100%;
+    min-width: 0;
+    height: auto;
+    position: relative;
+    top: auto;
+    border-right: none;
+    border-bottom: 1px solid var(--shell-sidebar-border);
+  }
+
+  .wp-field-shell__sidebar {
+    flex-direction: row;
+    overflow-x: auto;
+    overflow-y: hidden;
+    min-height: auto;
+  }
+
+  .wp-field-shell__logo {
+    display: none;
+  }
+
+  .wp-field-shell__nav {
+    flex-direction: row;
+    padding: 0;
+    flex: 1;
+  }
+
+  .wp-field-shell__nav-group {
+    display: none;
+  }
+
+  .wp-field-shell__nav-item {
+    margin: 4px 3px;
+    border-radius: 6px;
+    white-space: nowrap;
+    padding: 8px 14px;
+    font-size: 13px;
+  }
+
+  .wp-field-shell__nav-item--child {
+    padding-left: 14px;
+  }
+
+  .wp-field-shell__header {
+    top: 0;
+    padding: 12px 16px;
+  }
+
+  .wp-field-shell__tabs {
+    margin: 0 16px 0;
+  }
+
+  #wp-field-shell-form {
+    padding: 16px 16px 0;
+  }
+
+  .wp-field-shell__card-header {
+    padding: 14px 18px;
+  }
+
+  .wp-field-shell__card-body {
+    padding: 0 18px 18px;
+  }
+
+  .wp-field-shell__card-body .form-table th {
+    display: block;
+    width: 100%;
+    padding: 14px 0 4px;
+  }
+
+  .wp-field-shell__card-body .form-table td {
+    display: block;
+    padding: 0 0 14px;
+  }
+
+  .wp-field-shell__action-bar {
+    padding: 12px 16px;
+  }
+}
