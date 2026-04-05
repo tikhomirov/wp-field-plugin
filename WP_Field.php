@@ -460,7 +460,15 @@ class WP_Field
 
         if (! empty($field['custom_attributes']) && is_array($field['custom_attributes'])) {
             foreach ($field['custom_attributes'] as $attr => $val) {
-                $attributes[] = esc_attr($attr).'="'.esc_attr($val).'"';
+                if (is_array($val) || is_object($val)) {
+                    $val = function_exists('wp_json_encode') ? wp_json_encode($val) : json_encode($val);
+                }
+
+                if ($val === null || $val === false) {
+                    continue;
+                }
+
+                $attributes[] = esc_attr($attr).'="'.esc_attr((string) $val).'"';
             }
         }
 
