@@ -59,7 +59,7 @@ class UIManager
 
     protected static function enqueueVanillaAssets(string $pluginUrl, string $pluginPath): void
     {
-        self::enqueueScript($pluginUrl, $pluginPath, 'wp-field-main', 'legacy/assets/js/wp-field.js', ['jquery'], false);
+        self::enqueueScript($pluginUrl, $pluginPath, 'wp-field-main', 'vanilla/assets/js/wp-field.js', ['jquery'], false);
 
         self::enqueueCommonStyles($pluginUrl, $pluginPath);
     }
@@ -94,7 +94,7 @@ class UIManager
 
     protected static function enqueueCommonStyles(string $pluginUrl, string $pluginPath): void
     {
-        self::enqueueStyle($pluginUrl, $pluginPath, 'wp-field-styles', 'legacy/assets/css/wp-field.css');
+        self::enqueueStyle($pluginUrl, $pluginPath, 'wp-field-styles', 'vanilla/assets/css/wp-field.css');
         self::enqueueStyle($pluginUrl, $pluginPath, 'wp-field-admin-shell-styles', 'assets/css/admin-shell.css');
         self::enqueueStyle($pluginUrl, $pluginPath, 'wp-field-wizard-styles', 'assets/css/wizard.css');
     }

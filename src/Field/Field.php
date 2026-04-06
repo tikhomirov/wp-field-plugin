@@ -108,7 +108,7 @@ class Field
     }
 
     /**
-     * Create a legacy field wrapper for types not yet supported by native OOP API
+     * Create a vanilla field wrapper for types not yet supported by native OOP API
      * (e.g. select, checkbox)
      */
     public static function legacy(string $type, string $name): LegacyWrapperField

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 use WpField\Field\Field;
 
-it('renders radio as native html without legacy wrapper', function (): void {
+it('renders radio as native html without vanilla wrapper', function (): void {
     $field = Field::make('radio', 'delivery')
         ->label('Delivery')
         ->attribute('options', [
@@ -23,7 +23,7 @@ it('renders radio as native html without legacy wrapper', function (): void {
         ->and($html)->not->toContain('data-field-type="radio"');
 });
 
-it('renders fieldset with nested modern fields without legacy wrapper', function (): void {
+it('renders fieldset with nested modern fields without vanilla wrapper', function (): void {
     $field = Field::make('fieldset', 'layout')
         ->attribute('legend', 'Layout settings')
         ->fields([

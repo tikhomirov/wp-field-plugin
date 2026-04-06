@@ -19,29 +19,27 @@
 ├── README.md
 ├── README.ru.md
 ├── vite.admin-shell.config.js
+├── vite.components.config.js — Vite build для examples/components/assets/ (sidebar search, scroll)
 ├── vite.config.js
 ├── vite.wizard.config.js
 ├── WP_Field.php — точка входа библиотеки: подключает автозагрузку, содержит legacy-совместимый класс WP_Field и мост к старому API
 ├── assets
 │   ├── css
 │   │   ├── admin-shell.css
-│   │   ├── imagepicker.css
-│   │   ├── wizard.css
-│   │   └── wp-field.css
+│   │   └── wizard.css
 │   ├── dist
 │   │   ├── admin-shell.js
-│   │   ├── client.js
 │   │   ├── flexible-content.js
 │   │   ├── repeater.js
 │   │   └── wizard.js
 │   ├── js
-│   │   ├── imagepicker.js
-│   │   └── wp-field.js
+│   │   └── wp-field-integrations.js — jQuery glue для WP компонентов (wp-color-picker, sliders)
 │   └── src
 │       ├── admin-shell.jsx — entry point React-оболочки админки: собирает shell-интерфейс, навигацию и общие layout-компоненты
 │       ├── flexible-content.jsx — entry point для UI flexible content: управляет списком блоков, их добавлением, удалением и порядком
 │       ├── repeater.jsx — entry point для UI repeater: рендерит повторяющиеся группы полей и синхронизирует их состояние
 │       ├── wizard.jsx — entry point React-мастера настройки: связывает шаги, прогресс и действия пользователя
+│       ├── wp-field-components.jsx — source entrypoint компонент-страницы; собирается в examples/components/assets/
 │       └── components
 │           ├── Alert.jsx — компактный компонент уведомления с выводом текста, типа сообщения и визуального статуса
 │           ├── HeaderBar.jsx — верхняя панель админ-интерфейса с заголовком, контекстом страницы и служебными действиями
@@ -49,9 +47,27 @@
 │           ├── TabBar.jsx — горизонтальная панель вкладок для переключения между секциями или подэкранами
 │           └── WizardProgress.jsx — индикатор прогресса мастера, отображает текущий шаг и общее число этапов
 ├── examples
+│   ├── components
+│   │   ├── assets
+│   │   │   ├── wp-field-components.css — стили страницы WP_Field Components
+│   │   │   └── wp-field-components.js  — JS-бандл (sidebar search, scroll tracking)
+│   │   └── index.php — WP_Field Components page (slug: wp-field-components)
+│   ├── ui-demo
+│   │   └── index.php — Flux UI Admin Shell showcase (slug: wp-field-ui-demo)
 │   ├── modern-api-examples.php — набор примеров современного API: fluent-синтаксис, контейнеры и создание полей
-│   ├── ui-demo.php — пример сборки admin UI и визуальной проверки компонентов библиотеки
-│   └── v3-demo.php — демонстрация возможностей версии 3.0 и типовых сценариев использования
+│   └── shared-catalog.php — единый каталог demo-полей (single source of truth) для components и ui-demo
+├── vanilla
+│   ├── WP_Field.php — legacy WP_Field class (Vanilla runtime)
+│   ├── bootstrap.php — enqueue vanilla assets (jQuery, wp-color-picker, wp-field.css/js)
+│   ├── example.php — WP_Field Vanilla documentation page (slug: wp-field-examples)
+│   └── assets
+│       ├── css
+│       │   ├── wp-field.css — Vanilla WP_Field styles
+│       │   └── wp-field-examples-vanilla.css — Vanilla docs page styles
+│       ├── js
+│       │   └── wp-field.js — Vanilla WP_Field JS
+│       └── scss
+│           └── wp-field-examples-vanilla.scss — SCSS source для Vanilla docs styles
 ├── lang
 │   ├── wp-field-ru_RU.l10n.php — PHP-кэш локализации WordPress с быстрым загрузочным массивом переводов
 │   ├── wp-field-ru_RU.mo

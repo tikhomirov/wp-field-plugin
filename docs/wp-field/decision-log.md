@@ -1,6 +1,6 @@
 # WP_Field — журнал решений (сжатая версия)
 
-_Обновлено: 2026-04-06_
+_Обновлено: 2026-04-07_
 
 ## Зачем файл
 Короткий реестр **актуальных архитектурных решений**. Детали реализации и длинная история — в git/blame и связанных docs.
@@ -13,6 +13,56 @@ _Обновлено: 2026-04-06_
 5. README/CHANGELOG/examples
 
 ---
+
+## 2026-04-07 — Demo Pages Realignment: Vanilla / Components / UI Demo
+
+### Решение
+- **`wp-field-examples`** (slug сохранён) переименован из "Legacy" в **"Vanilla"**. Удалён маркетинговый текст, inline CSS вынесен в `assets/css/wp-field-examples-vanilla.css`. Страница — чистая документация `WP_Field::make()` API с jQuery + WP built-in components.
+- **`wp-field-v3-demo`** (slug) → **`wp-field-components`**. Класс `WP_Field_V3_Demo` → `WP_Field_Components`. PHP-рендер с sidebar, code examples, props badges. JS-бандл (vanilla, без React) для sidebar search и scroll tracking. Не зависит от jQuery и `wp.*` UI scripts.
+- **`examples/shared-catalog.php`** — единый каталог demo-полей (single source of truth) на основе `Field::make()` fluent API. Используется `wp-field-components`, готов к подключению в `wp-field-ui-demo`.
+- **`wp-field-ui-demo`** — не трогался в этой итерации (по явному требованию пользователя). `shared-catalog.php` доступен для будущей интеграции.
+- Добавлен `vite.components.config.js` и `build:components` script в `package.json`.
+
+### Почему
+Три demo-страницы смешивали роли (документация vs showcase vs marketing). Разделение:
+1. Vanilla — стабильная документация для классического WP admin.
+2. Components — React-независимая документация modern API, publishable на GitHub Pages.
+3. UI Demo — Flux UI showcase поверх того же каталога (Phase 5 плана).
+
+### Затронутые файлы
+- `legacy/example.php` — rewrite header, remove inline CSS, rename to Vanilla
+- `examples/v3-demo.php` — полная перезапись → `WP_Field_Components`
+- `examples/shared-catalog.php` — новый файл
+- `assets/css/wp-field-components.css` — новый файл
+- `assets/src/wp-field-components.jsx` — новый entrypoint (vanilla JS)
+- `assets/dist/wp-field-components.js` — pre-built bundle
+- `vite.components.config.js` — новый Vite config
+- `package.json` — добавлен `build:components`
+- `wp-field.php` — обновлён комментарий
+- `tree.md` — обновлено дерево
+
+### Тесты
+140 passed (737 assertions). PHP syntax check OK для всех изменённых файлов.
+
+---
+
+## 2026-04-06 — `API.md` сокращён до contract-first формата
+
+### Решение
+- `API.md` переписан в короткий формат: оставлены только стабильные публичные контракты и практические правила интеграции.
+- Удалены длинные перечисления всех field-type методов и подробные повторяющиеся описания runtime-деталей.
+- Для полного supported matrix и детальных value-shape ссылка теперь идёт в профильные docs, в первую очередь `docs/wp-field/supported-matrix.md`.
+
+### Почему
+Старый `API.md` разросся и смешивал:
+- стабильный публичный контракт;
+- внутренние детали реализации;
+- длинные инвентари типов, которые быстрее устаревают.
+
+Короткий contract-first документ проще поддерживать синхронно с кодом и безопаснее использовать как входную точку для интеграции.
+
+### Совместимость
+Поведение библиотеки не менялось. Изменён только формат документации и граница того, что в ней считается обязательным публичным контрактом.
 
 ## 2026-04-06 — Этап 1 bridge-миграции закрыт (simple types)
 

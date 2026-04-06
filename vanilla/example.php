@@ -1,16 +1,15 @@
 <?php
 /**
- * WP_Field v2.3 — Примеры использования всех типов полей
+ * WP_Field — Vanilla API Documentation & Examples
  *
- * Подключение: require_once 'path/to/example.php';
- *
- * Добавляет страницу в меню "Инструменты" с демонстрацией всех 48 типов полей
+ * Classic WP_Field::make() API with jQuery + WordPress built-in components.
+ * Page: Tools → WP_Field Vanilla Examples
+ * Slug: wp-field-examples
  */
 if (! defined('ABSPATH')) {
     exit;
 }
 
-// Подключаем WP_Field если еще не подключен
 if (! class_exists('WP_Field')) {
     require_once __DIR__.'/WP_Field.php';
 }
@@ -22,41 +21,25 @@ class WP_Field_Examples
         add_action('admin_menu', [$this, 'add_menu_page']);
         add_action('admin_init', [$this, 'save_settings']);
         add_action('admin_enqueue_scripts', [$this, 'enqueue_assets']);
-
-        // Подключаем CodeMirror для code_editor
-        add_action('admin_enqueue_scripts', function ($hook): void {
-            if ($hook === 'tools_page_wp-field-examples') {
-                wp_enqueue_code_editor(['type' => 'text/css']);
-            }
-        });
     }
 
-    /**
-     * Подключение необходимых скриптов и стилей
-     */
     public function enqueue_assets($hook): void
     {
-        // Загружаем только на нашей странице
         if ($hook !== 'tools_page_wp-field-examples') {
             return;
         }
 
-        // WP встроенные скрипты
         wp_enqueue_script('jquery');
         wp_enqueue_script('jquery-ui-datepicker');
         wp_enqueue_script('jquery-ui-sortable');
-
-        // wp-color-picker для color полей (с зависимостью iris)
         wp_enqueue_script('iris');
         wp_enqueue_script('wp-color-picker');
         wp_enqueue_style('wp-color-picker');
-
-        // wp-media для media полей
         wp_enqueue_media();
+        wp_enqueue_code_editor(['type' => 'text/css']);
 
-        // Наш JS для зависимостей и инициализации
         $wp_field_url = plugin_dir_url(__FILE__);
-        $wp_field_ver = defined('WP_DEBUG') && WP_DEBUG ? time() : '2.3.0';
+        $wp_field_ver = defined('WP_DEBUG') && WP_DEBUG ? time() : '3.0.0';
 
         wp_enqueue_script(
             'wp-field-main',
@@ -66,10 +49,8 @@ class WP_Field_Examples
             true,
         );
 
-        // Добавляем inline скрипт для гарантированной инициализации Color Picker
         wp_add_inline_script('wp-field-main', '
             jQuery(document).ready(function($) {
-                // Дополнительная инициализация Color Picker после загрузки страницы
                 setTimeout(function() {
                     if (typeof $.fn.wpColorPicker !== "undefined") {
                         $(".wp-color-picker-field").each(function() {
@@ -82,7 +63,6 @@ class WP_Field_Examples
             });
         ');
 
-        // Наш CSS
         wp_enqueue_style(
             'wp-field-main',
             $wp_field_url.'assets/css/wp-field.css',
@@ -90,7 +70,16 @@ class WP_Field_Examples
             $wp_field_ver,
         );
 
-        // Prism.js для подсветки синтаксиса
+        $vanilla_css = __DIR__.'/assets/css/wp-field-examples-vanilla.css';
+        if (file_exists($vanilla_css)) {
+            wp_enqueue_style(
+                'wp-field-examples-vanilla',
+                plugin_dir_url(__FILE__).'assets/css/wp-field-examples-vanilla.css',
+                ['wp-field-main'],
+                (string) filemtime($vanilla_css),
+            );
+        }
+
         wp_enqueue_style(
             'prism-css',
             'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css',
@@ -98,7 +87,6 @@ class WP_Field_Examples
             '1.29.0',
         );
 
-        // Используем полную версию Prism с поддержкой PHP
         wp_enqueue_script(
             'prism-js',
             'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js',
@@ -107,7 +95,6 @@ class WP_Field_Examples
             true,
         );
 
-        // Добавляем поддержку PHP через data-атрибут
         wp_add_inline_script('prism-js', '
             if (typeof Prism !== "undefined") {
                 Prism.languages.php = Prism.languages.extend("clike", {
@@ -122,23 +109,17 @@ class WP_Field_Examples
         ', 'after');
     }
 
-    /**
-     * Добавить страницу в меню Инструменты
-     */
     public function add_menu_page(): void
     {
         add_management_page(
-            'WP_Field Examples',
-            'WP_Field Examples',
+            'WP_Field Vanilla Examples',
+            'WP_Field Vanilla',
             'manage_options',
             'wp-field-examples',
             [$this, 'render_page'],
         );
     }
 
-    /**
-     * Сохранение настроек
-     */
     public function save_settings(): void
     {
         if (! isset($_POST['wp_field_examples_nonce'])) {
@@ -153,7 +134,6 @@ class WP_Field_Examples
             return;
         }
 
-        // Сохраняем все поля
         $fields = $this->get_all_fields();
         foreach ($fields as $section) {
             foreach ($section['fields'] as $field) {
@@ -163,220 +143,39 @@ class WP_Field_Examples
             }
         }
 
-        add_settings_error('wp_field_examples', 'settings_updated', 'Настройки сохранены!', 'updated');
+        add_settings_error('wp_field_examples', 'settings_updated', 'Settings saved.', 'updated');
     }
 
-    /**
-     * Рендер страницы
-     */
     public function render_page(): void
     {
+        $sections = $this->get_all_fields();
+        $fieldCount = 0;
+        foreach ($sections as $section) {
+            $fieldCount += count($section['fields']);
+        }
         ?>
         <div class="wrap">
-            <h1>WP_Field v3.0 — Примеры всех типов полей</h1>
-            
-            <div class="notice notice-info">
-                <p><strong>48 типов полей</strong> с системой зависимостей, поддержкой всех типов хранилищ и встроенными WP компонентами.</p>
-                <p>📌 <strong>Новое:</strong> <a href="<?php echo admin_url('tools.php?page=wp-field-v3-demo'); ?>">Смотрите v3.0 Demo</a> с Fluent API, Repeater и Flexible Content!</p>
-            </div>
-            
+            <h1>WP_Field — Vanilla API Documentation</h1>
+            <p class="description" style="font-size:14px;margin:8px 0 20px;">
+                Classic <code>WP_Field::make()</code> API — jQuery + WordPress built-in components.
+                <?php echo esc_html($fieldCount); ?> field examples covering all supported types.
+            </p>
+
             <?php settings_errors('wp_field_examples'); ?>
-            
+
             <form method="post" action="">
                 <?php wp_nonce_field('wp_field_examples_save', 'wp_field_examples_nonce'); ?>
-                
+
                 <div class="wp-field-examples-container">
                     <?php $this->render_all_fields(); ?>
                 </div>
-                
+
                 <p class="submit">
-                    <button type="submit" class="button button-primary button-large">Сохранить все настройки</button>
-                    <button type="button" class="button button-secondary" onclick="location.reload()">Сбросить</button>
+                    <button type="submit" class="button button-primary button-large">Save Settings</button>
+                    <button type="button" class="button button-secondary" onclick="location.reload()">Reset</button>
                 </p>
             </form>
         </div>
-        
-        <style>
-            .wp-field-examples-container {
-                background: #fff;
-                padding: 20px;
-                margin: 20px 0;
-                border: 1px solid #ccd0d4;
-                box-shadow: 0 1px 1px rgba(0,0,0,.04);
-            }
-            .wp-field-section {
-                margin-bottom: 40px;
-                padding-bottom: 30px;
-                border-bottom: 2px solid #f0f0f0;
-            }
-            .wp-field-section:last-child {
-                border-bottom: none;
-            }
-            .wp-field-section h2 {
-                margin-top: 0;
-                padding: 10px 15px;
-                background: #f9f9f9;
-                border-left: 4px solid #0073aa;
-            }
-            .wp-field-section .description {
-                padding: 0 15px;
-                color: #666;
-                font-style: italic;
-            }
-            .wp-field-example {
-                margin: 20px 0;
-                padding: 15px;
-                background: #fafafa;
-                border-left: 3px solid #0073aa;
-            }
-            .wp-field-example h3 {
-                margin-top: 0;
-                color: #0073aa;
-            }
-            .wp-field-example h3 code {
-                background: #e8f4f8;
-                padding: 2px 8px;
-                border-radius: 3px;
-                font-size: 12px;
-                color: #0073aa;
-                font-weight: normal;
-            }
-            .wp-field-example details {
-                margin-top: 15px;
-            }
-            .wp-field-example details summary {
-                cursor: pointer;
-                color: #0073aa;
-                font-weight: 600;
-                padding: 8px 12px;
-                background: #f0f8ff;
-                border-radius: 4px;
-                user-select: none;
-                transition: background 0.2s;
-            }
-            .wp-field-example details summary:hover {
-                background: #e0f0ff;
-            }
-            .wp-field-example details[open] summary {
-                margin-bottom: 10px;
-            }
-            .wp-field-example pre {
-                margin: 0;
-                border-radius: 4px;
-                overflow: hidden;
-            }
-            .wp-field-example pre code {
-                display: block;
-                padding: 15px !important;
-                margin: 0;
-                font-size: 13px;
-                line-height: 1.6;
-                overflow-x: auto;
-                background: #2d2d2d !important;
-            }
-            .wp-field-description {
-                background: #f0f8ff;
-                padding: 12px 15px;
-                border-left: 3px solid #0073aa;
-                margin: 10px 0;
-                border-radius: 3px;
-            }
-            .wp-field-description p {
-                margin: 0;
-                color: #333;
-            }
-            .wp-field-preview {
-                background: #fff;
-                padding: 20px;
-                border: 1px solid #e0e0e0;
-                border-radius: 4px;
-                margin: 15px 0;
-            }
-            .wp-field-arguments,
-            .wp-field-code,
-            .wp-field-advanced {
-                margin: 15px 0;
-            }
-            .wp-field-arguments summary,
-            .wp-field-code summary,
-            .wp-field-advanced summary {
-                cursor: pointer;
-                color: #0073aa;
-                font-weight: 600;
-                padding: 10px 15px;
-                background: #f9f9f9;
-                border: 1px solid #ddd;
-                border-radius: 4px;
-                user-select: none;
-                transition: background 0.2s;
-            }
-            .wp-field-arguments summary:hover,
-            .wp-field-code summary:hover,
-            .wp-field-advanced summary:hover {
-                background: #f0f0f0;
-            }
-            .wp-field-arguments[open] summary,
-            .wp-field-code[open] summary,
-            .wp-field-advanced[open] summary {
-                margin-bottom: 15px;
-                border-bottom-left-radius: 0;
-                border-bottom-right-radius: 0;
-            }
-            .wp-field-args-table {
-                width: 100%;
-                border-collapse: collapse;
-                background: #fff;
-                border: 1px solid #ddd;
-                border-top: none;
-            }
-            .wp-field-args-table th,
-            .wp-field-args-table td {
-                padding: 10px 12px;
-                text-align: left;
-                border-bottom: 1px solid #e0e0e0;
-            }
-            .wp-field-args-table th {
-                background: #f5f5f5;
-                font-weight: 600;
-                color: #333;
-            }
-            .wp-field-args-table tr:last-child td {
-                border-bottom: none;
-            }
-            .wp-field-args-table code {
-                background: #f0f0f0;
-                padding: 2px 6px;
-                border-radius: 3px;
-                font-size: 12px;
-                color: #d63384;
-            }
-            .wp-field-advanced-item {
-                background: #fff;
-                padding: 15px;
-                border: 1px solid #ddd;
-                border-top: none;
-                margin-bottom: 15px;
-            }
-            .wp-field-advanced-item:first-child {
-                border-top: 1px solid #ddd;
-            }
-            .wp-field-advanced-item:last-child {
-                margin-bottom: 0;
-            }
-            .wp-field-advanced-item h4 {
-                margin: 0 0 8px 0;
-                color: #0073aa;
-                font-size: 14px;
-            }
-            .wp-field-advanced-item p {
-                margin: 0 0 10px 0;
-                color: #666;
-                font-size: 13px;
-            }
-            .wp-field-advanced-item pre {
-                margin: 0;
-            }
-        </style>
         <?php
     }
 

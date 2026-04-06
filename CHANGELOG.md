@@ -2,6 +2,47 @@
 
 Все важные изменения в проекте WP_Field документируются в этом файле.
 
+## [3.0.1] - 2026-04-06
+
+### Изменено (Реструктуризация файловой структуры)
+- **Vanilla runtime изолирован** — все legacy/vanilla файлы перемещены в `vanilla/`:
+  - `vanilla/WP_Field.php` — legacy класс
+  - `vanilla/bootstrap.php` — загрузчик vanilla assets
+  - `vanilla/example.php` — demo страница (slug: wp-field-examples)
+  - `vanilla/assets/css/wp-field.css` — vanilla стили
+  - `vanilla/assets/css/wp-field-examples-vanilla.css` — demo page стили
+  - `vanilla/assets/js/wp-field.js` — vanilla JS
+  - `vanilla/assets/scss/wp-field-examples-vanilla.scss` — SCSS source
+
+- **Demo pages реорганизованы** — co-located структура:
+  - `examples/components/index.php` — WP_Field Components page (slug: wp-field-components)
+  - `examples/components/assets/wp-field-components.css` — стили components page
+  - `examples/components/assets/wp-field-components.js` — vanilla JS бандл (sidebar, search)
+  - `examples/ui-demo/index.php` — Flux UI showcase (slug: wp-field-ui-demo)
+  - `examples/shared-catalog.php` — единый каталог полей для всех demo pages
+
+- **Удалены orphaned/legacy файлы**:
+  - `assets/css/wp-field-v3-demo.css`
+  - `assets/css/wp-field-demo.css`
+  - `assets/css/wp-field-examples-vanilla.css` (перенесён в vanilla/)
+  - `assets/css/imagepicker.css`
+  - `assets/dist/v3-demo.js`
+  - `assets/dist/client.js`
+  - `assets/dist/wp-field-components.js` (перенесён в examples/components/)
+  - `assets/js/imagepicker.js`
+  - `assets/js/wp-field.js` (перенесён в vanilla/)
+  - `assets/scss/demos/vanilla-demo.scss` → `vanilla/assets/scss/wp-field-examples-vanilla.scss`
+  - `assets/scss/demos/v3-demo.scss`
+  - `assets/src/v3-demo-app.jsx`
+  - `examples/v3-demo.php` → `examples/components/index.php`
+  - `examples/ui-demo.php` → `examples/ui-demo/index.php`
+  - `legacy/` директория (перенесена в `vanilla/`)
+
+- **Vite конфиги обновлены**:
+  - `vite.components.config.js` — outDir теперь `examples/components/assets/`
+
+- **wp-field.php** — обновлены пути подключения demo pages
+
 ## [3.0.0] - 2025-02-24
 
 ### Добавлено

@@ -39,7 +39,7 @@ class BootstrapFilesTest extends TestCase
         $this->assertTrue(defined('WP_FIELD_PLUGIN_DIR'));
         $this->assertTrue(defined('WP_FIELD_PLUGIN_URL'));
 
-        include dirname(__DIR__, 2).'/legacy/bootstrap.php';
+        include dirname(__DIR__, 2) . '/vanilla/bootstrap.php';
 
         $this->assertNotEmpty($GLOBALS['wp_test_actions']);
         $hooks = array_column($GLOBALS['wp_test_actions'], 'hook');

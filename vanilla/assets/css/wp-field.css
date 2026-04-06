@@ -1036,7 +1036,7 @@
     padding: 15px;
 }
 
-/* safety: если где-то осталась legacy-иконка — скрываем */
+/* safety: если где-то осталась vanilla-иконка — скрываем */
 .wp-field-accordion-icon {
     display: none !important;
 }

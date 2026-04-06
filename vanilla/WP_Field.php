@@ -247,7 +247,7 @@ class WP_Field
         // Наш JS для зависимостей и инициализации
         wp_enqueue_script(
             'wp-field-main',
-            $this->url.'legacy/assets/js/wp-field.js',
+            $this->url.'vanilla/assets/js/wp-field.js',
             ['jquery'],
             $this->ver,
             true,
@@ -256,7 +256,7 @@ class WP_Field
         // Наш CSS
         wp_enqueue_style(
             'wp-field-main',
-            $this->url.'legacy/assets/css/wp-field.css',
+            $this->url.'vanilla/assets/css/wp-field.css',
             [],
             $this->ver,
         );
@@ -1267,7 +1267,7 @@ class WP_Field
     }
 
     /**
-     * Рендер image picker (legacy)
+     * Рендер image picker (vanilla)
      */
     private function render_image_picker(array $field): void
     {

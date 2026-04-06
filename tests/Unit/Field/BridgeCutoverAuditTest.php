@@ -5,7 +5,7 @@ declare(strict_types=1);
 use WpField\Field\Field;
 use WpField\Field\Types\LegacyWrapperField;
 
-it('official registry types are routed to native classes, not legacy wrapper fallback', function (): void {
+it('official registry types are routed to native classes, not vanilla wrapper fallback', function (): void {
     $officialTypes = [
         'text', 'password', 'email', 'url', 'tel', 'number', 'range', 'hidden', 'textarea',
         'select', 'multiselect', 'radio', 'checkbox', 'checkbox_group',

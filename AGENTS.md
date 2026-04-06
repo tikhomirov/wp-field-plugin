@@ -9,9 +9,6 @@
 1. `AGENTS.md`
 2. `tree.md`
 3. `API.md`
-4. `docs/wp-field/analysis.md`
-5. `docs/wp-field/plan.md`
-6. `docs/wp-field/decision-log.md`
 
 Если задача про конкретный слой, затем читать код этого слоя:
 - runtime/legacy → `WP_Field.php`, `assets/js/wp-field.js`

@@ -1,214 +1,205 @@
-# WP_Field — активный план де-легасизации bridge-типов
+# WP_Field Demo Pages Realignment
 
-_Обновлено: 2026-04-06_
+_Обновлено: 2026-04-07_
 
-## Статус
+## Progress
 
-План миграции `Field::make()` (Итерации 1–10) завершён и перенесён в архив:
-- `docs/реализовано/2026-04-06-field-make-migration-plan.md`
+| Phase | Status | Notes |
+|---|---|---|
+| 1. Demo audit | ✅ done | Target matrix in decision-log |
+| 2. Shared demo catalog | ✅ done | `examples/shared-catalog.php` |
+| 3. Vanilla page rebuild | ✅ done | Inline CSS → external, marketing removed, renamed to Vanilla |
+| 4. React components page | ✅ done | Slug `wp-field-components`, sidebar, code examples, props badges, vanilla JS bundle |
+| 5. UI demo convergence | ⏳ pending | `wp-field-ui-demo` not yet on shared catalog (user: "пока не трогаем") |
 
-Следующий главный этап — **максимально перевести bridge-типы с `LegacyAdapterBridge` на полноценный native runtime**.
+## Goal
 
-Источник списка для миграции:
-- `radio`
-- `media`
-- `fieldset`
-- `color`
-- `editor`
-- `image`
-- `file`
-- `gallery`
-- `accordion`
-- `tabbed`
-- `typography`
-- `spacing`
-- `dimensions`
-- `border`
-- `background`
-- `link_color`
-- `color_group`
-- `code_editor`
-- `icon`
-- `map`
-- `sortable`
-- `sorter`
-- `palette`
-- `link`
-- `backup`
-- `image_picker` / `imagepicker`
+Привести demo-страницы к новой роли:
+- `wp-field-examples` = стабильная Vanilla-документация для классической WP admin;
+- `wp-field-components` = React-документация и demo нового модуля без jQuery и без зависимости от встроенных WP UI scripts;
+- `wp-field-ui-demo` = отдельная showcase-страница admin framework, которая использует те же компоненты, но в Flux UI-оформлении.
 
-Ограничение текущего цикла:
-- **не более 5 этапов**;
-- порядок — **от простого к сложному**;
-- каждый этап считается закрытым только когда типы удалены из `LegacyAdapterBridge`-маршрута, добавлены тесты и обновлена документация.
+## Expected Result
 
----
+После завершения цикла:
+- страница `tools.php?page=wp-field-examples` показывает все поддерживаемые поля старого API, выглядит как компактная документация и остаётся рабочей в классической админке;
+- страница `tools.php?page=wp-field-components` заменяет `wp-field-v3-demo`, показывает не меньший набор поддерживаемых полей, поддерживает custom field/custom content и не требует jQuery или `wp.media` / `wp.editor` / `wp-color-picker`;
+- страница `tools.php?page=wp-field-ui-demo` использует тот же каталог компонентов, что и `wp-field-components`, но остаётся витриной UI shell в стиле Flux UI;
+- документация и demo coverage отражают реальное поведение.
 
-## Этап 1 — Простые bridge-типы без тяжёлой JS-интеграции
+## Fixed decisions
 
-### Цель
-Перевести типы, у которых низкая стоимость native-рендера и понятный HTML-контракт.
+- Термин `Legacy` больше не использовать для `wp-field-examples`; это `Vanilla` реализация.
+- `wp-field-examples` остаётся на jQuery + минимальном CSS и целится в классическую WordPress admin.
+- `wp-field-v3-demo` переименовывается в `wp-field-components`.
+- `wp-field-components` не использует jQuery и не опирается на встроенные WP UI scripts; если для отдельных типов нужен enhancement, он должен быть независимым от WordPress UI runtime.
+- `wp-field-ui-demo` пока не проектируется заново как отдельный каталог; он должен стать визуальной оболочкой над тем же набором примеров, что и `wp-field-components`.
+- Источник состава полей: `docs/wp-field/supported-matrix.md` + отдельно `flexible_content` + custom demo cases.
 
-### Объём этапа
-- [x] `radio`
-- [x] `fieldset`
-- [x] `image_picker` / `imagepicker`
-- [x] `palette`
-- [x] `link`
-- [x] `backup`
+## In scope
 
-### Подзадачи
-- [x] Для каждого типа описать фактический render-contract из legacy (`markup`, `name/id`, `value shape`, CSS-классы, data-атрибуты).
-- [x] Проверить, нужны ли для типа legacy-only fluent-атрибуты, которых ещё нет в native-классе.
-- [x] Реализовать `render()` без `LegacyAdapterBridge`.
-- [x] Явно реализовать/проверить `sanitize()` и `validate()` там, где простого поведения `AbstractField` недостаточно.
-- [x] Обновить `Field::make()` так, чтобы типы шли в native route, а не в legacy bridge.
-- [x] Добавить unit/feature-тесты на HTML и value-contract.
-- [x] Перенести типы из блока "excluded bridge types" в supported modern-only список демо, если они реально работают без legacy assets.
+- Аудит текущих demo entrypoints, slug-ов, asset pipeline и списка полей.
+- Выделение общего каталога demo-примеров/секций, который смогут использовать и `wp-field-components`, и `wp-field-ui-demo`.
+- Пересборка `wp-field-examples` как Vanilla docs page.
+- Переименование и переработка `wp-field-v3-demo` в `wp-field-components`.
+- Приведение `wp-field-ui-demo` к shared data model c `wp-field-components`.
+- Обновление docs (`API.md`, `analysis.md`, `decision-log.md`, `demo-matrix-coverage.md`, при необходимости README).
 
-### DoD этапа
-- [x] Ни один тип этапа не использует `renderViaLegacy()`.
-- [x] Есть тесты на рендер и базовое поведение каждого типа.
-- [x] Типы этапа можно безопасно показывать в `WP_Field Demo` как `legacy disabled`-совместимые.
+## Out of scope
 
----
+- Расширение публичного fluent API вне нужд demo/doc pages.
+- Полный redesign `AdminShell`/`Wizard`.
+- Полный перенос legacy runtime из `WP_Field.php`.
+- GitHub Pages publish pipeline как отдельная инфраструктурная задача.
 
-## Этап 2 — Поля выбора и layout-контейнеры средней сложности
+## Repo facts
 
-### Цель
-Закрыть типы, где основная сложность — структура вложенного UI, а не глубокая WP-интеграция.
+- `legacy/example.php` уже регистрирует `wp-field-examples` и использует jQuery, `wp-color-picker`, `wp_enqueue_media`, `wp_enqueue_code_editor`, Prism CDN и большой inline CSS.
+- `examples/v3-demo.php` сейчас регистрирует slug `wp-field-v3-demo`, но это PHP-rendered modern-only demo, а не React component documentation page.
+- `examples/ui-demo.php` сейчас содержит отдельную вручную собранную Flux UI витрину и не использует общий каталог полей из `v3-demo`.
+- `docs/wp-field/supported-matrix.md` фиксирует 52 official unique types + 4 aliases; `flexible_content` описан отдельно как поддерживаемый modern type вне legacy registry.
+- `docs/wp-field/demo-matrix-coverage.md` уже требует полного покрытия demo-страниц, но фактическая архитектура страниц пока не соответствует новой задаче.
+- `vite.config.js` собирает только `repeater` и `flexible-content`; отдельного entrypoint для `wp-field-components` сейчас нет.
+- В `package.json` нет отдельной команды для сборки demo app.
 
-### Объём этапа
-- [x] `accordion`
-- [x] `tabbed`
-- [x] `sortable`
-- [x] `sorter`
-- [x] `color_group`
+## Constraints
 
-### Подзадачи
-- [x] Зафиксировать минимальный HTML/API-контракт для вложенных секций, вкладок, элементов сортировки и grouped-values.
-- [x] Убрать предположение, что layout должен строиться legacy renderer-ом.
-- [x] Выделить общие внутренние хелперы для nested collections / section config, чтобы не дублировать код.
-- [x] Для `sortable`/`sorter` определить, можно ли оставить поведение как "server-render only" без drag-and-drop JS на первом native-шаге.
-- [x] Для `accordion`/`tabbed` определить минимальный modern baseline: корректный HTML + доступность без обязательного JS enhancement.
-- [x] Добавить regression-тесты на вложенные элементы, labels, active-state и serialized config.
-- [x] Обновить supported matrix и demo-страницу после закрытия реальной поддержки.
+- Не ломать `WP_Field` и старый API.
+- Не уменьшать покрытие поддерживаемых полей на новой React-странице относительно Vanilla-страницы.
+- Перед любыми claims о поддержке сверять поле с реальным кодом, а не со старыми README/demo.
+- Для `wp-field-components` нельзя зависеть от jQuery и встроенных WP UI scripts.
+- План должен быть выполнен максимум за 5 фаз.
 
-### DoD этапа
-- [x] Типы этапа рендерятся native-классами без bridge.
-- [x] Вложенные конфиги не теряются при `toArray()` / `render()`.
-- [x] Базовое поведение работает даже без legacy JS.
+## Scope
 
----
+Allowed:
+- менять demo PHP files, demo assets, Vite entries, shared demo config/data files, docs;
+- выносить общие demo definitions в `src/` или `examples/` shared layer;
+- переименовывать slug, titles, labels и тексты страниц;
+- удалять со страниц лишний маркетинговый/исторический контент;
+- добавлять targeted tests/smoke checks для demo routing и shared catalog.
 
-## Этап 3 — Settings-object типы с составным value shape
+Forbidden:
+- менять supported behavior полей без отдельной фиксации;
+- оставлять на `wp-field-components` скрытую зависимость от `wp.*` UI API;
+- дублировать два независимых каталога примеров для `wp-field-components` и `wp-field-ui-demo`;
+- смешивать Vanilla docs page и UI framework showcase в одну страницу.
 
-### Цель
-Перевести типы, где главное препятствие — сложная структура значения и набор связанных саб-полей.
+## Assumptions
 
-### Объём этапа
-- [x] `typography`
-- [x] `spacing`
-- [x] `dimensions`
-- [x] `border`
-- [x] `background`
-- [x] `link_color`
+- Сохранение старого slug `wp-field-v3-demo` не требуется, если будет добавлен прозрачный rename/migration path.
+- Для `wp-field-components` допустим серверный PHP bootstrap страницы, но визуальный и интерактивный слой должен идти через React bundle.
+- Для сложных полей, которые в runtime сейчас используют WP-specific enhancement, потребуется отдельный React demo adapter, а не прямой reuse текущего admin enhancement pipeline.
 
-### Подзадачи
-- [x] Для каждого типа описать canonical value shape из legacy-реализации.
-- [x] Зафиксировать список саб-ключей: обязательные, опциональные, дефолтные.
-- [x] Реализовать native-рендер через композицию простых полей (`select`, `checkbox`, `color`, `text`, `number`, `group`), а не через отдельный монолитный HTML.
-- [x] Нормализовать `sanitize()` по каждому саб-ключу.
-- [x] Явно описать `validate()` для частично заполненных конфигов.
-- [x] Добавить тесты на round-trip: `value -> render -> sanitize/validate -> expected shape`.
-- [x] Проверить, что resulting HTML не требует `WP_Field` для базового отображения.
+## Risks
 
-### DoD этапа
-- [x] Все settings-object типы имеют documented native value shape.
-- [x] Значения этих типов больше не зависят от legacy wrapper при рендере.
-- [x] Тесты покрывают и пустые, и частично заполненные, и полные конфиги.
+- Требование “без встроенных wp scripts” конфликтует с текущими native integration types (`media`, `editor`, `gallery`, `code_editor`, `color`) и потребует либо независимых demo adapters, либо явно ограниченного demo mode.
+- Если shared demo catalog не будет введён первым, `wp-field-components` и `wp-field-ui-demo` быстро разойдутся по составу и документация снова устареет.
+- Переименование slug без compat-редиректа может сломать существующие ссылки из README и внутренних заметок.
+- Vanilla-страница сейчас тянет внешние CDN assets и лишний explanatory content; без отдельной чистки она не подходит под роль публикуемой документации.
 
----
+## Phases
 
-## Этап 4 — WordPress media/editor integration типы
+### Phase 1. Demo audit and target contract
 
-### Цель
-Перевести типы, завязанные на WP admin-интеграции и client-side enhancement.
+Цель:
+Зафиксировать, как именно должны выглядеть и чем должны отличаться три страницы.
 
-### Объём этапа
-- [x] `media`
-- [x] `color`
-- [x] `editor`
-- [x] `image`
-- [x] `file`
-- [x] `gallery`
-- [x] `code_editor`
-- [x] `icon`
+Шаги:
+1. Сверить `legacy/example.php`, `examples/v3-demo.php`, `examples/ui-demo.php`, `docs/wp-field/demo-matrix-coverage.md`, `docs/wp-field/supported-matrix.md`.
+2. Составить target matrix:
+   - slug;
+   - title;
+   - runtime (`jQuery` / `React`);
+   - источник данных;
+   - список поддерживаемых типов;
+   - допускаемые зависимости.
+3. Отдельно отметить типы, для которых у `wp-field-components` нет независимого React demo adapter.
+4. Зафиксировать решение в `decision-log.md`.
 
-### Подзадачи
-- [x] Разделить для каждого типа 2 слоя: server-render baseline и optional JS enhancement.
-- [x] Вынести общую native-стратегию подключения WP assets (`wp_enqueue_media`, color picker, code editor APIs).
-- [x] Реализовать degraded mode: поле должно иметь usable HTML даже если enhancement-скрипт не подключен.
-- [x] Определить единый контракт `data-*` атрибутов для modern JS вместо legacy DOM-зависимостей.
-- [x] Добавить/обновить modern JS-инициализацию там, где без неё тип нефункционален.
-- [x] Добавить integration-тесты на enqueue contract и render contract.
-- [x] Расширить demo/smoke checklist для страниц, где нужны WP-admin assets.
+Проверка:
+- есть таблица ролей и ограничений для всех трёх страниц;
+- нет неявных конфликтов по slug, runtime и источнику данных.
 
-### DoD этапа
-- [x] Типы этапа используют native PHP render и modern asset contract.
-- [x] Нет прямой зависимости от `legacy/assets/js/wp-field.js`.
-- [x] При отсутствии enhancement JS поле деградирует предсказуемо, а не ломается.
+### Phase 2. Shared demo catalog
 
----
+Цель:
+Сделать единый источник секций и примеров для нового component demo и UI demo.
 
-## Этап 5 — Высокая сложность: map + финальный cutover bridge-слоя
+Шаги:
+1. Вынести definitions секций, карточек, custom demos и coverage metadata из `examples/v3-demo.php` в shared PHP/JSON-like layer.
+2. Разделить shared data и page-specific presentation.
+3. Добавить в shared catalog:
+   - все official supported types;
+   - alias coverage;
+   - `flexible_content`;
+   - custom field/custom content examples.
+4. Добавить smoke-проверку, что `wp-field-components` catalog не меньше Vanilla coverage по числу/списку типов.
 
-### Цель
-Закрыть самые сложные интеграционные типы и подготовить системный отказ от `LegacyAdapterBridge` для официального registry.
+Проверка:
+- `wp-field-components` и `wp-field-ui-demo` читают один каталог;
+- расхождение состава полей ловится автоматической проверкой или явным audit script/test.
 
-### Объём этапа
-- [x] `map`
-- [x] Проверка остаточных bridge routes в `Field::make()`
-- [x] Финальный audit alias-маршрутов (`image_picker`, `imagepicker`, `date_time`)
-- [x] Подготовка плана удаления/сужения `LegacyAdapterBridge`
+### Phase 3. Vanilla page rebuild
 
-### Подзадачи
-- [x] Для `map` определить минимальный native baseline без внешних провайдеров и enhancement-путь с JS.
-- [x] Проверить, не тянут ли оставшиеся типы скрытые legacy hooks/enqueues.
-- [x] Составить финальную таблицу: `official registry type -> native | legacy-only fallback`.
-- [x] Оставить через fallback только truly-custom/unknown типы вне registry.
-- [x] Обновить `API.md`, `README*`, `analysis.md`, `decision-log.md`, demo-страницы и supported matrix.
-- [x] Добавить regression-тест, который подтверждает: официальный registry больше не уходит в `LegacyAdapterBridge`.
-- [x] Зафиксировать отдельным решением, можно ли сужать `LegacyAdapterBridge` до режима compat-only.
+Цель:
+Превратить `wp-field-examples` в чистую Vanilla docs page.
 
-### DoD этапа
-- [x] Все официальные bridge-типы либо переведены в native, либо явно помечены как сознательно отложенные с причиной.
-- [x] `LegacyAdapterBridge` перестаёт быть основным маршрутом для официального registry.
-- [x] Документация синхронизирована с фактическим runtime.
+Шаги:
+1. Очистить `legacy/example.php` от лишнего маркетингового текста и нерелевантных блоков.
+2. Переименовать язык страницы с `Legacy` на `Vanilla`.
+3. Сохранить jQuery + минимальный CSS как baseline для классической админки.
+4. Убрать всё, что мешает публикации как документации:
+   - лишний inline visual noise;
+   - неточные claims;
+   - внешние зависимости без явной необходимости.
+5. Проверить покрытие:
+   - все official types;
+   - alias examples;
+   - custom type/custom content example;
+   - документационный код рядом с preview.
 
----
+Проверка:
+- страница остаётся рабочей в классической WP admin;
+- страница действительно документирует `WP_Field`, а не рекламирует migration path.
 
-## Сквозные правила для всех этапов
+### Phase 4. React components page
 
-- [ ] Не менять `WP_Field.php` без крайней необходимости; приоритет — перенос поведения в native runtime.
-- [ ] Каждый тип переносить по схеме: `contract capture -> native render -> sanitize/validate -> tests -> docs -> demo`.
-- [ ] Не переносить следующий этап, пока не закрыт regression gate текущего.
-- [ ] Если тип требует JS, сначала обеспечить server-render baseline, потом enhancement.
-- [ ] После завершения значимой сессии обновлять минимум один из файлов: `analysis.md`, `plan.md`, `decision-log.md`.
+Цель:
+Построить `wp-field-components` как новую React demo/docs page.
 
----
+Шаги:
+1. Переименовать menu slug/title из `wp-field-v3-demo` в `wp-field-components`.
+2. Добавить отдельный Vite entrypoint для components demo app.
+3. Построить React page shell в стиле component documentation:
+   - sidebar/table of contents;
+   - section anchors;
+   - preview + usage API;
+   - краткие notes по поведению и value shape.
+4. Исключить jQuery и WP UI runtime dependencies из demo implementation.
+5. Для полей с WP-specific runtime сделать независимый React demo adapter или явно documented fallback, который не ломает страницу.
+6. Обновить docs/links, где фигурирует `wp-field-v3-demo`.
 
-## Минимальные команды проверок по этапу
+Проверка:
+- страница открывается по `tools.php?page=wp-field-components`;
+- React bundle собирается отдельным entrypoint;
+- нет `jquery`, `wp.media`, `wp.editor`, `wp-color-picker` как обязательных зависимостей страницы.
 
-```bash
-./vendor/bin/pest --configuration phpunit.xml tests/Unit
-./vendor/bin/pest --configuration phpunit.xml tests/Feature
-composer analyse
-composer lint:check
-```
+### Phase 5. UI demo convergence and docs sync
 
-Полный прогон перед merge этапа:
+Цель:
+Оставить `wp-field-ui-demo` как Flux UI showcase поверх того же component catalog и синхронизировать документацию.
 
-```bash
-composer ci
-```
+Шаги:
+1. Перевести `wp-field-ui-demo` на использование shared catalog из Phase 2.
+2. Оставить Flux UI styling как presentation layer, не как отдельный набор компонентов.
+3. Обновить `analysis.md`, `decision-log.md`, `demo-matrix-coverage.md`, `API.md`, README при необходимости.
+4. Прогнать нужные проверки:
+   - targeted PHP tests/smoke;
+   - `npm run build` или отдельную demo build команду после добавления entrypoint;
+   - ручную проверку трёх admin pages.
+
+Проверка:
+- `wp-field-ui-demo` и `wp-field-components` показывают одинаковый каталог примеров;
+- различается только presentation/runtime role;
+- docs не спорят с кодом и slug-ами.

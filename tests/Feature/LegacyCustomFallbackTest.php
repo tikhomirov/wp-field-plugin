@@ -19,8 +19,8 @@ class LegacyCustomFallbackTest extends TestCase
             ->value('abc')
             ->render();
 
-        $this->assertStringContainsString('wp-field-legacy-fallback', $html);
-        $this->assertStringContainsString('data-legacy-type="my_custom_type"', $html);
+        $this->assertStringContainsString('wp-field-vanilla-fallback', $html);
+        $this->assertStringContainsString('data-vanilla-type="my_custom_type"', $html);
         $this->assertStringContainsString('name="custom_payload"', $html);
         $this->assertStringContainsString('value="abc"', $html);
         $this->assertStringContainsString('Enter value', $html);

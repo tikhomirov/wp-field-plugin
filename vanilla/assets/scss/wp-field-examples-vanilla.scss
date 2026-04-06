@@ -1,0 +1,247 @@
+/**
+ * WP_Field Vanilla demo — classic API documentation page (WP_Field::make).
+ * Build: npm run build:scss → assets/css/wp-field-examples-vanilla.css
+ */
+
+.wp-field-examples-container {
+    background: #fff;
+    padding: 20px;
+    margin: 20px 0;
+    border: 1px solid #ccd0d4;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+}
+
+.wp-field-section {
+    margin-bottom: 40px;
+    padding-bottom: 30px;
+    border-bottom: 2px solid #f0f0f0;
+
+    &:last-child {
+        border-bottom: none;
+    }
+
+    h2 {
+        margin-top: 0;
+        padding: 10px 15px;
+        background: #f9f9f9;
+        border-left: 4px solid #0073aa;
+    }
+
+    .description {
+        padding: 0 15px;
+        color: #666;
+        font-style: italic;
+    }
+}
+
+.wp-field-example {
+    margin: 20px 0;
+    padding: 15px;
+    background: #fafafa;
+    border-left: 3px solid #0073aa;
+
+    h3 {
+        margin-top: 0;
+        color: #0073aa;
+
+        code {
+            background: #e8f4f8;
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-size: 12px;
+            color: #0073aa;
+            font-weight: normal;
+        }
+    }
+
+    details {
+        margin-top: 15px;
+
+        summary {
+            cursor: pointer;
+            color: #0073aa;
+            font-weight: 600;
+            padding: 8px 12px;
+            background: #f0f8ff;
+            border-radius: 4px;
+            user-select: none;
+            transition: background 0.2s;
+
+            &:hover {
+                background: #e0f0ff;
+            }
+        }
+
+        &[open] summary {
+            margin-bottom: 10px;
+        }
+    }
+
+    // Блоки кода только внутри раскрываемых секций (не трогаем table code в аргументах)
+    .wp-field-code pre,
+    .wp-field-advanced-item pre {
+        margin: 0;
+        border-radius: 4px;
+        overflow-x: auto;
+        overflow-y: hidden;
+        white-space: pre;
+        tab-size: 4;
+        background: #2d2d2d;
+        border: 1px solid #1e1e1e;
+    }
+
+    .wp-field-code pre code,
+    .wp-field-advanced-item pre code {
+        display: block;
+        padding: 15px !important;
+        margin: 0;
+        font-size: 13px;
+        line-height: 1.55;
+        font-family: Consolas, Monaco, "Courier New", monospace;
+        white-space: pre;
+        overflow-wrap: normal;
+        word-break: normal;
+        background: transparent !important;
+        color: #f8f8f2;
+    }
+}
+
+.wp-field-description {
+    background: #f0f8ff;
+    padding: 12px 15px;
+    border-left: 3px solid #0073aa;
+    margin: 10px 0;
+    border-radius: 3px;
+
+    p {
+        margin: 0;
+        color: #333;
+    }
+}
+
+.wp-field-preview {
+    background: #fff;
+    padding: 20px;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    margin: 15px 0;
+}
+
+.wp-field-arguments,
+.wp-field-code,
+.wp-field-advanced {
+    margin: 15px 0;
+
+    summary {
+        cursor: pointer;
+        color: #0073aa;
+        font-weight: 600;
+        padding: 10px 15px;
+        background: #f9f9f9;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        user-select: none;
+        transition: background 0.2s;
+
+        &:hover {
+            background: #f0f0f0;
+        }
+    }
+
+    &[open] summary {
+        margin-bottom: 15px;
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+    }
+}
+
+// Обёртка: на узких экранах таблица не «ломает» сетку админки
+.wp-field-args-table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-top: none;
+}
+
+.wp-field-args-table {
+    width: 100%;
+    min-width: 560px;
+    table-layout: fixed;
+    border-collapse: collapse;
+    background: #fff;
+
+    th,
+    td {
+        vertical-align: top;
+        padding: 10px 12px;
+        text-align: left;
+        border-bottom: 1px solid #e0e0e0;
+    }
+
+    th {
+        background: #f5f5f5;
+        font-weight: 600;
+        color: #333;
+        width: 16%;
+    }
+
+    th:nth-child(4),
+    td:nth-child(4) {
+        width: 40%;
+    }
+
+    tr:last-child td {
+        border-bottom: none;
+    }
+
+    code {
+        display: inline;
+        background: #f0f0f0;
+        padding: 2px 6px;
+        border-radius: 3px;
+        font-size: 12px;
+        color: #d63384;
+        white-space: normal;
+        word-break: break-word;
+    }
+}
+
+.wp-field-advanced-item {
+    background: #fff;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-top: none;
+    margin-bottom: 15px;
+
+    &:first-child {
+        border-top: 1px solid #ddd;
+    }
+
+    &:last-child {
+        margin-bottom: 0;
+    }
+
+    h4 {
+        margin: 0 0 8px 0;
+        color: #0073aa;
+        font-size: 14px;
+    }
+
+    p {
+        margin: 0 0 10px 0;
+        color: #666;
+        font-size: 13px;
+    }
+
+    pre {
+        margin: 0;
+    }
+}
+
+.wp-field-custom-demo-badge {
+    padding: 8px 12px;
+    background: #e0f2fe;
+    border-radius: 4px;
+    border: 1px solid #bae6fd;
+}

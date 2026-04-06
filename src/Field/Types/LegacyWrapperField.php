@@ -19,7 +19,7 @@ class LegacyWrapperField extends AbstractField
     }
 
     /**
-     * Merge additional legacy config options
+     * Merge additional vanilla config options
      *
      * @param  array<string, mixed>  $config
      */
@@ -141,7 +141,7 @@ class LegacyWrapperField extends AbstractField
         $class = isset($config['class']) && is_scalar($config['class']) ? (string) $config['class'] : '';
 
         $html = sprintf(
-            '<div class="wp-field-legacy-fallback" data-legacy-fallback="1" data-legacy-type="%s">',
+            '<div class="wp-field-vanilla-fallback" data-vanilla-fallback="1" data-vanilla-type="%s">',
             esc_attr($this->type),
         );
 

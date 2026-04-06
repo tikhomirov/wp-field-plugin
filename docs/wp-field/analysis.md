@@ -109,6 +109,13 @@ Coverage gate:
 3. **Документация должна продолжать синхронизироваться с фактическим кодом**.
    - Источник истины: код и зафиксированные решения, не маркетинговые claims.
 
+4. **Demo pages realignment (2026-04-07)** — Phases 1–4 закрыты.
+   - `wp-field-examples` → Vanilla docs page (inline CSS → external, marketing text removed).
+   - `wp-field-v3-demo` slug → `wp-field-components` (shared catalog, sidebar, code examples).
+   - `examples/shared-catalog.php` — единый каталог для components и ui-demo.
+   - `wp-field-ui-demo` пока не переведён на shared catalog (Phase 5 плана).
+   - Старые CSS файлы (`wp-field-demo.css`, `wp-field-v3-demo.css`) можно удалить после подтверждения.
+
 ---
 
 ## 7) Практический режим для следующих сессий

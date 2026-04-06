@@ -12,8 +12,8 @@ if (function_exists('add_action')) {
         $base_url = defined('WP_FIELD_PLUGIN_URL') ? WP_FIELD_PLUGIN_URL : plugin_dir_url(__FILE__);
         $base_dir = defined('WP_FIELD_PLUGIN_DIR') ? WP_FIELD_PLUGIN_DIR : plugin_dir_path(__FILE__);
 
-        $css_rel = 'legacy/assets/css/wp-field.css';
-        $js_rel = 'legacy/assets/js/wp-field.js';
+        $css_rel = 'vanilla/assets/css/wp-field.css';
+        $js_rel = 'vanilla/assets/js/wp-field.js';
 
         $css_ver = file_exists($base_dir.$css_rel) ? (string) filemtime($base_dir.$css_rel) : '3.0.0';
         $js_ver = file_exists($base_dir.$js_rel) ? (string) filemtime($base_dir.$js_rel) : '3.0.0';

@@ -39,14 +39,14 @@ class WP_Field_UI_Demo
             return;
         }
 
-        $base_path = trailingslashit(dirname(__DIR__));
-        $base_url = trailingslashit(plugin_dir_url(__DIR__));
+        $base_path = trailingslashit(dirname(__DIR__, 2));
+        $base_url = trailingslashit(plugin_dir_url(dirname(__DIR__)));
 
         wp_enqueue_style('wp-color-picker');
 
-        $wpfield_css = $base_path.'legacy/assets/css/wp-field.css';
+        $wpfield_css = $base_path.'vanilla/assets/css/wp-field.css';
         if (file_exists($wpfield_css)) {
-            wp_enqueue_style('wp-field-main', $base_url.'legacy/assets/css/wp-field.css', [], (string) filemtime($wpfield_css));
+            wp_enqueue_style('wp-field-main', $base_url.'vanilla/assets/css/wp-field.css', [], (string) filemtime($wpfield_css));
         }
 
         $shell_css = $base_path.'assets/css/admin-shell.css';

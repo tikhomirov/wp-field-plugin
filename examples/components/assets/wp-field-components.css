@@ -1,0 +1,331 @@
+/**
+ * WP_Field Components — Modern documentation page styles.
+ * Slug: wp-field-components
+ * No jQuery, no WP built-in styles required.
+ */
+
+/* ── Page layout ── */
+.wfc-page {
+    max-width: 1400px;
+}
+
+.wfc-header {
+    margin-bottom: 24px;
+}
+
+.wfc-header h1 {
+    margin-bottom: 6px;
+}
+
+.wfc-header__lead {
+    max-width: 800px;
+    color: #475569;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.wfc-header__lead code {
+    background: #f1f5f9;
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 13px;
+}
+
+/* ── Two-column layout ── */
+.wfc-layout {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    gap: 28px;
+    align-items: start;
+}
+
+/* ── Sidebar ── */
+.wfc-sidebar {
+    position: sticky;
+    top: 32px;
+    max-height: calc(100vh - 80px);
+    overflow-y: auto;
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 14px;
+}
+
+.wfc-sidebar__search {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    font-size: 13px;
+    margin-bottom: 10px;
+    background: #f8fafc;
+    transition: border-color 0.15s;
+}
+
+.wfc-sidebar__search:focus {
+    outline: none;
+    border-color: #3b82f6;
+    background: #fff;
+}
+
+.wfc-sidebar__nav {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.wfc-sidebar__link {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 7px 10px;
+    border-radius: 6px;
+    text-decoration: none;
+    color: #334155;
+    font-size: 13px;
+    font-weight: 500;
+    transition: background 0.15s, color 0.15s;
+}
+
+.wfc-sidebar__link:hover {
+    background: #f1f5f9;
+    color: #1e293b;
+}
+
+.wfc-sidebar__link.is-active {
+    background: #eff6ff;
+    color: #2563eb;
+    font-weight: 600;
+}
+
+.wfc-sidebar__count {
+    font-size: 11px;
+    color: #94a3b8;
+    background: #f1f5f9;
+    padding: 1px 6px;
+    border-radius: 10px;
+    font-weight: 600;
+}
+
+.wfc-sidebar__link.is-active .wfc-sidebar__count {
+    background: #dbeafe;
+    color: #2563eb;
+}
+
+/* ── Content area ── */
+.wfc-content {
+    min-width: 0;
+}
+
+.wfc-section {
+    margin-bottom: 40px;
+}
+
+.wfc-section__header {
+    margin-bottom: 16px;
+}
+
+.wfc-section__header h2 {
+    margin: 0 0 4px;
+    font-size: 20px;
+}
+
+.wfc-section__header p {
+    margin: 0;
+    color: #64748b;
+    font-size: 14px;
+}
+
+/* ── Card grid ── */
+.wfc-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+    gap: 16px;
+    align-items: start;
+}
+
+/* ── Card ── */
+.wfc-card {
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    overflow: hidden;
+    transition: box-shadow 0.15s;
+}
+
+.wfc-card:hover {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.wfc-card__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px 16px;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.wfc-card__header h3 {
+    margin: 0 0 3px;
+    font-size: 15px;
+    font-weight: 600;
+    color: #1e293b;
+}
+
+.wfc-card__header p {
+    margin: 0;
+    color: #64748b;
+    font-size: 13px;
+    line-height: 1.4;
+}
+
+.wfc-card__type {
+    flex-shrink: 0;
+    padding: 2px 8px;
+    background: #f1f5f9;
+    border-radius: 4px;
+    font-size: 12px;
+    color: #475569;
+    font-family: Consolas, Monaco, 'Courier New', monospace;
+    white-space: nowrap;
+}
+
+/* ── Preview ── */
+.wfc-card__preview {
+    padding: 16px;
+}
+
+.wfc-card__preview > label,
+.wfc-card__preview > p,
+.wfc-card__preview > h3,
+.wfc-card__preview > h4,
+.wfc-card__preview > div,
+.wfc-card__preview > select,
+.wfc-card__preview > textarea,
+.wfc-card__preview > input {
+    display: block;
+    margin-bottom: 10px;
+}
+
+.wfc-card__preview > :last-child {
+    margin-bottom: 0;
+}
+
+.wfc-card__preview .description {
+    margin-top: 6px;
+    color: #64748b;
+}
+
+.wfc-card__preview table {
+    width: 100%;
+}
+
+.wfc-card__preview .wp-field-group-fields,
+.wfc-card__preview .wp-field-flexible-block-content,
+.wfc-card__preview .wp-field-checkbox-group,
+.wfc-card__preview .wp-field-button-set,
+.wfc-card__preview .wp-field-image-select {
+    display: grid;
+    gap: 10px;
+}
+
+.wfc-card__preview .wp-field-switcher {
+    display: inline-flex;
+}
+
+.wfc-card__preview .wp-field-image-select img {
+    display: block;
+    max-width: 96px;
+    height: auto;
+}
+
+.wfc-card__preview .wp-field-flexible-block,
+.wfc-card__preview .wp-field-repeater-row,
+.wfc-card__preview .wp-field-group {
+    padding: 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    background: #f8fafc;
+}
+
+/* ── Props badges ── */
+.wfc-card__props {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    padding: 0 16px 12px;
+}
+
+.wfc-card__prop {
+    display: inline-block;
+    padding: 1px 7px;
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    border-radius: 4px;
+    font-size: 11px;
+    font-family: Consolas, Monaco, 'Courier New', monospace;
+    color: #166534;
+    white-space: nowrap;
+}
+
+/* ── Code example ── */
+.wfc-card__code {
+    border-top: 1px solid #f1f5f9;
+}
+
+.wfc-card__code summary {
+    cursor: pointer;
+    padding: 10px 16px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #3b82f6;
+    user-select: none;
+    transition: background 0.15s;
+}
+
+.wfc-card__code summary:hover {
+    background: #f8fafc;
+}
+
+.wfc-card__code[open] summary {
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.wfc-card__code pre {
+    margin: 0;
+    padding: 14px 16px;
+    background: #1e293b;
+    overflow-x: auto;
+}
+
+.wfc-card__code pre code {
+    display: block;
+    font-size: 12.5px;
+    line-height: 1.6;
+    font-family: Consolas, Monaco, 'Courier New', monospace;
+    color: #e2e8f0;
+    white-space: pre;
+}
+
+/* ── Responsive ── */
+@media (max-width: 960px) {
+    .wfc-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .wfc-sidebar {
+        position: static;
+        max-height: none;
+    }
+}
+
+@media (max-width: 782px) {
+    .wfc-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .wfc-card__header {
+        flex-direction: column;
+    }
+}

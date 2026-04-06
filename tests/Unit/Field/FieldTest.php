@@ -475,7 +475,7 @@ it('layout container fields render nested content in native mode', function (): 
         ->and($tabbed->render())->toContain('Tab Title');
 });
 
-it('sortable and sorter render ordered hidden inputs without legacy bridge', function (): void {
+it('sortable and sorter render ordered hidden inputs without vanilla bridge', function (): void {
     $sortable = Field::make('sortable', 'blocks')
         ->attribute('options', ['hero' => 'Hero', 'gallery' => 'Gallery'])
         ->value(['gallery', 'hero']);
