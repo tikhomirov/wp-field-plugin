@@ -100,6 +100,20 @@ if (! function_exists('esc_html')) {
     }
 }
 
+if (! function_exists('__')) {
+    function __($text, $domain = 'default')
+    {
+        return $text;
+    }
+}
+
+if (! function_exists('esc_html__')) {
+    function esc_html__($text, $domain = 'default')
+    {
+        return esc_html(__($text, $domain));
+    }
+}
+
 if (! function_exists('esc_textarea')) {
     function esc_textarea($text)
     {

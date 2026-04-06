@@ -7,7 +7,7 @@
 <p align="center">
   <strong>HTML Fields Library for WordPress</strong><br>
   A foundation for building custom frameworks, settings systems, and admin UIs.<br>
-  Fluent API, 48 unique field types (+4 aliases), React/Vanilla UI, and modern v3 architecture.
+  Fluent API, 52 unique field types (+4 aliases), React/Vanilla UI, and modern v3 architecture.
 </p>
 
 <p align="center">
@@ -40,7 +40,7 @@
 - 🛡️ **Type Safety** — PHPStan Level 9, strict types, full PHPDoc
 
 ### Core Features
-- 🚀 **48 Unique Field Types** — Text, select, repeater, flexible content, and more
+- 🚀 **52 Unique Field Types** — Text, select, repeater, flexible content, and more
 - ♻️ **4 Compatibility Aliases** — `date_time`, `datetime-local`, `image_picker`, `imagepicker`
 - 🔗 **Conditional Logic** — 14 operators with AND/OR relations
 - 🧪 **Full Test Coverage** — Pest/PHPUnit tests with 100% pass rate
@@ -143,7 +143,7 @@ $flexible = Field::flexibleContent('page_sections')
     ->buttonLabel('Add Section');
 ```
 
-## Field Types (48 unique + 4 aliases)
+## Field Types (52 unique + 4 aliases)
 
 ### Basic (9)
 - `text` — Text input
@@ -271,7 +271,7 @@ Field::make('group', 'address')
 Field::make('code_editor', 'custom_css')
     ->label('Custom CSS')
     ->mode('css') // css, javascript, php, html
-    ->height('400px');
+    ->attribute('settings', ['height' => '400px']);
 ```
 
 ### Icon Picker
@@ -287,9 +287,8 @@ Field::make('icon', 'menu_icon')
 ```php
 Field::make('map', 'location')
     ->label('Location')
-    ->apiKey('YOUR_GOOGLE_MAPS_API_KEY')
     ->zoom(12)
-    ->center(['lat' => 55.7558, 'lng' => 37.6173]);
+    ->attribute('center', ['lat' => 55.7558, 'lng' => 37.6173]);
 ```
 
 ### Sortable
@@ -310,10 +309,10 @@ Field::make('sortable', 'menu_order')
 ```php
 Field::make('palette', 'color_scheme')
     ->label('Color Scheme')
-    ->palettes([
-        'blue'   => ['#0073aa', '#005a87', '#003d82'],
-        'green'  => ['#28a745', '#218838', '#1e7e34'],
-        'red'    => ['#dc3545', '#c82333', '#bd2130'],
+    ->options([
+        'blue' => '#0073aa',
+        'green' => '#28a745',
+        'red' => '#dc3545',
     ]);
 ```
 
@@ -438,11 +437,11 @@ See **[CHANGELOG.md](CHANGELOG.md)** for detailed version history.
 
 ## Project Stats
 
-- **PHP Lines:** 2705 (WP_Field.php)
+- **PHP Lines:** 2705 (legacy/WP_Field.php)
 - **JS Lines:** 1222 (wp-field.js)
 - **CSS Lines:** 1839 (wp-field.css)
-- **Field Types:** 48
-- **Dependency Operators:** 12
+- **Field Types:** 52
+- **Dependency Operators:** 14
 - **Storage Types:** 5
 - **External Dependencies:** 0
 

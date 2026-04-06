@@ -40,18 +40,18 @@ class WP_Field_UI_Demo
         }
 
         $base_path = trailingslashit(dirname(__DIR__));
-        $base_url  = trailingslashit(plugin_dir_url(__DIR__));
+        $base_url = trailingslashit(plugin_dir_url(__DIR__));
 
         wp_enqueue_style('wp-color-picker');
 
-        $wpfield_css = $base_path . 'assets/css/wp-field.css';
+        $wpfield_css = $base_path.'legacy/assets/css/wp-field.css';
         if (file_exists($wpfield_css)) {
-            wp_enqueue_style('wp-field-main', $base_url . 'assets/css/wp-field.css', [], (string) filemtime($wpfield_css));
+            wp_enqueue_style('wp-field-main', $base_url.'legacy/assets/css/wp-field.css', [], (string) filemtime($wpfield_css));
         }
 
-        $shell_css = $base_path . 'assets/css/admin-shell.css';
+        $shell_css = $base_path.'assets/css/admin-shell.css';
         if (file_exists($shell_css)) {
-            wp_enqueue_style('iiko-admin-shell', $base_url . 'assets/css/admin-shell.css', ['wp-field-main'], (string) filemtime($shell_css));
+            wp_enqueue_style('iiko-admin-shell', $base_url.'assets/css/admin-shell.css', ['wp-field-main'], (string) filemtime($shell_css));
         }
 
         wp_add_inline_style('iiko-admin-shell', '
@@ -175,7 +175,7 @@ class WP_Field_UI_Demo
                 <h3 class="wp-field-shell__card-title"><?php echo esc_html($title); ?></h3>
             </div>
             <div class="wp-field-shell__card-body" style="padding:20px 24px;">
-                <?php echo $body; // phpcs:ignore WordPress.Security.EscapeOutput ?>
+                <?php echo $body; // phpcs:ignore WordPress.Security.EscapeOutput?>
             </div>
         </div>
         <?php
@@ -237,17 +237,17 @@ class WP_Field_UI_Demo
             <div class="wp-field-shell" style="display:block;min-height:auto;margin:0;background:transparent;">
                 <?php
                 $this->card('Buttons', $buttons);
-                $this->card('Checkbox Group', $checkbox);
-                $this->card('Radio Group', $radio);
-                $this->card('Switch / Toggle', $switch);
-                $this->card('Input / Textarea', $inputs);
-                $this->card('Select / Dropdown', $select);
-                $this->card('Badge / Tag / Kbd', $badges);
-                $this->card('Notices / Callouts', $notices);
-                $this->card('Typography', $typography);
-                $this->card('Misc: Avatar · Progress · Skeleton · Table · Separator', $misc);
-                $this->card('Action Bar', $actionbar);
-                ?>
+        $this->card('Checkbox Group', $checkbox);
+        $this->card('Radio Group', $radio);
+        $this->card('Switch / Toggle', $switch);
+        $this->card('Input / Textarea', $inputs);
+        $this->card('Select / Dropdown', $select);
+        $this->card('Badge / Tag / Kbd', $badges);
+        $this->card('Notices / Callouts', $notices);
+        $this->card('Typography', $typography);
+        $this->card('Misc: Avatar · Progress · Skeleton · Table · Separator', $misc);
+        $this->card('Action Bar', $actionbar);
+        ?>
             </div>
         </div>
         <?php
@@ -366,10 +366,10 @@ class WP_Field_UI_Demo
                 <th>Pill variant</th>
                 <td>
                     <div style="display:flex;gap:8px;flex-wrap:wrap;">
-                        <?php foreach (['Fantasy', 'Sci-Fi', 'Horror', 'Mystery', 'Romance', 'Thriller'] as $i => $g): ?>
+                        <?php foreach (['Fantasy', 'Sci-Fi', 'Horror', 'Mystery', 'Romance', 'Thriller'] as $i => $g) { ?>
                         <input type="checkbox" id="pill-<?php echo $i; ?>" class="ui-checkbox-pill" <?php echo $i < 2 ? 'checked' : ''; ?>>
                         <label for="pill-<?php echo $i; ?>"><?php echo esc_html($g); ?></label>
-                        <?php endforeach; ?>
+                        <?php } ?>
                     </div>
                 </td>
             </tr>
@@ -414,12 +414,12 @@ class WP_Field_UI_Demo
                 <th>Horizontal</th>
                 <td>
                     <div style="display:flex;gap:20px;flex-wrap:wrap;">
-                        <?php foreach (['Small', 'Medium', 'Large', 'XL'] as $s): ?>
+                        <?php foreach (['Small', 'Medium', 'Large', 'XL'] as $s) { ?>
                         <label style="display:flex;align-items:center;gap:7px;cursor:pointer;font-size:13.5px;color:#374151;">
                             <input type="radio" name="size" value="<?php echo strtolower($s); ?>" <?php echo $s === 'Medium' ? 'checked' : ''; ?>>
                             <?php echo esc_html($s); ?>
                         </label>
-                        <?php endforeach; ?>
+                        <?php } ?>
                     </div>
                 </td>
             </tr>
@@ -446,7 +446,7 @@ class WP_Field_UI_Demo
         ];
         ?>
         <table class="form-table" style="margin:0;">
-            <?php foreach ($rows as [$label, $desc, $checked]): ?>
+            <?php foreach ($rows as [$label, $desc, $checked]) { ?>
             <tr>
                 <th><?php echo esc_html($label); ?></th>
                 <td>
@@ -461,7 +461,7 @@ class WP_Field_UI_Demo
                     </label>
                 </td>
             </tr>
-            <?php endforeach; ?>
+            <?php } ?>
             <tr>
                 <th>Disabled</th>
                 <td>
@@ -605,12 +605,12 @@ class WP_Field_UI_Demo
                 <th>Button set</th>
                 <td>
                     <div class="wp-field-button-set">
-                        <?php foreach (['Day', 'Week', 'Month', 'Year'] as $i => $opt): ?>
+                        <?php foreach (['Day', 'Week', 'Month', 'Year'] as $i => $opt) { ?>
                         <label class="wp-field-button-set-item <?php echo $i === 1 ? 'active' : ''; ?>">
                             <input type="radio" name="period" value="<?php echo strtolower($opt); ?>" <?php echo $i === 1 ? 'checked' : ''; ?>>
                             <span><?php echo esc_html($opt); ?></span>
                         </label>
-                        <?php endforeach; ?>
+                        <?php } ?>
                     </div>
                     <p class="description">Segmented control / button-set selector.</p>
                 </td>
@@ -820,4 +820,4 @@ class WP_Field_UI_Demo
     }
 }
 
-new WP_Field_UI_Demo();
+new WP_Field_UI_Demo;

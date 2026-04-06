@@ -1,149 +1,78 @@
-# WP_Field — план работ
+# WP_Field — активный план после завершения миграции `Field::make()`
 
-_Обновлено: 2026-04-05_
+_Обновлено: 2026-04-06_
 
-## Цель текущего цикла
+## Статус
 
-Довести `Field::make()` до функционального паритета с тем, что сегодня умеет `Field::legacy()`/`WP_Field::make(...)`,
-но в **ООП-слое `src/Field/*`**.
+План миграции `Field::make()` (Итерации 1–10) завершён и перенесён в архив:
+- `docs/реализовано/2026-04-06-field-make-migration-plan.md`
 
-Критерий цели:
-- для каждого legacy-типа из реестра `WP_Field::init_field_types()` есть нативный OOP-класс;
-- `Field::make($type, $name)` возвращает нативный класс (а не `LegacyWrapperField`) для всех поддерживаемых типов;
-- legacy API (`WP_Field`) остаётся рабочим и обратно совместимым.
+Текущий документ — рабочий план следующего этапа (bugfix + стабилизация).
 
 ---
 
-## 0) Фактическая точка старта (по аудиту)
+## Приоритет 1 — исправить ошибку UI в woo2iiko (`NavItem not found`)
 
-### Что уже есть
-- Реестр legacy: **52 уникальных типа + 4 алиаса**.
-- `Field::make()` нативно покрывает только:
-  - `text`
-  - `repeater`
-  - `flexible_content`
-  - `radio` (через bridge)
-  - `media` (через bridge)
-  - `fieldset` (через bridge)
-- Всё остальное идёт в `LegacyWrapperField`.
+### Симптом
+`Uncaught Error: Class "WpField\UI\NavItem" not found`
+в `src/Features/AdminUI/Services/AdminUINavigationBuilder.php:37` (плагин `woo2iiko`).
 
-### Что мешает прямой миграции
-1. Нет supported-matrix на уровне «тип → обязательные опции → формат value → HTML/JS контракт».
-2. `LegacyWrapperField` некорректно маппит conditional logic (плоская структура vs ожидание вложенной).
-3. `RepeaterField`/`FlexibleContentField` используют reflection-хак для имён вложенных полей.
-4. `UIManager` не совпадает с реальным ассет-пайплайном.
+### Гипотеза
+Проблема в загрузке/интеграции wp-field (autoload/runtime bootstrap), а не в самом классе `src/UI/NavItem.php`.
 
----
+### Шаги
+1. Проверить bootstrap-путь подключения wp-field в `woo2iiko`.
+2. Проверить момент вызова `AdminUINavigationBuilder` относительно загрузки автолоадера.
+3. Добавить безопасный guard/fallback в точке использования `NavItem`.
+4. Добавить интеграционный тест на построение nav в контексте Woo settings.
 
-## 1) План реализации паритета `Field::make()`
-
-## Этап 1 — Зафиксировать контракт паритета (документационно)
-
-Сделать перед кодом:
-1. Сформировать матрицу типов (`legacy registry` → `OOP class`) с колонками:
-   - тип/алиас;
-   - required config keys;
-   - формат значения;
-   - required CSS/JS hooks;
-   - статус: `native` / `bridge` / `legacy-only`.
-2. Зафиксировать минимальный контракт совместимости:
-   - совместимый HTML-каркас (классы/`data-*` для `assets/js/wp-field.js`);
-   - совместимый формат `dependency`;
-   - совместимый формат сохранённого value.
-3. Уточнить целевой приоритет портирования (ниже).
-
-**DoD этапа:** есть формальная матрица, по которой можно портировать без догадок.
+### DoD
+- ошибка `Class ... NavItem not found` не воспроизводится;
+- есть тест/смоук на сценарий построения Admin UI навигации.
 
 ---
 
-## Этап 2 — Стабилизационный фундамент для миграции
+## Приоритет 2 — стабилизировать demo-страницы
 
-Перед массовым добавлением новых классов:
-1. Починить mapping conditions в `LegacyWrapperField` (чтобы fallback не ломал поведение).
-2. Убрать reflection-хак из composite-полей (ввести явный механизм `withName()`/`cloneWithName()`).
-3. Привести `UIManager` к фактическим ассетам (реальные файлы + корректный `type="module"` где нужно).
-4. Синхронизировать поведение `FieldInterface` и traits (минимум: решить контракт `orWhen()`).
+### Цели
+- `wp-field-v3-demo` должен демонстрировать modern API полностью;
+- `wp-field-ui-demo` должен покрывать ключевые возможности framework-а, без частичного рендера.
 
-**DoD этапа:** fallback слой стабилен, и миграция новых типов не размножает техдолг.
+### Шаги
+1. Разделить секции demo по режимам (`legacy enabled` / `legacy disabled`).
+2. Убрать оставшиеся скрытые зависимости от legacy runtime в modern demo блоках.
+3. Добавить явные индикаторы доступности функций (react build / legacy runtime).
+4. Добавить smoke-тест чеклист по обоим demo pages.
 
----
-
-## Этап 3 — Портирование типов в OOP (волнами)
-
-### Волна A (базовые и массовые)
-- `password`, `email`, `url`, `tel`, `number`, `range`, `hidden`, `textarea`, `date`, `time`, `datetime`, `color`.
-
-### Волна B (choice и простые интерактивные)
-- `select`, `multiselect`, `checkbox`, `checkbox_group`, `switcher`, `spinner`, `button_set`, `slider`, `image_select`.
-
-### Волна C (медиа и редакторы)
-- `editor`, `image`, `file`, `gallery`, `code_editor`, `icon`, `map`, `link`.
-
-### Волна D (структурные и composition UI)
-- `group`, `accordion`, `tabbed`, `typography`, `spacing`, `dimensions`, `border`, `background`, `link_color`, `color_group`, `sortable`, `sorter`, `palette`, `backup`.
-
-### Волна E (алиасы + финализация фабрики)
-- `date_time`, `datetime-local`, `image_picker`, `imagepicker`.
-- финальный `Field::make()` map без fallback на `LegacyWrapperField` для покрытых типов.
-
-**DoD этапа:** все типы из матрицы имеют нативные OOP-классы, `make()` использует их напрямую.
+### DoD
+- обе страницы рендерятся без фаталов;
+- все заявленные секции либо работают, либо явно помечены как недоступные с причиной.
 
 ---
 
-## Этап 4 — Тесты паритета и регрессия
+## Приоритет 3 — покрытие тестами до 100%
 
-Для каждой волны:
-1. Unit-тесты на fluent-конфигурацию и `toArray()`.
-2. Тесты `sanitize()`/`validate()` для value-формата типа.
-3. Snapshot/contract тесты рендера (критичные CSS классы и `data-*`).
-4. Интеграционные тесты «legacy vs oop» на одинаковый входной конфиг для ключевых сценариев.
+### Шаги
+1. Зафиксировать базовую линию coverage (unit/feature раздельно).
+2. Добрать покрытие для:
+   - `src/UI/*` (NavItem/AdminShell/Wizard/UIManager);
+   - bridge-типов с кастомными fluent-методами;
+   - веток fallback/guards в bootstrap-файлах (`wp-field.php`, `legacy/bootstrap.php`, `WP_Field.php`).
+3. Добавить обязательный coverage gate в CI (минимальный порог с ростом до 100%).
 
-Отдельно:
-- тесты conditional logic для native + fallback;
-- тесты composite-полей на корректные вложенные `name`.
-
-**DoD этапа:** новый OOP-слой покрыт тестами не хуже legacy-критичных сценариев.
-
----
-
-## Этап 5 — Документация и cutover
-
-1. Обновить `API.md` и README под фактический API.
-2. Обновить examples, убрать вызовы несуществующих sugar-методов.
-3. Зафиксировать в `decision-log.md` статус cutover:
-   - что считается fully-native;
-   - что временно остаётся через bridge.
-
-**DoD этапа:** документация = коду; нет «ложно поддерживаемых» примеров.
+### DoD
+- coverage достигает 100% по согласованной метрике;
+- CI падает при снижении покрытия.
 
 ---
 
-## 2) Приоритет выполнения (P0 → P3)
+## Минимальные команды проверок по этапу
 
-### P0
-- матрица поддерживаемых типов;
-- fix conditions в `LegacyWrapperField`;
-- стабилизация name/runtime для composite полей.
+```bash
+./vendor/bin/pest --configuration phpunit.xml tests/Unit
+./vendor/bin/pest --configuration phpunit.xml tests/Feature
+composer analyse
+composer lint:check
+```
 
-### P1
-- волны A + B (самый частый функционал форм);
-- тесты паритета для A/B.
-
-### P2
-- волны C + D;
-- выравнивание примеров/README/API.
-
-### P3
-- косметический рефакторинг legacy-монолита `WP_Field.php` после достижения паритета.
-
----
-
-## 3) Definition of Done для задачи пользователя
-
-Задачу «довести `Field::make()` до возможностей `Field::legacy()` в ООП» считаем завершённой, когда:
-
-1. `Field::make()` покрывает все типы legacy-реестра (с алиасами).
-2. Для каждого типа есть нативный класс в `src/Field/Types/*`.
-3. Fallback на `LegacyWrapperField` остаётся только как совместимость, а не основной путь.
-4. Рендер/сохранение/зависимости работают совместимо с текущим runtime.
-5. Документация и примеры не расходятся с кодом.
+(полный прогон `composer ci` — перед финальным merge этапа)

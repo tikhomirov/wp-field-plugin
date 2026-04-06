@@ -22,19 +22,25 @@ final class NavItem
     private function __construct(
         public readonly string $id,
         public readonly string $label,
-        /** @var NavItem[]|null */
+        /** @var array<int, NavItem>|null */
         public readonly ?array $children,
         /** @var array<int, array{id: string, label: string}>|null */
         public readonly ?array $panels,
     ) {}
 
-    /** Leaf node — renders content via panel_renderer. */
+    /** Leaf node — renders content via panel_renderer.
+     *
+     * @param  array<int, array{id: string, label: string}>|null  $panels
+     */
     public static function leaf(string $id, string $label, ?array $panels = null): self
     {
         return new self($id, $label, null, $panels ?: null);
     }
 
-    /** Group node — wraps children, no content of its own. */
+    /** Group node — wraps children, no content of its own.
+     *
+     * @param  array<int, NavItem>  $children
+     */
     public static function group(string $id, string $label, array $children): self
     {
         return new self($id, $label, $children, null);
@@ -42,7 +48,7 @@ final class NavItem
 
     public function isGroup(): bool
     {
-        return ! empty($this->children);
+        return $this->children !== null && $this->children !== [];
     }
 
     public function isLeaf(): bool
@@ -54,7 +60,7 @@ final class NavItem
      * Build a flat depth-1 nav tree from a simple id=>label map.
      * Backward-compatible with current flat sections pattern.
      *
-     * @param  array<string, string> $sections
+     * @param  array<string, string>  $sections
      * @return NavItem[]
      */
     public static function flatSections(array $sections): array
@@ -70,7 +76,7 @@ final class NavItem
     /**
      * Collect all leaves (depth-first) from a nav tree.
      *
-     * @param  NavItem[] $items
+     * @param  NavItem[]  $items
      * @return NavItem[]
      */
     public static function collectLeaves(array $items): array
@@ -78,7 +84,7 @@ final class NavItem
         $leaves = [];
         foreach ($items as $item) {
             if ($item->isGroup()) {
-                foreach ($item->children as $child) {
+                foreach ($item->children ?? [] as $child) {
                     $leaves[] = $child;
                 }
             } else {
@@ -92,7 +98,7 @@ final class NavItem
     /**
      * Find the first leaf id in the nav tree.
      *
-     * @param NavItem[] $items
+     * @param  NavItem[]  $items
      */
     public static function firstLeafId(array $items): string
     {
@@ -106,7 +112,7 @@ final class NavItem
     /**
      * Find a leaf by id across the entire tree.
      *
-     * @param NavItem[] $items
+     * @param  NavItem[]  $items
      */
     public static function findLeaf(array $items, string $id): ?self
     {
@@ -122,7 +128,7 @@ final class NavItem
     /**
      * Serialize the tree to a JSON-safe array for the React data attribute.
      *
-     * @param  NavItem[]         $items
+     * @param  NavItem[]  $items
      * @return array<int, mixed>
      */
     public static function toJsonArray(array $items): array
@@ -131,7 +137,7 @@ final class NavItem
         foreach ($items as $item) {
             $node = ['id' => $item->id, 'label' => $item->label];
             if ($item->isGroup()) {
-                $node['children'] = self::toJsonArray($item->children);
+                $node['children'] = self::toJsonArray($item->children ?? []);
             }
             if ($item->panels !== null) {
                 $node['panels'] = $item->panels;

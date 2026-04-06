@@ -71,25 +71,9 @@ class LegacyWrapperField extends AbstractField
         }
 
         // Map conditions
-        if (! empty($this->conditions)) {
-            $config['dependency'] = [];
-            foreach ($this->conditions as $conditionGroup) {
-                // Legacy API uses simpler dependency arrays
-                foreach ($conditionGroup as $condition) {
-                    if (
-                        is_array($condition) &&
-                        isset($condition['field'], $condition['operator'], $condition['value']) &&
-                        is_string($condition['field']) &&
-                        is_string($condition['operator'])
-                    ) {
-                        $config['dependency'][] = [
-                            $condition['field'],
-                            $condition['operator'],
-                            $condition['value'],
-                        ];
-                    }
-                }
-            }
+        $dependency = $this->mapConditionsToLegacyDependency();
+        if ($dependency !== []) {
+            $config['dependency'] = $dependency;
         }
 
         // Add any explicitly set legacy config
@@ -100,6 +84,20 @@ class LegacyWrapperField extends AbstractField
             $options = $this->getAttribute('options');
             if ($options) {
                 $config['options'] = $options;
+            }
+        }
+
+        if ($this->type === 'accordion') {
+            $sections = $this->getAttribute('sections') ?? $this->getAttribute('items');
+            if (is_array($sections)) {
+                $config['sections'] = $sections;
+            }
+        }
+
+        if ($this->type === 'tabbed') {
+            $tabs = $this->getAttribute('tabs');
+            if (is_array($tabs)) {
+                $config['tabs'] = $tabs;
             }
         }
 
@@ -126,5 +124,62 @@ class LegacyWrapperField extends AbstractField
         $html = ob_get_clean();
 
         return $html ?: '';
+    }
+
+    /**
+     * @return array<int|string, mixed>
+     */
+    private function mapConditionsToLegacyDependency(): array
+    {
+        if ($this->conditions === []) {
+            return [];
+        }
+
+        $dependency = [];
+        $relation = 'AND';
+
+        $appendCondition = static function (mixed $condition) use (&$dependency, &$relation): void {
+            if (! is_array($condition)) {
+                return;
+            }
+
+            $field = $condition['field'] ?? null;
+            $operator = $condition['operator'] ?? null;
+
+            if (! is_string($field) || ! is_string($operator)) {
+                return;
+            }
+
+            $dependency[] = [$field, $operator, $condition['value'] ?? null];
+
+            $logic = $condition['logic'] ?? 'AND';
+            if ($logic === 'OR') {
+                $relation = 'OR';
+            }
+        };
+
+        foreach ($this->conditions as $condition) {
+            if (is_array($condition) && isset($condition['field'], $condition['operator'])) {
+                $appendCondition($condition);
+
+                continue;
+            }
+
+            if (is_array($condition)) {
+                foreach ($condition as $nestedCondition) {
+                    $appendCondition($nestedCondition);
+                }
+            }
+        }
+
+        if ($dependency === []) {
+            return [];
+        }
+
+        if ($relation === 'OR' && count($dependency) > 1) {
+            $dependency['relation'] = 'OR';
+        }
+
+        return $dependency;
     }
 }

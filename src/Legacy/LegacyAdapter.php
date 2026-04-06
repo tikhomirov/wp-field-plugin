@@ -26,7 +26,7 @@ class LegacyAdapter
             $name = $config['name'];
         }
 
-        if (empty($name)) {
+        if ($name === '' || $name === '0') {
             throw new \InvalidArgumentException('Field name/id is required');
         }
 
@@ -151,7 +151,7 @@ class LegacyAdapter
             $operator = is_string($condition['operator'] ?? null) ? $condition['operator'] : '==';
             $value = $condition['value'] ?? '';
 
-            if (! empty($targetField)) {
+            if ($targetField !== '' && $targetField !== '0') {
                 $field->when($targetField, $operator, $value);
             }
         }

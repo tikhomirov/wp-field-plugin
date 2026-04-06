@@ -63,4 +63,6 @@ interface FieldInterface
 
     // HasConditionals trait methods
     public function when(string $field, string $operator, mixed $value): static;
+
+    public function orWhen(string $field, string $operator, mixed $value): static;
 }

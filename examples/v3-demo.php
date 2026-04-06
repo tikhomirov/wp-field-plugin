@@ -53,11 +53,19 @@ class WP_Field_V3_Demo
         }
 
         $mode = sanitize_text_field($_POST['ui_mode'] ?? 'vanilla');
-        if (in_array($mode, ['react', 'vanilla'], true)) {
-            update_option(self::UI_MODE_OPTION, $mode);
-            add_settings_error('wp_field_v3_demo', 'ui_mode_updated',
-                sprintf('UI Mode switched to: %s', ucfirst($mode)), 'updated');
+        if (! in_array($mode, ['react', 'vanilla'], true)) {
+            return;
         }
+
+        if (! $this->isLegacyEnabled() && $mode === 'vanilla') {
+            $mode = 'react';
+            add_settings_error('wp_field_v3_demo', 'ui_mode_forced',
+                'Vanilla mode requires legacy runtime. Mode forced to React.', 'warning');
+        }
+
+        update_option(self::UI_MODE_OPTION, $mode);
+        add_settings_error('wp_field_v3_demo', 'ui_mode_updated',
+            sprintf('UI Mode switched to: %s', ucfirst($mode)), 'updated');
     }
 
     public function enqueue_assets(string $hook): void
@@ -66,24 +74,38 @@ class WP_Field_V3_Demo
             return;
         }
 
-        wp_enqueue_script('jquery');
-        wp_enqueue_media();
-        wp_enqueue_style('wp-color-picker');
-        wp_enqueue_script('wp-color-picker');
-
         $plugin_url = plugin_dir_url(dirname(__FILE__));
         $version = defined('WP_DEBUG') && WP_DEBUG ? time() : '3.0.0';
+        $legacy_enabled = $this->isLegacyEnabled();
 
-        // Base legacy JS/CSS for dependency logic and vanilla fallback behaviour.
-        wp_enqueue_script(
-            'wp-field-main',
-            $plugin_url.'assets/js/wp-field.js',
-            ['jquery', 'wp-color-picker'],
-            $version,
-            true
-        );
+        if ($legacy_enabled) {
+            wp_enqueue_script('jquery');
+            wp_enqueue_media();
+            wp_enqueue_style('wp-color-picker');
+            wp_enqueue_script('wp-color-picker');
+
+            // Legacy JS/CSS for vanilla mode and legacy fallbacks.
+            wp_enqueue_script(
+                'wp-field-main',
+                $plugin_url.'legacy/assets/js/wp-field.js',
+                ['jquery', 'wp-color-picker'],
+                $version,
+                true
+            );
+
+            wp_enqueue_style(
+                'wp-field-main',
+                $plugin_url.'legacy/assets/css/wp-field.css',
+                ['wp-color-picker'],
+                $version
+            );
+        }
 
         $current_mode = get_option(self::UI_MODE_OPTION, 'vanilla');
+        if (! $legacy_enabled && $current_mode === 'vanilla') {
+            $current_mode = 'react';
+        }
+
         if ($current_mode === 'react' && $this->hasReactBuild()) {
             wp_enqueue_script(
                 'wp-field-react-repeater',
@@ -103,19 +125,18 @@ class WP_Field_V3_Demo
             );
             wp_script_add_data('wp-field-react-flexible', 'type', 'module');
         }
-
-        wp_enqueue_style(
-            'wp-field-main',
-            $plugin_url.'assets/css/wp-field.css',
-            ['wp-color-picker'],
-            $version
-        );
     }
 
     public function render_page(): void
     {
         $current_mode = get_option(self::UI_MODE_OPTION, 'vanilla');
         $react_available = $this->hasReactBuild();
+        $legacy_enabled = $this->isLegacyEnabled();
+
+        if (! $legacy_enabled && $current_mode === 'vanilla') {
+            $current_mode = 'react';
+            update_option(self::UI_MODE_OPTION, 'react');
+        }
 
         echo '<div class="wrap">';
         echo '<h1>WP_Field v3.0 — Modern API Demo</h1>';
@@ -126,7 +147,8 @@ class WP_Field_V3_Demo
         if (! $react_available) {
             echo ' <span style="color: #d63638;">(React build not found - using Vanilla fallback)</span>';
         }
-        echo '</p></div>';
+        echo '</p>';
+        echo '<p><strong>Legacy Runtime:</strong> '.($legacy_enabled ? 'enabled' : 'disabled').'</p></div>';
 
         settings_errors('wp_field_v3_demo');
 
@@ -138,8 +160,8 @@ class WP_Field_V3_Demo
         echo '<p>';
         echo '<label><input type="radio" name="ui_mode" value="react" '.checked($current_mode, 'react', false).'> ';
         echo 'React UI '.($react_available ? '✓' : '(build required)').'</label><br>';
-        echo '<label><input type="radio" name="ui_mode" value="vanilla" '.checked($current_mode, 'vanilla', false).'> ';
-        echo 'Vanilla JS UI ✓</label>';
+        echo '<label><input type="radio" name="ui_mode" value="vanilla" '.checked($current_mode, 'vanilla', false).' '.disabled(! $legacy_enabled, true, false).'> ';
+        echo 'Vanilla JS UI '.($legacy_enabled ? '✓' : '(legacy disabled)').'</label>';
         echo '</p><p>';
         echo '<button type="submit" class="button button-primary">Switch Mode</button>';
         if (! $react_available) {
@@ -184,7 +206,7 @@ echo $field->render();</code></pre></div>';
     ->fields([
         Field::text(\'name\')->label(\'Name\')->required(),
         Field::text(\'position\')->label(\'Position\'),
-        Field::email(\'email\')->label(\'Email\'),
+        Field::make(\'email\', \'email\')->label(\'Email\'),
     ])
     ->min(1)
     ->max(10)
@@ -220,26 +242,18 @@ echo $repeater->render();</code></pre></div>';
                 esc_attr((string) wp_json_encode($repeater_config))
             );
         } else {
-            $repeater_html = WP_Field::make([
-                'id' => 'demo_team',
-                'type' => 'repeater',
-                'label' => 'Team Members',
-                'storage_type' => 'options',
-                'min' => 1,
-                'max' => 5,
-                'add_text' => 'Add Member',
-                'fields' => [
-                    ['id' => 'name', 'type' => 'text', 'label' => 'Name'],
-                    ['id' => 'position', 'type' => 'text', 'label' => 'Position'],
-                    ['id' => 'email', 'type' => 'email', 'label' => 'Email'],
-                ],
-            ], false);
-
-            if (is_string($repeater_html)) {
-                echo $repeater_html;
-            } else {
-                echo '<p style="color: #666;">Repeater is unavailable in the current context.</p>';
-            }
+            echo Field::repeater('demo_team')
+                ->label('Team Members')
+                ->fields([
+                    Field::text('name')->label('Name')->required(),
+                    Field::text('position')->label('Position'),
+                    Field::make('email', 'email')->label('Email'),
+                ])
+                ->min(1)
+                ->max(5)
+                ->buttonLabel('Add Member')
+                ->layout('table')
+                ->render();
         }
         echo '</div></div>';
 
@@ -251,10 +265,10 @@ echo $repeater->render();</code></pre></div>';
     ->label(\'Page Sections\')
     ->addLayout(\'text_block\', \'Text Block\', [
         Field::text(\'heading\')->label(\'Heading\'),
-        Field::textarea(\'content\')->label(\'Content\'),
+        Field::make(\'textarea\', \'content\')->label(\'Content\'),
     ])
     ->addLayout(\'image\', \'Image\', [
-        Field::image(\'image_url\')->label(\'Image\'),
+        Field::make(\'image\', \'image_url\')->label(\'Image\'),
         Field::text(\'caption\')->label(\'Caption\'),
     ])
     ->min(1)
@@ -299,32 +313,19 @@ echo $flexible->render();</code></pre></div>';
                 esc_attr((string) wp_json_encode($flexible_config))
             );
         } else {
-            $legacy_flexible_html = WP_Field::make([
-                'id' => 'demo_flexible_fallback',
-                'type' => 'repeater',
-                'label' => 'Flexible Content (Vanilla fallback via Repeater)',
-                'storage_type' => 'options',
-                'add_text' => 'Add Section',
-                'fields' => [
-                    [
-                        'id' => 'layout',
-                        'type' => 'select',
-                        'label' => 'Layout',
-                        'options' => [
-                            'text_block' => 'Text Block',
-                            'image' => 'Image',
-                        ],
-                    ],
-                    ['id' => 'heading', 'type' => 'text', 'label' => 'Heading'],
-                    ['id' => 'content', 'type' => 'textarea', 'label' => 'Content'],
-                ],
-            ], false);
-
-            if (is_string($legacy_flexible_html)) {
-                echo $legacy_flexible_html;
-            } else {
-                echo '<p style="color: #666;">Flexible Content fallback is unavailable in the current context.</p>';
-            }
+            echo Field::flexibleContent('demo_flexible_fallback')
+                ->label('Page Sections')
+                ->addLayout('text_block', 'Text Block', [
+                    Field::text('heading')->label('Heading'),
+                    Field::make('textarea', 'content')->label('Content'),
+                ])
+                ->addLayout('image', 'Image', [
+                    Field::make('url', 'image_url')->label('Image URL'),
+                    Field::text('caption')->label('Caption'),
+                ])
+                ->min(1)
+                ->buttonLabel('Add Section')
+                ->render();
         }
         echo '</div></div>';
 
@@ -334,53 +335,28 @@ echo $flexible->render();</code></pre></div>';
         echo '<p class="description">14 operators with AND/OR relations</p>';
         echo '<div class="demo-code"><pre><code class="language-php">$field = Field::text(\'courier_address\')
     ->label(\'Delivery Address\')
-    ->dependency([
-        [\'delivery_type\', \'==\', \'courier\']
-    ]);
+    ->when(\'delivery_type\', \'==\', \'courier\');
 
 $field = Field::text(\'special_field\')
-    ->dependency([
-        [\'field1\', \'==\', \'value1\'],
-        [\'field2\', \'!=\', \'value2\'],
-        \'relation\' => \'AND\'
-    ]);</code></pre></div>';
+    ->when(\'field1\', \'==\', \'value1\')
+    ->when(\'field2\', \'!=\', \'value2\');</code></pre></div>';
 
         echo '<div class="demo-preview"><h3>Preview:</h3>';
-        try {
-            $delivery_html = WP_Field::make([
-                'id' => 'demo_delivery_type',
-                'type' => 'select',
-                'label' => 'Delivery Type',
-                'storage_type' => 'options',
-                'options' => [
-                    'pickup' => 'Pickup',
-                    'courier' => 'Courier',
-                    'mail' => 'Mail',
-                ],
-            ], false);
-            if (is_string($delivery_html)) {
-                echo $delivery_html;
-            }
+        echo Field::make('select', 'demo_delivery_type')
+            ->label('Delivery Type')
+            ->attribute('options', [
+                'pickup' => 'Pickup',
+                'courier' => 'Courier',
+                'mail' => 'Mail',
+            ])
+            ->render();
 
-            $address_html = WP_Field::make([
-                'id' => 'demo_courier_address',
-                'type' => 'text',
-                'label' => 'Courier Address',
-                'storage_type' => 'options',
-                'dependency' => [
-                    ['demo_delivery_type', '==', 'courier'],
-                ],
-            ], false);
-            if (is_string($address_html)) {
-                echo $address_html;
-            }
+        echo Field::text('demo_courier_address')
+            ->label('Courier Address')
+            ->when('demo_delivery_type', '==', 'courier')
+            ->render();
 
-            if (! is_string($delivery_html) || ! is_string($address_html)) {
-                echo '<p style="color: #666;">Select "Courier" to reveal the address field.</p>';
-            }
-        } catch (Exception $e) {
-            echo '<p style="color: #d63638;">Error: '.esc_html($e->getMessage()).'</p>';
-        }
+        echo '<p style="color:#666; margin-top:8px;">Conditional rules are attached via fluent API (`when` / `orWhen`).</p>';
         echo '</div></div>';
 
         // 5. Legacy API
@@ -397,7 +373,7 @@ $field = Field::text(\'special_field\')
 echo $field->render();</code></pre></div>';
 
         echo '<div class="demo-preview"><h3>Preview:</h3>';
-        try {
+        if (class_exists('WP_Field')) {
             $shop_html = WP_Field::make([
                 'id' => 'demo_shop_name',
                 'type' => 'text',
@@ -406,13 +382,12 @@ echo $field->render();</code></pre></div>';
                 'placeholder' => 'Enter shop name',
                 'required' => true,
             ], false);
+
             if (is_string($shop_html)) {
                 echo $shop_html;
-            } else {
-                echo '<p style="color: #666;">Legacy API: <code>WP_Field::make([...])->render()</code></p>';
             }
-        } catch (Exception $e) {
-            echo '<p style="color: #d63638;">Error: '.esc_html($e->getMessage()).'</p>';
+        } else {
+            echo '<p style="color: #666;">Legacy runtime is disabled by <code>wp_field_enable_legacy</code>.</p>';
         }
         echo '</div></div>';
 
@@ -439,6 +414,11 @@ echo $field->render();</code></pre></div>';
         return file_exists($plugin_path.'/assets/dist/client.js')
             && file_exists($plugin_path.'/assets/dist/repeater.js')
             && file_exists($plugin_path.'/assets/dist/flexible-content.js');
+    }
+
+    private function isLegacyEnabled(): bool
+    {
+        return (bool) apply_filters('wp_field_enable_legacy', true);
     }
 }
 

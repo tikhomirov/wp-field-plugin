@@ -7,7 +7,7 @@
 <p align="center">
   <strong>Библиотека HTML-полей для WordPress</strong><br>
   Основа для создания собственных фреймворков, систем настроек и admin UI.<br>
-  Fluent API, 48 уникальных типов полей (+4 алиаса), React/Vanilla UI и современная архитектура v3.
+  Fluent API, 52 уникальных типа полей (+4 алиаса), React/Vanilla UI и современная архитектура v3.
 </p>
 
 <p align="center">
@@ -40,7 +40,7 @@
 - 🛡️ **Типобезопасность** — PHPStan Level 9, строгие типы, полный PHPDoc
 
 ### Основные возможности
-- 🚀 **48 уникальных типов полей** — Text, select, repeater, flexible content и другие
+- 🚀 **52 уникальных типа полей** — Text, select, repeater, flexible content и другие
 - ♻️ **4 алиаса совместимости** — `date_time`, `datetime-local`, `image_picker`, `imagepicker`
 - 🔗 **Условная логика** — 14 операторов с отношениями AND/OR
 - 🧪 **Полное покрытие тестами** — Pest/PHPUnit тесты со 100% успехом
@@ -143,7 +143,7 @@ $flexible = Field::flexibleContent('page_sections')
     ->buttonLabel('Добавить секцию');
 ```
 
-## Типы полей (48 уникальных + 4 алиаса)
+## Типы полей (52 уникальных + 4 алиаса)
 
 ### Базовые (9)
 - `text` — Текстовый ввод
@@ -271,7 +271,7 @@ Field::make('group', 'address')
 Field::make('code_editor', 'custom_css')
     ->label('Custom CSS')
     ->mode('css') // css, javascript, php, html
-    ->height('400px');
+    ->attribute('settings', ['height' => '400px']);
 ```
 
 ### Icon Picker
@@ -287,9 +287,8 @@ Field::make('icon', 'menu_icon')
 ```php
 Field::make('map', 'location')
     ->label('Местоположение')
-    ->apiKey('YOUR_GOOGLE_MAPS_API_KEY')
     ->zoom(12)
-    ->center(['lat' => 55.7558, 'lng' => 37.6173]);
+    ->attribute('center', ['lat' => 55.7558, 'lng' => 37.6173]);
 ```
 
 ### Sortable
@@ -310,10 +309,10 @@ Field::make('sortable', 'menu_order')
 ```php
 Field::make('palette', 'color_scheme')
     ->label('Цветовая схема')
-    ->palettes([
-        'blue'   => ['#0073aa', '#005a87', '#003d82'],
-        'green'  => ['#28a745', '#218838', '#1e7e34'],
-        'red'    => ['#dc3545', '#c82333', '#bd2130'],
+    ->options([
+        'blue' => '#0073aa',
+        'green' => '#28a745',
+        'red' => '#dc3545',
     ]);
 ```
 
@@ -438,11 +437,11 @@ add_filter('wp_field_get_value', function($value, $storage_type, $key, $id, $fie
 
 ## Статистика проекта
 
-- **Строк PHP:** 2705 (WP_Field.php)
+- **Строк PHP:** 2705 (legacy/WP_Field.php)
 - **Строк JS:** 1222 (wp-field.js)
 - **Строк CSS:** 1839 (wp-field.css)
-- **Типов полей:** 48
-- **Операторов зависимостей:** 12
+- **Типов полей:** 52
+- **Операторов зависимостей:** 14
 - **Типов хранилищ:** 5
 - **Внешних зависимостей:** 0
 

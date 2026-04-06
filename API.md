@@ -11,7 +11,7 @@
 - интерфейсы `FieldInterface`, `ContainerInterface`, `StorageInterface`;
 - контейнеры WordPress-интеграции (`MetaboxContainer`, `SettingsContainer`, `TaxonomyContainer`, `UserContainer`);
 - UI-слой (`NavItem`, `AdminShell`, `Wizard`, `UIManager`);
-- legacy-совместимость через `WP_Field.php`.
+- legacy-совместимость через `legacy/WP_Field.php` (с корневым compat-loader `WP_Field.php`).
 
 > Правило: если метод объявлен в интерфейсе или в явной фабрике, его можно использовать как контракт. Остальные методы лучше считать реализационными, даже если они сейчас публичные.
 
@@ -55,30 +55,39 @@ $container->register();
 ### Методы
 
 - `Field::text(string $name): TextField` — обычное текстовое поле.
+- `Field::group(string $name): GroupField` — группа вложенных полей.
 - `Field::repeater(string $name): RepeaterField` — повторяющаяся группа строк.
 - `Field::flexibleContent(string $name): FlexibleContentField` — гибкие блоки с разными layout.
+- `Field::heading(string $name): HeadingField` — статический заголовок.
+- `Field::subheading(string $name): SubheadingField` — статический подзаголовок.
+- `Field::notice(string $name): NoticeField` — информационный/предупреждающий блок.
+- `Field::content(string $name): ContentField` — произвольный HTML-блок.
 - `Field::radio(string $name): RadioField` — radio-контрол.
 - `Field::media(string $name): MediaField` — поле выбора медиа.
 - `Field::fieldset(string $name): FieldsetField` — группировка полей.
 - `Field::legacy(string $type, string $name): LegacyWrapperField` — обёртка для типов, которые ещё живут в legacy-слое.
 - `Field::make(string $type, string $name): FieldInterface` — универсальный вход.
 
+`Field::make()` покрывает весь legacy registry (52 unique типа) и официальные алиасы (`date_time`, `datetime-local`, `image_picker`, `imagepicker`) через native/bridge-классы.
+
 ### Поведение `make()`
 
-`Field::make()` выбирает современную реализацию, если тип поддержан нативно.
-Если тип не поддержан, возвращается `LegacyWrapperField`.
+`Field::make()` выбирает современную реализацию (native/bridge) для всех официальных типов и алиасов.
+`LegacyWrapperField` используется только для неизвестных/кастомных типов вне registry.
 
 Пример:
 
 ```php
 Field::make('text', 'email');
-Field::make('select', 'status'); // legacy wrapper
+Field::make('switcher', 'enabled');
+Field::make('imagepicker', 'layout_style'); // alias -> ImagePickerField
+Field::make('my_custom_type', 'payload'); // unknown type -> LegacyWrapperField fallback
 ```
 
 ### Когда использовать `legacy()`
 
-Используйте `Field::legacy()` или `Field::make()` для типов, которые ещё не переведены на OOP-реализацию.
-Это безопасный способ сохранить совместимость со старым API.
+Используйте `Field::legacy()` только для явно кастомных/нестандартных legacy-типов, которых нет в официальном registry.
+Для всех стандартных типов и алиасов используйте `Field::make()`: он уже маршрутизирует в соответствующий OOP-класс.
 
 ---
 
@@ -129,8 +138,9 @@ Field::make('select', 'status'); // legacy wrapper
 ### Условная логика
 
 - `when(string $field, string $operator, mixed $value): static`
+- `orWhen(string $field, string $operator, mixed $value): static`
 
-> На текущей реализации через trait также доступны `orWhen()`, `getConditions()`, `hasConditions()`, `getAttributes()`, `isRequired()`, `getValidationRules()`. Но это уже не часть формального интерфейса.
+> На текущей реализации через trait также доступны `getConditions()`, `hasConditions()`, `getAttributes()`, `isRequired()`, `getValidationRules()`. Эти методы считаются runtime-утилитами и не входят в минимальный стабильный контракт интеграции.
 
 ---
 
@@ -159,6 +169,98 @@ Field::make('select', 'status'); // legacy wrapper
 Дополнительный метод:
 
 - `fields(array $fields): static` — задать вложенные поля.
+
+### `GroupField`
+
+Группа вложенных полей с именами вида `parent[child]`.
+
+Методы:
+
+- `fields(array $fields): static` — задать вложенные поля.
+- `addField(FieldInterface $field): static` — добавить одно вложенное поле.
+- `getFields(): array` — получить вложенные поля.
+- `toArray(): array` — сериализация с вложенными полями.
+- `sanitize(mixed $value): mixed` — очистка значения по вложенным полям.
+- `validate(mixed $value): bool` — проверка вложенных полей.
+- `render(): string` — HTML-рендер.
+
+### `HeadingField`
+
+Статический заголовок.
+
+Дополнительные методы:
+
+- `tag(string $tag): static`
+
+### `SubheadingField`
+
+Статический подзаголовок.
+
+Дополнительные методы:
+
+- `tag(string $tag): static`
+
+### `NoticeField`
+
+Информационный или предупреждающий блок.
+
+Дополнительный метод:
+
+- `noticeType(string $type): static`
+
+### `ContentField`
+
+Произвольный HTML-блок.
+
+Дополнительный метод:
+
+- `content(string $content): static`
+
+### `SwitcherField`
+
+On/off переключатель.
+
+Дополнительные методы:
+
+- `textOn(string $text): static`
+- `textOff(string $text): static`
+- `checkedValue(string $value): static`
+
+### `SpinnerField`
+
+Числовой счётчик с кнопками увеличения и уменьшения.
+
+Дополнительные методы:
+
+- `step(int|float $step): static`
+- `unit(string $unit): static`
+
+`min()` и `max()` в этом типе используются и как render-атрибуты, и как validation-границы.
+
+### `ButtonSetField`
+
+Группа кнопок для выбора одного или нескольких значений.
+
+Дополнительный метод:
+
+- `multiple(bool $multiple = true): static`
+
+### `SliderField`
+
+Ползунок диапазона.
+
+Дополнительные методы:
+
+- `step(int|float $step): static`
+- `showValue(bool $show = true): static`
+
+`min()` и `max()` в этом типе используются и как render-атрибуты, и как validation-границы.
+
+### `ImageSelectField`
+
+Выбор значения через карточки изображений.
+
+Этот тип наследует `options()` от `ChoiceField`.
 
 ### `ChoiceField`
 
@@ -446,9 +548,10 @@ Field::make('select', 'status'); // legacy wrapper
 
 ---
 
-## 9. Legacy API `WP_Field.php`
+## 9. Legacy API `legacy/WP_Field.php`
 
-Файл `WP_Field.php` остаётся точкой входа для старых интеграций.
+Legacy-класс находится в `legacy/WP_Field.php`.
+WordPress entrypoint плагина — `wp-field.php`, а корневой `WP_Field.php` оставлен как compat-loader для старых include-путей.
 
 ### Что он даёт
 

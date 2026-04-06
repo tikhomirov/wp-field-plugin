@@ -179,7 +179,7 @@ class RepeaterField extends AbstractField
 
         $html .= '<div class="wp-field-repeater-rows">';
 
-        if (empty($rows) && $this->min > 0) {
+        if ($rows === [] && $this->min > 0) {
             for ($i = 0; $i < $this->min; $i++) {
                 $html .= $this->renderRow($i, []);
             }
@@ -222,11 +222,9 @@ class RepeaterField extends AbstractField
             $fieldName = $field->getName();
             $fieldValue = $rowData[$fieldName] ?? null;
 
-            $clonedField = clone $field;
-            $clonedField->value($fieldValue);
-
             $fullName = sprintf('%s[%s][%s]', $name, $index, $fieldName);
-            $clonedField = $this->updateFieldName($clonedField, $fullName);
+            $clonedField = $this->cloneSubFieldWithName($field, $fullName);
+            $clonedField->value($fieldValue);
 
             if ($this->layout === 'table') {
                 $html .= '<td>';
@@ -245,10 +243,12 @@ class RepeaterField extends AbstractField
             $html .= '<div class="wp-field-repeater-actions">';
         }
 
+        $removeLabel = function_exists('esc_html__') ? esc_html__('Remove', 'wp-field') : 'Remove';
+
         $html .= sprintf(
             '<button type="button" class="button wp-field-repeater-remove" data-min="%d">%s</button>',
             $this->min,
-            esc_html__('Remove', 'wp-field'),
+            esc_html($removeLabel),
         );
 
         if ($this->layout === 'table') {
@@ -262,13 +262,15 @@ class RepeaterField extends AbstractField
         return $html;
     }
 
-    protected function updateFieldName(FieldInterface $field, string $newName): FieldInterface
+    protected function cloneSubFieldWithName(FieldInterface $field, string $newName): FieldInterface
     {
-        $reflection = new \ReflectionClass($field);
-        $nameProperty = $reflection->getProperty('name');
-        $nameProperty->setAccessible(true);
-        $nameProperty->setValue($field, $newName);
+        if (method_exists($field, 'cloneWithName')) {
+            /** @var FieldInterface $renamed */
+            $renamed = $field->cloneWithName($newName);
 
-        return $field;
+            return $renamed;
+        }
+
+        return clone $field;
     }
 }

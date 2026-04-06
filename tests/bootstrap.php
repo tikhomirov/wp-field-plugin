@@ -24,6 +24,20 @@ if (! function_exists('esc_html')) {
     }
 }
 
+if (! function_exists('__')) {
+    function __(string $text, string $domain = 'default'): string
+    {
+        return $text;
+    }
+}
+
+if (! function_exists('esc_html__')) {
+    function esc_html__(string $text, string $domain = 'default'): string
+    {
+        return esc_html(__($text, $domain));
+    }
+}
+
 if (! function_exists('is_email')) {
     function is_email(string $email): bool
     {

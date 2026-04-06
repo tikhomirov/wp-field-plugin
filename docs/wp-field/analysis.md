@@ -234,10 +234,20 @@ Storage слой простой и понятный:
 
 ## 4.2 Native fluent API: фактическая поддержка
 
-Нативно реализованы только:
+Нативно реализованы:
 - `text`
+- `group`
+- `heading`
+- `subheading`
+- `notice`
+- `content`
 - `repeater`
 - `flexible_content`
+- `switcher`
+- `spinner`
+- `button_set`
+- `slider`
+- `image_select`
 
 Частично через legacy bridge:
 - `radio`
@@ -247,7 +257,7 @@ Storage слой простой и понятный:
 Через общий fallback:
 - почти всё остальное через `LegacyWrapperField`
 
-Вывод: **маркетинговое сообщение “modern v3 architecture” верное только частично**. Полный v3 field layer ещё не собран.
+Вывод: **modern v3 слой растёт поэтапно, но ещё не покрывает весь legacy registry**.
 
 ---
 
@@ -392,15 +402,7 @@ Storage слой простой и понятный:
 
 ## Средние риски
 
-### 5. `FieldInterface` не знает про `orWhen()`
-Проблема:
-- trait метод есть;
-- interface метода нет.
-
-Следствие:
-- API работает несимметрично и хуже описан для IDE/static analysis.
-
-### 6. Reflection-хак для вложенных имён полей
+### 5. Reflection-хак для вложенных имён полей
 Файлы:
 - `src/Field/Types/RepeaterField.php`
 - `src/Field/Types/FlexibleContentField.php`
@@ -412,7 +414,7 @@ Storage слой простой и понятный:
 - хрупкая реализация;
 - сложнее безопасно эволюционировать field internals.
 
-### 7. Глобальное подключение assets на всех admin pages
+### 6. Глобальное подключение assets на всех admin pages
 Файл: `WP_Field.php`
 
 Проблема:
@@ -421,7 +423,7 @@ Storage слой простой и понятный:
 Следствие:
 - лишняя нагрузка и размытые границы подключения.
 
-### 8. `examples/modern-api-examples.php` делает `echo` внутри `init`
+### 7. `examples/modern-api-examples.php` делает `echo` внутри `init`
 Проблема:
 - это не нормальный production usage.
 
@@ -437,7 +439,8 @@ Storage слой простой и понятный:
 - storage-абстракции в `src/Storage/*`;
 - контейнеры metabox/settings/taxonomy/user;
 - `AdminShell` и `Wizard` как отдельные UI-конструкции;
-- базовый `TextField` и общая идея fluent field API.
+- базовый `TextField` и общая идея fluent field API;
+- native B1/A2 простые типы: `group`, `heading`, `subheading`, `notice`, `content`, `switcher`, `spinner`, `button_set`, `slider`, `image_select`.
 
 ---
 

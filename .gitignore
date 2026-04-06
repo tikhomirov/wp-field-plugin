@@ -22,3 +22,6 @@ node_modules/
 *.sql
 *.sqlite
 .idea
+vendor
+sessions
+.rector.cache

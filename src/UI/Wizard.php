@@ -19,13 +19,13 @@ namespace WpField\UI;
 final class Wizard
 {
     /**
-     * @param array<int, array{id: string, title: string, description?: string}> $steps
-     *        Step metadata — id, title, optional description (all translated by host).
-     * @param string       $active_step     Currently active step id.
-     * @param string       $action_url      Form action URL.
-     * @param string       $nonce_field     HTML output of wp_nonce_field().
-     * @param callable     $step_renderer   callable(string $step_id): void
-     * @param WizardConfig $config          Optional configuration.
+     * @param  array<int, array{id: string, title: string, description?: string}>  $steps
+     *                                                                                     Step metadata — id, title, optional description (all translated by host).
+     * @param  string  $active_step  Currently active step id.
+     * @param  string  $action_url  Form action URL.
+     * @param  string  $nonce_field  HTML output of wp_nonce_field().
+     * @param  callable  $step_renderer  callable(string $step_id): void
+     * @param  WizardConfig  $config  Optional configuration.
      */
     public static function render(
         array $steps,
@@ -33,9 +33,9 @@ final class Wizard
         string $action_url,
         string $nonce_field,
         callable $step_renderer,
-        WizardConfig $config = new WizardConfig(),
+        WizardConfig $config = new WizardConfig,
     ): void {
-        if (empty($steps)) {
+        if ($steps === []) {
             return;
         }
 
@@ -47,7 +47,7 @@ final class Wizard
 
         $steps_json = (string) wp_json_encode($steps, JSON_UNESCAPED_UNICODE);
 
-        $wrapper_class = trim('wp-field-wizard ' . $config->wrapper_extra_class);
+        $wrapper_class = trim('wp-field-wizard '.$config->wrapper_extra_class);
         ?>
         <div class="<?php echo esc_attr($wrapper_class); ?>">
 
@@ -80,7 +80,7 @@ final class Wizard
 
                         <div class="wp-field-wizard-step__header">
                             <h2 class="wp-field-wizard-step__title">
-                                <?php echo esc_html($step['title'] ?? $step_id); ?>
+                                <?php echo esc_html($step['title']); ?>
                             </h2>
                             <?php if (! empty($step['description'])) { ?>
                                 <p class="wp-field-wizard-step__description">
@@ -100,17 +100,15 @@ final class Wizard
             </form>
 
         </div>
-        <?php
+<?php
     }
 
     /**
      * Resolve active step from GET parameters.
      *
-     * @param  array<int, array{id: string, title: string}> $steps
-     * @param  WizardConfig                                 $config
-     * @return string
+     * @param  array<int, array{id: string, title: string}>  $steps
      */
-    public static function resolveFromRequest(array $steps, WizardConfig $config = new WizardConfig()): string
+    public static function resolveFromRequest(array $steps, WizardConfig $config = new WizardConfig): string
     {
         if (isset($_GET[$config->step_query_key])) {
             $requested = sanitize_key((string) $_GET[$config->step_query_key]);

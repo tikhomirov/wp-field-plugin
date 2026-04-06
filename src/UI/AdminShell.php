@@ -25,14 +25,14 @@ namespace WpField\UI;
 final class AdminShell
 {
     /**
-     * @param NavItem[]        $nav            Navigation tree (depth ≤ 2).
-     * @param string           $active_segment Active leaf id (resolved from GET by host or passed directly).
-     * @param string           $active_panel   Active panel/tab id within the leaf ('' = first panel).
-     * @param string           $page_title     Page title (already translated).
-     * @param string           $action_url     Form action URL.
-     * @param string           $nonce_field    HTML output of wp_nonce_field().
-     * @param callable         $panel_renderer callable(string $segment_id, string $panel_id): void
-     * @param AdminShellConfig $config         Optional configuration.
+     * @param  NavItem[]  $nav  Navigation tree (depth ≤ 2).
+     * @param  string  $active_segment  Active leaf id (resolved from GET by host or passed directly).
+     * @param  string  $active_panel  Active panel/tab id within the leaf ('' = first panel).
+     * @param  string  $page_title  Page title (already translated).
+     * @param  string  $action_url  Form action URL.
+     * @param  string  $nonce_field  HTML output of wp_nonce_field().
+     * @param  callable  $panel_renderer  callable(string $segment_id, string $panel_id): void
+     * @param  AdminShellConfig  $config  Optional configuration.
      */
     public static function render(
         array $nav,
@@ -42,16 +42,16 @@ final class AdminShell
         string $action_url,
         string $nonce_field,
         callable $panel_renderer,
-        AdminShellConfig $config = new AdminShellConfig(),
+        AdminShellConfig $config = new AdminShellConfig,
     ): void {
         $leaves = NavItem::collectLeaves($nav);
 
         // Fallback: first leaf
-        if ($active_segment === '' || NavItem::findLeaf($nav, $active_segment) === null) {
-            $active_segment = NavItem::firstLeafId($nav);
-        }
-
         $active_leaf = NavItem::findLeaf($nav, $active_segment);
+        if ($active_segment === '' || ! $active_leaf) {
+            $active_segment = NavItem::firstLeafId($nav);
+            $active_leaf = NavItem::findLeaf($nav, $active_segment);
+        }
 
         // Resolve active panel: fallback to first panel id or empty string
         if ($active_panel === '' && $active_leaf?->panels) {
@@ -60,7 +60,7 @@ final class AdminShell
 
         $nav_json = (string) wp_json_encode(NavItem::toJsonArray($nav), JSON_UNESCAPED_UNICODE);
 
-        $wrapper_class = trim('wp-field-shell ' . $config->wrapper_extra_class);
+        $wrapper_class = trim('wp-field-shell '.$config->wrapper_extra_class);
         ?>
         <div class="<?php echo esc_attr($wrapper_class); ?>">
 
@@ -78,7 +78,7 @@ final class AdminShell
 
                 <div class="wp-field-shell__header">
                     <div class="wp-field-shell__breadcrumb">
-<!--                        <span class="wp-field-shell__breadcrumb-page">--><?php //echo esc_html($page_title); ?><!--</span>-->
+<!--                        <span class="wp-field-shell__breadcrumb-page">--><?php // echo esc_html($page_title);?><!--</span>-->
 <!--                        <span class="wp-field-shell__breadcrumb-sep" aria-hidden="true"> › </span>-->
                         <span class="wp-field-shell__breadcrumb-section" id="wp-field-shell-header-section">
                             <?php echo esc_html($active_leaf?->label ?? $page_title); ?>
@@ -102,7 +102,7 @@ final class AdminShell
                     <?php foreach ($leaves as $leaf) {
                         $panels = $leaf->panels ?: [['id' => '', 'label' => '']];
                         foreach ($panels as $panel) {
-                            $panel_id = (string) ($panel['id'] ?? '');
+                            $panel_id = (string) $panel['id'];
                             $is_active = $leaf->id === $active_segment
                                 && ($panel_id === $active_panel || ($active_panel === '' && $panel_id === ($panels[0]['id'] ?? '')));
                             ?>
@@ -116,7 +116,7 @@ final class AdminShell
                                     <?php if (count($panels) > 1 || $panel_id !== '') { ?>
                                     <div class="wp-field-shell__card-header">
                                         <h2 class="wp-field-shell__card-title">
-                                            <?php echo esc_html($panel['label'] ?? $leaf->label); ?>
+                                            <?php echo esc_html($panel['label']); ?>
                                         </h2>
                                     </div>
                                     <?php } else { ?>
@@ -147,16 +147,16 @@ final class AdminShell
             </div>
 
         </div>
-        <?php
+<?php
     }
 
     /**
      * Resolve active segment and panel from GET parameters using the given config.
      *
-     * @param  NavItem[]                             $nav
+     * @param  NavItem[]  $nav
      * @return array{segment: string, panel: string}
      */
-    public static function resolveFromRequest(array $nav, AdminShellConfig $config = new AdminShellConfig()): array
+    public static function resolveFromRequest(array $nav, AdminShellConfig $config = new AdminShellConfig): array
     {
         $segment = isset($_GET[$config->section_query_key])
             ? sanitize_key((string) $_GET[$config->section_query_key])
