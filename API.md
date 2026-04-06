@@ -11,7 +11,7 @@
 - интерфейсы `FieldInterface`, `ContainerInterface`, `StorageInterface`;
 - контейнеры `MetaboxContainer`, `SettingsContainer`, `TaxonomyContainer`, `UserContainer`;
 - UI API `NavItem`, `AdminShell`, `Wizard`, `UIManager`;
-- legacy entrypoint `WP_Field.php` и класс `legacy/WP_Field.php` только как compat-слой.
+- legacy entrypoint `WP_Field.php` и класс `vanilla/WP_Field.php` только как compat-слой.
 
 Правило:
 - если контракт зафиксирован интерфейсом, фабрикой или явно описан ниже, его можно использовать;
@@ -260,7 +260,7 @@ Legacy-слой нужен только для совместимости.
 
 - `wp-field.php` -> canonical entrypoint;
 - `WP_Field.php` -> compat-loader;
-- `legacy/WP_Field.php` -> legacy class `WP_Field`.
+- `vanilla/WP_Field.php` -> vanilla/legacy class `WP_Field`.
 
 Использовать legacy имеет смысл только если:
 
