@@ -32,33 +32,30 @@ class LegacyWrapperField extends AbstractField
 
     public function render(): string
     {
-        if (! class_exists('\WP_Field')) {
-            return '';
+        $config = $this->buildLegacyConfig();
+
+        $legacyHtml = $this->renderWithLegacyApi($config);
+        if ($legacyHtml !== '') {
+            return $legacyHtml;
         }
 
+        return $this->renderGenericFallback($config);
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function buildLegacyConfig(): array
+    {
         $config = [
             'id' => $this->name,
+            'name' => $this->name,
             'type' => $this->type,
         ];
 
-        // Map Fluent API properties to Legacy Array config
-        if ($this->getAttribute('label')) {
-            $config['label'] = $this->getAttribute('label');
-        }
+        $config = array_merge($config, $this->attributes, $this->legacyConfig);
 
-        if ($this->getAttribute('description')) {
-            $config['desc'] = $this->getAttribute('description');
-        }
-
-        if ($this->getAttribute('placeholder')) {
-            $config['placeholder'] = $this->getAttribute('placeholder');
-        }
-
-        if ($this->getAttribute('default')) {
-            $config['default'] = $this->getAttribute('default');
-        }
-
-        if ($this->getValue() !== null) {
+        if ($this->getValue() !== null && ! array_key_exists('value', $config)) {
             $config['value'] = $this->getValue();
         }
 
@@ -66,64 +63,130 @@ class LegacyWrapperField extends AbstractField
             $config['required'] = true;
         }
 
-        if ($this->getAttribute('class')) {
-            $config['class'] = $this->getAttribute('class');
+        if (array_key_exists('description', $config) && ! array_key_exists('desc', $config)) {
+            $config['desc'] = $config['description'];
         }
 
-        // Map conditions
         $dependency = $this->mapConditionsToLegacyDependency();
-        if ($dependency !== []) {
+        if ($dependency !== [] && ! array_key_exists('dependency', $config)) {
             $config['dependency'] = $dependency;
         }
 
-        // Add any explicitly set legacy config
-        $config = array_merge($config, $this->legacyConfig);
+        if (isset($config['fields']) && is_array($config['fields'])) {
+            $config['fields'] = array_map(function ($field) {
+                if ($field instanceof \WpField\Field\FieldInterface) {
+                    return $field->toArray();
+                }
 
-        // Map specific field properties
-        if ($this->type === 'radio' || $this->type === 'select' || $this->type === 'checkbox') {
-            $options = $this->getAttribute('options');
-            if ($options) {
-                $config['options'] = $options;
-            }
+                return $field;
+            }, $config['fields']);
         }
 
-        if ($this->type === 'accordion') {
-            $sections = $this->getAttribute('sections') ?? $this->getAttribute('items');
-            if (is_array($sections)) {
-                $config['sections'] = $sections;
-            }
+        return $config;
+    }
+
+    /**
+     * @param  array<string, mixed>  $config
+     */
+    private function renderWithLegacyApi(array $config): string
+    {
+        if (! class_exists('\WP_Field')) {
+            return '';
         }
 
-        if ($this->type === 'tabbed') {
-            $tabs = $this->getAttribute('tabs');
-            if (is_array($tabs)) {
-                $config['tabs'] = $tabs;
-            }
-        }
+        $hasRuntimeError = false;
 
-        if ($this->type === 'fieldset') {
-            $fields = $this->getAttribute('fields');
-            if (is_array($fields)) {
-                // Convert FieldInterface objects to legacy arrays if needed
-                $config['fields'] = array_map(function ($field) {
-                    if ($field instanceof \WpField\Field\FieldInterface) {
-                        // We would need a toLegacyArray() method, but for now
-                        // assume fieldsets are configured via the config() method
-                        return $field->toArray();
-                    }
-
-                    return $field;
-                }, $fields);
-            }
-        }
-
-        // Render using the legacy API but return as string
         ob_start();
-        $legacyField = new \WP_Field($config);
-        $legacyField->render();
-        $html = ob_get_clean();
 
-        return $html ?: '';
+        set_error_handler(static function () use (&$hasRuntimeError): bool {
+            $hasRuntimeError = true;
+
+            return true;
+        });
+
+        try {
+            $legacyField = new \WP_Field($config);
+            $legacyField->render();
+        } catch (\Throwable) {
+            $hasRuntimeError = true;
+        } finally {
+            restore_error_handler();
+        }
+
+        $html = trim((string) ob_get_clean());
+
+        if ($hasRuntimeError) {
+            return '';
+        }
+
+        return $html;
+    }
+
+    /**
+     * @param  array<string, mixed>  $config
+     */
+    private function renderGenericFallback(array $config): string
+    {
+        $id = isset($config['id']) && is_scalar($config['id']) ? (string) $config['id'] : $this->name;
+        $name = isset($config['name']) && is_scalar($config['name']) ? (string) $config['name'] : $id;
+        $label = isset($config['label']) && is_scalar($config['label']) ? (string) $config['label'] : '';
+        $description = isset($config['desc']) && is_scalar($config['desc'])
+            ? (string) $config['desc']
+            : (isset($config['description']) && is_scalar($config['description']) ? (string) $config['description'] : '');
+        $placeholder = isset($config['placeholder']) && is_scalar($config['placeholder']) ? (string) $config['placeholder'] : '';
+        $value = $config['value'] ?? null;
+        $required = empty($config['required']) ? '' : ' required';
+        $readonly = empty($config['readonly']) ? '' : ' readonly';
+        $disabled = empty($config['disabled']) ? '' : ' disabled';
+        $class = isset($config['class']) && is_scalar($config['class']) ? (string) $config['class'] : '';
+
+        $html = sprintf(
+            '<div class="wp-field-legacy-fallback" data-legacy-fallback="1" data-legacy-type="%s">',
+            esc_attr($this->type),
+        );
+
+        if ($label !== '') {
+            $html .= sprintf('<label for="%s">%s</label>', esc_attr($id), esc_html($label));
+        }
+
+        $options = $config['options'] ?? null;
+        if (is_array($options) && $options !== []) {
+            $multiple = ! empty($config['multiple']);
+            $currentValues = is_array($value) ? $value : [$value];
+            $selectName = $multiple ? $name.'[]' : $name;
+
+            $html .= sprintf('<select id="%s" name="%s" class="%s"%s%s%s%s>', esc_attr($id), esc_attr($selectName), esc_attr($class), $multiple ? ' multiple' : '', $required, $readonly, $disabled);
+            foreach ($options as $optionValue => $optionLabel) {
+                $isSelected = in_array((string) $optionValue, array_map(static fn ($v) => is_scalar($v) ? (string) $v : '', $currentValues), true)
+                    ? ' selected'
+                    : '';
+                $html .= sprintf('<option value="%s"%s>%s</option>', esc_attr((string) $optionValue), $isSelected, esc_html(is_scalar($optionLabel) ? (string) $optionLabel : (string) $optionValue));
+            }
+            $html .= '</select>';
+        } else {
+            $inputValue = is_scalar($value) ? (string) $value : '';
+            $inputClass = trim('regular-text '.$class);
+
+            $html .= sprintf(
+                '<input type="text" id="%s" name="%s" value="%s" class="%s" placeholder="%s"%s%s%s>',
+                esc_attr($id),
+                esc_attr($name),
+                esc_attr($inputValue),
+                esc_attr($inputClass),
+                esc_attr($placeholder),
+                $required,
+                $readonly,
+                $disabled,
+            );
+        }
+
+        if ($description !== '') {
+            $html .= sprintf('<p class="description">%s</p>', esc_html($description));
+        }
+
+        $html .= '</div>';
+
+        return $html;
     }
 
     /**
