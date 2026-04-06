@@ -36,6 +36,8 @@ class UIManager
         $pluginUrl = plugin_dir_url(dirname(__DIR__, 2));
         $pluginPath = dirname(__DIR__, 2);
 
+        self::enqueueWordPressEnhancementAssets($pluginUrl, $pluginPath);
+
         if (self::isReactMode()) {
             self::enqueueReactAssets($pluginUrl, $pluginPath);
         } else {
@@ -60,6 +62,34 @@ class UIManager
         self::enqueueScript($pluginUrl, $pluginPath, 'wp-field-main', 'legacy/assets/js/wp-field.js', ['jquery'], false);
 
         self::enqueueCommonStyles($pluginUrl, $pluginPath);
+    }
+
+    protected static function enqueueWordPressEnhancementAssets(string $pluginUrl, string $pluginPath): void
+    {
+        wp_enqueue_style('wp-color-picker');
+        wp_enqueue_script('wp-color-picker');
+        wp_enqueue_script('jquery-ui-slider');
+
+        if (function_exists('wp_enqueue_media')) {
+            wp_enqueue_media();
+        }
+
+        if (function_exists('wp_enqueue_editor')) {
+            wp_enqueue_editor();
+        }
+
+        if (function_exists('wp_enqueue_code_editor')) {
+            wp_enqueue_code_editor(['type' => 'text/html']);
+        }
+
+        self::enqueueScript(
+            $pluginUrl,
+            $pluginPath,
+            'wp-field-integrations',
+            'assets/js/wp-field-integrations.js',
+            ['jquery', 'wp-color-picker', 'jquery-ui-slider'],
+            false,
+        );
     }
 
     protected static function enqueueCommonStyles(string $pluginUrl, string $pluginPath): void

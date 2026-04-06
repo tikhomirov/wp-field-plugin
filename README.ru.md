@@ -42,6 +42,7 @@
 ### Основные возможности
 - 🚀 **52 уникальных типа полей** — Text, select, repeater, flexible content и другие
 - ♻️ **4 алиаса совместимости** — `date_time`, `datetime-local`, `image_picker`, `imagepicker`
+- ✅ **Официальный registry работает в native runtime** — `LegacyWrapperField` остаётся только fallback для unknown/custom типов
 - 🔗 **Условная логика** — 14 операторов с отношениями AND/OR
 - 🧪 **Полное покрытие тестами** — Pest/PHPUnit тесты со 100% успехом
 - 🎨 **Компоненты WP** — Нативная интеграция с WordPress UI
@@ -204,7 +205,7 @@ $flexible = Field::flexibleContent('page_sections')
 ### Поля высокой сложности (8)
 - `code_editor` — Редактор кода с подсветкой синтаксиса
 - `icon` — Выбор иконки из библиотеки
-- `map` — Карта Google Maps с выбором координат
+- `map` — Поле координат карты (native baseline + optional provider enhancement)
 - `sortable` — Сортировка drag & drop
 - `sorter` — Сортировка enabled/disabled
 - `palette` — Палитра цветов
@@ -385,7 +386,7 @@ Field::make('typography', 'heading_typography')
 👉 **Инструменты → WP_Field Examples** (демо классического API)  
 👉 `/wp-admin/tools.php?page=wp-field-examples`
 
-👉 **Инструменты → WP_Field v3.0 Demo** (Modern Fluent API)  
+👉 **Инструменты → WP_Field Demo** (modern-only / legacy disabled baseline)  
 👉 `/wp-admin/tools.php?page=wp-field-v3-demo`
 
 Демо-страницы включают:

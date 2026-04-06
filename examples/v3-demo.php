@@ -1,10 +1,10 @@
 <?php
 
 /**
- * WP_Field v3.0 Demo Page
+ * WP_Field Demo Page
  *
- * Demonstrates modern Fluent API, Repeater, Flexible Content, Conditional Logic
- * with React/Vanilla UI mode switching
+ * Deliberately demonstrates only fields that render in the modern runtime
+ * without legacy bootstrap/assets.
  */
 
 declare(strict_types=1);
@@ -14,15 +14,13 @@ if (! defined('ABSPATH')) {
 }
 
 use WpField\Field\Field;
+use WpField\Field\FieldInterface;
 
 class WP_Field_V3_Demo
 {
-    private const UI_MODE_OPTION = 'wp_field_ui_mode';
-
     public function __construct()
     {
         add_action('admin_menu', [$this, 'add_menu_page']);
-        add_action('admin_init', [$this, 'handle_ui_mode_switch']);
         add_action('admin_enqueue_scripts', [$this, 'enqueue_assets']);
     }
 
@@ -30,42 +28,12 @@ class WP_Field_V3_Demo
     {
         add_submenu_page(
             'tools.php',
-            'WP_Field v3.0 Demo',
-            'WP_Field v3.0 Demo',
+            'WP_Field Demo',
+            'WP_Field Demo',
             'manage_options',
             'wp-field-v3-demo',
             [$this, 'render_page']
         );
-    }
-
-    public function handle_ui_mode_switch(): void
-    {
-        if (! isset($_POST['wp_field_ui_mode_nonce'])) {
-            return;
-        }
-
-        if (! wp_verify_nonce($_POST['wp_field_ui_mode_nonce'], 'wp_field_ui_mode')) {
-            return;
-        }
-
-        if (! current_user_can('manage_options')) {
-            return;
-        }
-
-        $mode = sanitize_text_field($_POST['ui_mode'] ?? 'vanilla');
-        if (! in_array($mode, ['react', 'vanilla'], true)) {
-            return;
-        }
-
-        if (! $this->isLegacyEnabled() && $mode === 'vanilla') {
-            $mode = 'react';
-            add_settings_error('wp_field_v3_demo', 'ui_mode_forced',
-                'Vanilla mode requires legacy runtime. Mode forced to React.', 'warning');
-        }
-
-        update_option(self::UI_MODE_OPTION, $mode);
-        add_settings_error('wp_field_v3_demo', 'ui_mode_updated',
-            sprintf('UI Mode switched to: %s', ucfirst($mode)), 'updated');
     }
 
     public function enqueue_assets(string $hook): void
@@ -74,355 +42,338 @@ class WP_Field_V3_Demo
             return;
         }
 
-        $plugin_url = plugin_dir_url(dirname(__FILE__));
-        $version = defined('WP_DEBUG') && WP_DEBUG ? time() : '3.0.0';
-        $legacy_enabled = $this->isLegacyEnabled();
-
-        if ($legacy_enabled) {
-            wp_enqueue_script('jquery');
-            wp_enqueue_media();
-            wp_enqueue_style('wp-color-picker');
-            wp_enqueue_script('wp-color-picker');
-
-            // Legacy JS/CSS for vanilla mode and legacy fallbacks.
-            wp_enqueue_script(
-                'wp-field-main',
-                $plugin_url.'legacy/assets/js/wp-field.js',
-                ['jquery', 'wp-color-picker'],
-                $version,
-                true
-            );
-
-            wp_enqueue_style(
-                'wp-field-main',
-                $plugin_url.'legacy/assets/css/wp-field.css',
-                ['wp-color-picker'],
-                $version
-            );
+        $stylePath = WP_FIELD_PLUGIN_DIR.'assets/css/wp-field-demo.css';
+        if (! file_exists($stylePath)) {
+            return;
         }
 
-        $current_mode = get_option(self::UI_MODE_OPTION, 'vanilla');
-        if (! $legacy_enabled && $current_mode === 'vanilla') {
-            $current_mode = 'react';
-        }
-
-        if ($current_mode === 'react' && $this->hasReactBuild()) {
-            wp_enqueue_script(
-                'wp-field-react-repeater',
-                $plugin_url.'assets/dist/repeater.js',
-                [],
-                $version,
-                true
-            );
-            wp_script_add_data('wp-field-react-repeater', 'type', 'module');
-
-            wp_enqueue_script(
-                'wp-field-react-flexible',
-                $plugin_url.'assets/dist/flexible-content.js',
-                [],
-                $version,
-                true
-            );
-            wp_script_add_data('wp-field-react-flexible', 'type', 'module');
-        }
+        wp_enqueue_style(
+            'wp-field-demo',
+            WP_FIELD_PLUGIN_URL.'assets/css/wp-field-demo.css',
+            [],
+            (string) filemtime($stylePath),
+        );
     }
 
     public function render_page(): void
     {
-        $current_mode = get_option(self::UI_MODE_OPTION, 'vanilla');
-        $react_available = $this->hasReactBuild();
-        $legacy_enabled = $this->isLegacyEnabled();
+        $sections = $this->get_sections();
+        $fieldCount = array_sum(array_map(static fn (array $section): int => count($section['fields']), $sections));
 
-        if (! $legacy_enabled && $current_mode === 'vanilla') {
-            $current_mode = 'react';
-            update_option(self::UI_MODE_OPTION, 'react');
-        }
-
-        echo '<div class="wrap">';
-        echo '<h1>WP_Field v3.0 — Modern API Demo</h1>';
-
-        echo '<div class="notice notice-info">';
-        echo '<p><strong>v3.0 Features:</strong> Fluent API, Repeater, Flexible Content, Conditional Logic, React UI</p>';
-        echo '<p><strong>Current UI Mode:</strong> '.esc_html(ucfirst($current_mode));
-        if (! $react_available) {
-            echo ' <span style="color: #d63638;">(React build not found - using Vanilla fallback)</span>';
-        }
+        echo '<div class="wrap wp-field-demo-page">';
+        echo '<h1>WP_Field Demo</h1>';
+        echo '<p class="wp-field-demo-page__lead">';
+        echo 'Страница работает как baseline для <strong>legacy disabled</strong>: без legacy bootstrap, без legacy assets и только с теми полями, которые рендерятся современным runtime самостоятельно.';
         echo '</p>';
-        echo '<p><strong>Legacy Runtime:</strong> '.($legacy_enabled ? 'enabled' : 'disabled').'</p></div>';
 
-        settings_errors('wp_field_v3_demo');
+        echo '<div class="wp-field-demo-summary">';
+        echo '<div class="wp-field-demo-summary__item"><span class="wp-field-demo-summary__label">Режим</span><strong>modern only</strong></div>';
+        echo '<div class="wp-field-demo-summary__item"><span class="wp-field-demo-summary__label">Legacy runtime</span><strong>disabled baseline</strong></div>';
+        echo '<div class="wp-field-demo-summary__item"><span class="wp-field-demo-summary__label">Показано полей</span><strong>'.esc_html((string) $fieldCount).'</strong></div>';
+        echo '</div>';
 
-        // UI Mode Switcher
-        echo '<div class="card" style="max-width: 600px; margin: 20px 0;">';
-        echo '<h2>UI Mode Switcher</h2>';
-        echo '<form method="post" action="">';
-        wp_nonce_field('wp_field_ui_mode', 'wp_field_ui_mode_nonce');
-        echo '<p>';
-        echo '<label><input type="radio" name="ui_mode" value="react" '.checked($current_mode, 'react', false).'> ';
-        echo 'React UI '.($react_available ? '✓' : '(build required)').'</label><br>';
-        echo '<label><input type="radio" name="ui_mode" value="vanilla" '.checked($current_mode, 'vanilla', false).' '.disabled(! $legacy_enabled, true, false).'> ';
-        echo 'Vanilla JS UI '.($legacy_enabled ? '✓' : '(legacy disabled)').'</label>';
-        echo '</p><p>';
-        echo '<button type="submit" class="button button-primary">Switch Mode</button>';
-        if (! $react_available) {
-            echo ' <span class="description">Run <code>npm run build</code> to enable React UI</span>';
-        }
-        echo '</p></form></div>';
+        echo '<div class="notice notice-info"><p>';
+        echo 'В официальном registry больше нет bridge-типов: все стандартные типы и алиасы работают в native runtime.';
+        echo '</p></div>';
 
-        // Demo Sections
-        echo '<div class="wp-field-v3-demos">';
+        echo '<section class="wp-field-demo-section">';
+        echo '<div class="wp-field-demo-section__header">';
+        echo '<h2>Не входят в modern-only demo</h2>';
+        echo '<p>Ограничение осталось только для unknown/custom типов, которые идут через compat fallback.</p>';
+        echo '</div>';
+        echo '<div class="wp-field-demo-excluded">';
 
-        // 1. Fluent API
-        echo '<div class="card">';
-        echo '<h2>1. Fluent API — Basic Example</h2>';
-        echo '<p class="description">Modern Laravel-style chaining methods</p>';
-        echo '<div class="demo-code"><pre><code class="language-php">use WpField\Field\Field;
+        foreach ($this->get_excluded_types() as $group => $types) {
+            echo '<div class="wp-field-demo-excluded__group">';
+            echo '<h3>'.esc_html($group).'</h3>';
+            echo '<ul>';
 
-$field = Field::text(\'email\')
-    ->label(\'Email Address\')
-    ->placeholder(\'user@example.com\')
-    ->required()
-    ->email()
-    ->class(\'regular-text\');
-
-echo $field->render();</code></pre></div>';
-
-        echo '<div class="demo-preview"><h3>Preview:</h3>';
-        echo Field::text('demo_fluent_email')
-            ->label('Email Address')
-            ->placeholder('user@example.com')
-            ->required()
-            ->email()
-            ->class('regular-text')
-            ->render();
-        echo '</div></div>';
-
-        // 2. Repeater
-        echo '<div class="card">';
-        echo '<h2>2. Repeater Field</h2>';
-        echo '<p class="description">Infinite nesting with min/max constraints</p>';
-        echo '<div class="demo-code"><pre><code class="language-php">$repeater = Field::repeater(\'team_members\')
-    ->label(\'Team Members\')
-    ->fields([
-        Field::text(\'name\')->label(\'Name\')->required(),
-        Field::text(\'position\')->label(\'Position\'),
-        Field::make(\'email\', \'email\')->label(\'Email\'),
-    ])
-    ->min(1)
-    ->max(10)
-    ->buttonLabel(\'Add Member\')
-    ->layout(\'table\');
-
-echo $repeater->render();</code></pre></div>';
-
-        echo '<div class="demo-preview"><h3>Preview:</h3>';
-        if ($current_mode === 'react' && $react_available) {
-            $repeater_config = [
-                'name' => 'demo_repeater',
-                'layout' => 'table',
-                'buttonLabel' => 'Add Member',
-                'min' => 1,
-                'max' => 5,
-                'value' => [
-                    [
-                        'name' => 'Alex',
-                        'position' => 'Developer',
-                        'email' => 'alex@example.com',
-                    ],
-                ],
-                'fields' => [
-                    ['name' => 'name', 'type' => 'text', 'label' => 'Name', 'required' => true],
-                    ['name' => 'position', 'type' => 'text', 'label' => 'Position'],
-                    ['name' => 'email', 'type' => 'email', 'label' => 'Email'],
-                ],
-            ];
-
-            printf(
-                '<div data-wp-field-repeater="%s"></div>',
-                esc_attr((string) wp_json_encode($repeater_config))
-            );
-        } else {
-            echo Field::repeater('demo_team')
-                ->label('Team Members')
-                ->fields([
-                    Field::text('name')->label('Name')->required(),
-                    Field::text('position')->label('Position'),
-                    Field::make('email', 'email')->label('Email'),
-                ])
-                ->min(1)
-                ->max(5)
-                ->buttonLabel('Add Member')
-                ->layout('table')
-                ->render();
-        }
-        echo '</div></div>';
-
-        // 3. Flexible Content
-        echo '<div class="card">';
-        echo '<h2>3. Flexible Content Field</h2>';
-        echo '<p class="description">ACF-style layout builder with multiple block types</p>';
-        echo '<div class="demo-code"><pre><code class="language-php">$flexible = Field::flexibleContent(\'page_sections\')
-    ->label(\'Page Sections\')
-    ->addLayout(\'text_block\', \'Text Block\', [
-        Field::text(\'heading\')->label(\'Heading\'),
-        Field::make(\'textarea\', \'content\')->label(\'Content\'),
-    ])
-    ->addLayout(\'image\', \'Image\', [
-        Field::make(\'image\', \'image_url\')->label(\'Image\'),
-        Field::text(\'caption\')->label(\'Caption\'),
-    ])
-    ->min(1)
-    ->buttonLabel(\'Add Section\');
-
-echo $flexible->render();</code></pre></div>';
-
-        echo '<div class="demo-preview"><h3>Preview:</h3>';
-        if ($current_mode === 'react' && $react_available) {
-            $flexible_config = [
-                'name' => 'demo_flexible',
-                'buttonLabel' => 'Add Section',
-                'min' => 1,
-                'max' => 5,
-                'value' => [
-                    [
-                        'acf_fc_layout' => 'text_block',
-                        'heading' => 'Welcome',
-                        'content' => 'Demo content block',
-                    ],
-                ],
-                'layouts' => [
-                    'text_block' => [
-                        'label' => 'Text Block',
-                        'fields' => [
-                            ['name' => 'heading', 'type' => 'text', 'label' => 'Heading'],
-                            ['name' => 'content', 'type' => 'text', 'label' => 'Content'],
-                        ],
-                    ],
-                    'image' => [
-                        'label' => 'Image',
-                        'fields' => [
-                            ['name' => 'image_url', 'type' => 'url', 'label' => 'Image URL'],
-                            ['name' => 'caption', 'type' => 'text', 'label' => 'Caption'],
-                        ],
-                    ],
-                ],
-            ];
-
-            printf(
-                '<div data-wp-field-flexible="%s"></div>',
-                esc_attr((string) wp_json_encode($flexible_config))
-            );
-        } else {
-            echo Field::flexibleContent('demo_flexible_fallback')
-                ->label('Page Sections')
-                ->addLayout('text_block', 'Text Block', [
-                    Field::text('heading')->label('Heading'),
-                    Field::make('textarea', 'content')->label('Content'),
-                ])
-                ->addLayout('image', 'Image', [
-                    Field::make('url', 'image_url')->label('Image URL'),
-                    Field::text('caption')->label('Caption'),
-                ])
-                ->min(1)
-                ->buttonLabel('Add Section')
-                ->render();
-        }
-        echo '</div></div>';
-
-        // 4. Conditional Logic
-        echo '<div class="card">';
-        echo '<h2>4. Conditional Logic</h2>';
-        echo '<p class="description">14 operators with AND/OR relations</p>';
-        echo '<div class="demo-code"><pre><code class="language-php">$field = Field::text(\'courier_address\')
-    ->label(\'Delivery Address\')
-    ->when(\'delivery_type\', \'==\', \'courier\');
-
-$field = Field::text(\'special_field\')
-    ->when(\'field1\', \'==\', \'value1\')
-    ->when(\'field2\', \'!=\', \'value2\');</code></pre></div>';
-
-        echo '<div class="demo-preview"><h3>Preview:</h3>';
-        echo Field::make('select', 'demo_delivery_type')
-            ->label('Delivery Type')
-            ->attribute('options', [
-                'pickup' => 'Pickup',
-                'courier' => 'Courier',
-                'mail' => 'Mail',
-            ])
-            ->render();
-
-        echo Field::text('demo_courier_address')
-            ->label('Courier Address')
-            ->when('demo_delivery_type', '==', 'courier')
-            ->render();
-
-        echo '<p style="color:#666; margin-top:8px;">Conditional rules are attached via fluent API (`when` / `orWhen`).</p>';
-        echo '</div></div>';
-
-        // 5. Legacy API
-        echo '<div class="card">';
-        echo '<h2>5. Legacy API (v2.x) — 100% Compatible</h2>';
-        echo '<p class="description">Old array-based API still works</p>';
-        echo '<div class="demo-code"><pre><code class="language-php">$field = WP_Field::make([
-    \'id\' => \'shop_name\',
-    \'type\' => \'text\',
-    \'label\' => \'Shop Name\',
-    \'required\' => true,
-]);
-
-echo $field->render();</code></pre></div>';
-
-        echo '<div class="demo-preview"><h3>Preview:</h3>';
-        if (class_exists('WP_Field')) {
-            $shop_html = WP_Field::make([
-                'id' => 'demo_shop_name',
-                'type' => 'text',
-                'label' => 'Shop Name (Legacy API)',
-                'storage_type' => 'options',
-                'placeholder' => 'Enter shop name',
-                'required' => true,
-            ], false);
-
-            if (is_string($shop_html)) {
-                echo $shop_html;
+            foreach ($types as $type) {
+                echo '<li><code>'.esc_html($type).'</code></li>';
             }
-        } else {
-            echo '<p style="color: #666;">Legacy runtime is disabled by <code>wp_field_enable_legacy</code>.</p>';
+
+            echo '</ul>';
+            echo '</div>';
         }
-        echo '</div></div>';
 
-        echo '</div>'; // wp-field-v3-demos
+        echo '</div>';
+        echo '</section>';
 
-        // Styles
-        echo '<style>
-            .wp-field-v3-demos .card { margin: 20px 0; padding: 20px; }
-            .wp-field-v3-demos h2 { margin-top: 0; color: #0073aa; }
-            .demo-code { background: #f5f5f5; padding: 15px; border-radius: 4px; margin: 15px 0; overflow-x: auto; }
-            .demo-code pre { margin: 0; }
-            .demo-code code { font-family: "Courier New", monospace; font-size: 13px; line-height: 1.6; }
-            .demo-preview { background: #fff; padding: 20px; border: 1px solid #ddd; border-radius: 4px; margin: 15px 0; }
-            .demo-preview h3 { margin-top: 0; font-size: 14px; color: #666; text-transform: uppercase; }
-        </style>';
+        foreach ($sections as $section) {
+            echo '<section class="wp-field-demo-section">';
+            echo '<div class="wp-field-demo-section__header">';
+            echo '<h2>'.esc_html($section['title']).'</h2>';
+            echo '<p>'.esc_html($section['description']).'</p>';
+            echo '</div>';
+            echo '<div class="wp-field-demo-grid">';
 
-        echo '</div>'; // wrap
+            foreach ($section['fields'] as $fieldDefinition) {
+                echo $this->render_demo_card(
+                    $fieldDefinition['type'],
+                    $fieldDefinition['title'],
+                    $fieldDefinition['description'],
+                    $fieldDefinition['field']
+                );
+            }
+
+            echo '</div>';
+            echo '</section>';
+        }
+
+        echo '</div>';
     }
 
-    private function hasReactBuild(): bool
+    /**
+     * @return array<int, array{title: string, description: string, fields: array<int, array{type: string, title: string, description: string, field: FieldInterface}>}>
+     */
+    private function get_sections(): array
     {
-        $plugin_path = dirname(__FILE__, 2);
+        $placeholderUrl = WP_FIELD_PLUGIN_URL.'placeholder.svg';
 
-        return file_exists($plugin_path.'/assets/dist/client.js')
-            && file_exists($plugin_path.'/assets/dist/repeater.js')
-            && file_exists($plugin_path.'/assets/dist/flexible-content.js');
+        return [
+            [
+                'title' => 'Input fields',
+                'description' => 'Нативные input-based поля, которые рендерятся без legacy bridge.',
+                'fields' => [
+                    $this->demoField('text', 'Text', 'Базовое текстовое поле.', Field::text('demo_text')->label('Site title')->placeholder('Bagel Shop')->value('Woo Store')),
+                    $this->demoField('password', 'Password', 'Пароль через InputField.', Field::make('password', 'demo_password')->label('API password')->placeholder('••••••••')->value('secret-123')),
+                    $this->demoField('email', 'Email', 'Email c fluent validation rule.', Field::make('email', 'demo_email')->label('Support email')->placeholder('support@example.com')->value('hello@example.com')->email()),
+                    $this->demoField('url', 'URL', 'URL input.', Field::make('url', 'demo_url')->label('Website')->placeholder('https://example.com')->value('https://woocommerce.local')->url()),
+                    $this->demoField('tel', 'Tel', 'Телефонный input.', Field::make('tel', 'demo_tel')->label('Phone')->placeholder('+7 999 123-45-67')->value('+7 999 123-45-67')),
+                    $this->demoField('number', 'Number', 'Числовое поле c min/max.', Field::make('number', 'demo_number')->label('Delivery time')->min(15)->max(180)->value(45)),
+                    $this->demoField('range', 'Range', 'HTML range input.', Field::make('range', 'demo_range')->label('Priority')->attribute('min', 1)->attribute('max', 10)->value(6)),
+                    $this->demoField('hidden', 'Hidden', 'Скрытое поле.', Field::make('hidden', 'demo_hidden')->value('hidden-value-123')),
+                    $this->demoField('date', 'Date', 'Выбор даты.', Field::make('date', 'demo_date')->label('Start date')->value('2026-04-06')),
+                    $this->demoField('time', 'Time', 'Выбор времени.', Field::make('time', 'demo_time')->label('Open at')->value('09:30')),
+                    $this->demoField('datetime-local', 'Datetime local', 'Дата и время.', Field::make('datetime-local', 'demo_datetime')->label('Scheduled at')->value('2026-04-06T12:45')),
+                    $this->demoField('textarea', 'Textarea', 'Многострочный ввод.', Field::make('textarea', 'demo_textarea')->label('Comment')->placeholder('Leave a comment')->value("Line 1\nLine 2")),
+                ],
+            ],
+            [
+                'title' => 'Choice fields',
+                'description' => 'Нативные варианты выбора без обращения к legacy runtime.',
+                'fields' => [
+                    $this->demoField('select', 'Select', 'Обычный select.', Field::make('select', 'demo_select')->label('Delivery type')->options([
+                        'pickup' => 'Pickup',
+                        'courier' => 'Courier',
+                        'dinein' => 'Dine in',
+                    ])->value('courier')),
+                    $this->demoField('multiselect', 'Multiselect', 'Select с multiple.', Field::make('multiselect', 'demo_multiselect')->label('Working days')->options([
+                        'mon' => 'Monday',
+                        'tue' => 'Tuesday',
+                        'wed' => 'Wednesday',
+                        'thu' => 'Thursday',
+                    ])->value(['mon', 'wed'])),
+                    $this->demoField('checkbox', 'Checkbox', 'Одиночный чекбокс.', Field::make('checkbox', 'demo_checkbox')->label('Enable sync')->checkedValue('yes')->value('yes')),
+                    $this->demoField('checkbox_group', 'Checkbox group', 'Группа чекбоксов.', Field::make('checkbox_group', 'demo_checkbox_group')->label('Channels')->options([
+                        'site' => 'Website',
+                        'app' => 'Mobile app',
+                        'phone' => 'Phone orders',
+                    ])->value(['site', 'phone'])),
+                    $this->demoField('radio', 'Radio', 'Нативный radio-group (ранее bridge).', Field::make('radio', 'demo_radio')->label('Payment type')->attribute('options', [
+                        'card' => 'Card',
+                        'cash' => 'Cash',
+                        'sbp' => 'SBP',
+                    ])->value('sbp')),
+                    $this->demoField('switcher', 'Switcher', 'Нативный on/off switcher.', Field::make('switcher', 'demo_switcher')->textOn('Enabled')->textOff('Disabled')->checkedValue('on')->value('on')->description('Switcher still renders without legacy CSS.')),
+                    $this->demoField('image_picker', 'Image picker', 'Select с preview-src (ранее bridge).', Field::make('image_picker', 'demo_image_picker')->label('Card style')->options([
+                        'classic' => ['src' => $placeholderUrl, 'label' => 'Classic'],
+                        'minimal' => ['src' => $placeholderUrl, 'label' => 'Minimal'],
+                    ])->value('minimal')),
+                    $this->demoField('palette', 'Palette', 'Выбор палитры (ранее bridge).', Field::make('palette', 'demo_palette')->label('Color palette')->palettes([
+                        'warm' => ['#ff7f50', '#ffb347', '#ffd166'],
+                        'cold' => ['#4facfe', '#00f2fe', '#90cdf4'],
+                    ])->value('cold')),
+                    $this->demoField('button_set', 'Button set', 'Single choice button set.', Field::make('button_set', 'demo_button_set')->options([
+                        'small' => 'Small',
+                        'medium' => 'Medium',
+                        'large' => 'Large',
+                    ])->value('medium')),
+                    $this->demoField('slider', 'Slider', 'Range slider with value.', Field::make('slider', 'demo_slider')->min(0)->max(100)->step(5)->showValue()->value(65)->description('Uses native range markup.')),
+                    $this->demoField('image_select', 'Image select', 'Карточки выбора c изображениями.', Field::make('image_select', 'demo_image_select')->label('Layout')->options([
+                        'grid' => ['src' => $placeholderUrl, 'label' => 'Grid'],
+                        'list' => ['src' => $placeholderUrl, 'label' => 'List'],
+                    ])->value('grid')),
+                ],
+            ],
+            [
+                'title' => 'Content fields',
+                'description' => 'Статические элементы интерфейса, доступные без legacy bootstrap.',
+                'fields' => [
+                    $this->demoField('heading', 'Heading', 'Статический заголовок.', Field::make('heading', 'demo_heading')->label('Section heading')->tag('h3')),
+                    $this->demoField('subheading', 'Subheading', 'Статический подзаголовок.', Field::make('subheading', 'demo_subheading')->label('Subsection title')->tag('h4')),
+                    $this->demoField('notice', 'Notice', 'Информационный блок.', Field::make('notice', 'demo_notice')->label('<strong>Modern-only mode:</strong> this notice is rendered without legacy bridge.')->noticeType('info')),
+                    $this->demoField('content', 'Content', 'HTML блок.', Field::make('content', 'demo_content')->content('<p><strong>HTML content</strong> with <a href="https://woocommerce.local" target="_blank" rel="noopener noreferrer">link</a>.</p>')),
+                ],
+            ],
+            [
+                'title' => 'Composite fields',
+                'description' => 'Составные native-поля, которые собирают вложенные структуры без `WP_Field`.',
+                'fields' => [
+                    $this->demoField('group', 'Group', 'Вложенные поля с именами вида parent[child].', Field::make('group', 'demo_group')
+                        ->label('Contact data')
+                        ->fields([
+                            Field::text('name')->label('Name')->value('Alex'),
+                            Field::make('email', 'email')->label('Email')->value('alex@example.com'),
+                            Field::make('tel', 'phone')->label('Phone')->value('+7 900 000-00-00'),
+                        ])),
+                    $this->demoField('fieldset', 'Fieldset', 'Группировка вложенных полей (ранее bridge).', Field::make('fieldset', 'demo_fieldset')
+                        ->attribute('legend', 'Delivery settings')
+                        ->fields([
+                            Field::text('zone')->label('Zone')->value('Center'),
+                            [
+                                'id' => 'courier_enabled',
+                                'type' => 'checkbox',
+                                'label' => 'Courier enabled',
+                                'value' => '1',
+                            ],
+                        ])),
+                    $this->demoField('spinner', 'Spinner', 'Числовой счётчик.', Field::make('spinner', 'demo_spinner')->label('Guests')->min(1)->max(12)->step(1)->value(3)->description('Native numeric control.')),
+                    $this->demoField('repeater', 'Repeater', 'Повторяющиеся строки с native render.', Field::make('repeater', 'demo_repeater')
+                        ->label('Team members')
+                        ->fields([
+                            Field::text('name')->label('Name'),
+                            Field::make('email', 'email')->label('Email'),
+                        ])
+                        ->min(1)
+                        ->max(3)
+                        ->buttonLabel('Add member')
+                        ->layout('table')
+                        ->value([
+                            ['name' => 'Alex', 'email' => 'alex@example.com'],
+                            ['name' => 'Kate', 'email' => 'kate@example.com'],
+                        ])),
+                    $this->demoField('flexible_content', 'Flexible content', 'Layout builder без legacy зависимости.', Field::make('flexible_content', 'demo_flexible')
+                        ->label('Page blocks')
+                        ->addLayout('hero', 'Hero', [
+                            Field::text('title')->label('Title'),
+                            Field::make('textarea', 'description')->label('Description'),
+                        ])
+                        ->addLayout('cta', 'CTA', [
+                            Field::text('button_text')->label('Button text'),
+                            Field::make('url', 'button_url')->label('Button URL'),
+                        ])
+                        ->buttonLabel('Add block')
+                        ->min(1)
+                        ->value([
+                            [
+                                'acf_fc_layout' => 'hero',
+                                'title' => 'Welcome to WP_Field',
+                                'description' => 'Modern runtime demo without legacy assets.',
+                            ],
+                            [
+                                'acf_fc_layout' => 'cta',
+                                'button_text' => 'Read docs',
+                                'button_url' => 'https://woocommerce.local',
+                            ],
+                        ])),
+                    $this->demoField('link', 'Link', 'Составное поле ссылки (ранее bridge).', Field::make('link', 'demo_link')->label('CTA link')->value([
+                        'url' => 'https://woocommerce.local/docs',
+                        'text' => 'Read documentation',
+                        'target' => '_blank',
+                    ])),
+                    $this->demoField('backup', 'Backup', 'UI экспорта/импорта JSON (ранее bridge).', Field::make('backup', 'demo_backup')->label('Settings backup')->attribute('export_data', [
+                        'enabled' => true,
+                        'endpoint' => 'https://api.example.com',
+                    ])),
+                    $this->demoField('accordion', 'Accordion', 'Секции с nested-полями и accessible baseline без обязательного JS.', Field::make('accordion', 'demo_accordion')->label('FAQ')->sections([
+                        [
+                            'title' => 'Delivery',
+                            'open' => true,
+                            'fields' => [
+                                ['id' => 'delivery_note', 'type' => 'text', 'label' => 'Delivery note', 'value' => '30-40 min'],
+                            ],
+                        ],
+                        [
+                            'title' => 'Payment',
+                            'fields' => [
+                                ['id' => 'payment_note', 'type' => 'text', 'label' => 'Payment note', 'value' => 'Card / Cash'],
+                            ],
+                        ],
+                    ])),
+                    $this->demoField('tabbed', 'Tabbed', 'Вкладки с role=tablist/tabpanel и nested-полями.', Field::make('tabbed', 'demo_tabbed')->label('Tabs')->tabs([
+                        [
+                            'title' => 'General',
+                            'active' => true,
+                            'fields' => [
+                                ['id' => 'tab_title_general', 'type' => 'text', 'label' => 'Title', 'value' => 'General settings'],
+                            ],
+                        ],
+                        [
+                            'title' => 'Advanced',
+                            'fields' => [
+                                ['id' => 'tab_title_advanced', 'type' => 'text', 'label' => 'Title', 'value' => 'Advanced settings'],
+                            ],
+                        ],
+                    ])),
+                    $this->demoField('sortable', 'Sortable', 'Server-render сортировка через hidden-input contract.', Field::make('sortable', 'demo_sortable')->label('Block order')->options([
+                        'hero' => 'Hero',
+                        'menu' => 'Menu',
+                        'reviews' => 'Reviews',
+                    ])->value(['menu', 'hero'])),
+                    $this->demoField('sorter', 'Sorter', 'Две колонки enabled/disabled без обязательного JS drag-and-drop.', Field::make('sorter', 'demo_sorter')->label('Visible sections')->options([
+                        'hero' => 'Hero',
+                        'menu' => 'Menu',
+                        'reviews' => 'Reviews',
+                        'contacts' => 'Contacts',
+                    ])->groups([
+                        'enabled' => 'Enabled',
+                        'disabled' => 'Disabled',
+                    ])->value([
+                        'enabled' => ['hero', 'menu'],
+                        'disabled' => ['reviews'],
+                    ])),
+                    $this->demoField('color_group', 'Color group', 'Группа цветовых значений с shape `name[key]`.', Field::make('color_group', 'demo_color_group')->label('Brand colors')->options([
+                        'primary' => 'Primary',
+                        'secondary' => 'Secondary',
+                        'accent' => 'Accent',
+                    ])->value([
+                        'primary' => '#111827',
+                        'secondary' => '#1f2937',
+                        'accent' => '#f59e0b',
+                    ])),
+                ],
+            ],
+        ];
     }
 
-    private function isLegacyEnabled(): bool
+    /**
+     * @return array<string, array<int, string>>
+     */
+    private function get_excluded_types(): array
     {
-        return (bool) apply_filters('wp_field_enable_legacy', true);
+        return [
+            'Legacy-only fallback route' => [
+                'любые custom/unknown типы вне официального registry',
+            ],
+        ];
+    }
+
+    /**
+     * @return array{type: string, title: string, description: string, field: FieldInterface}
+     */
+    private function demoField(string $type, string $title, string $description, FieldInterface $field): array
+    {
+        return [
+            'type' => $type,
+            'title' => $title,
+            'description' => $description,
+            'field' => $field,
+        ];
+    }
+
+    private function render_demo_card(string $type, string $title, string $description, FieldInterface $field): string
+    {
+        return sprintf(
+            '<article class="wp-field-demo-card"><header class="wp-field-demo-card__header"><div><h3>%s</h3><p>%s</p></div><code>%s</code></header><div class="wp-field-demo-card__preview">%s</div></article>',
+            esc_html($title),
+            esc_html($description),
+            esc_html($type),
+            $field->render(),
+        );
     }
 }
 
-// Initialize only in admin
 if (is_admin()) {
     new WP_Field_V3_Demo;
 }

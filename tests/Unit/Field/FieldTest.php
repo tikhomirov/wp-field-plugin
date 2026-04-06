@@ -330,7 +330,7 @@ it('FlexibleContentField рендерит вложенные имена layout-�
         ->and($html)->toContain('value="Добро пожаловать"');
 });
 
-it('Field::make maps layout container types accordion and tabbed to bridge classes', function (): void {
+it('Field::make maps layout container types accordion and tabbed to native classes', function (): void {
     $accordion = Field::make('accordion', 'faq')
         ->sections([
             ['title' => 'A', 'fields' => []],
@@ -347,7 +347,7 @@ it('Field::make maps layout container types accordion and tabbed to bridge class
         ->and($tabbed->getType())->toBe('tabbed');
 });
 
-it('Field::make maps C1 settings object types to bridge classes', function (): void {
+it('Field::make maps C1 settings object types to dedicated classes', function (): void {
     $typography = Field::make('typography', 'font')->attribute('options', ['font_size' => true]);
     $spacing = Field::make('spacing', 'padding')->attribute('units', ['px', 'em']);
     $dimensions = Field::make('dimensions', 'box')->attribute('units', ['px', '%']);
@@ -372,7 +372,7 @@ it('Field::make maps C1 settings object types to bridge classes', function (): v
         ->and($colorGroup->getType())->toBe('color_group');
 });
 
-it('Field::make maps C2 advanced integration types to bridge classes', function (): void {
+it('Field::make maps C2 advanced integration types to dedicated classes', function (): void {
     $codeEditor = Field::make('code_editor', 'custom_css')->attribute('mode', 'css');
     $icon = Field::make('icon', 'site_icon')->attribute('library', 'dashicons');
     $map = Field::make('map', 'store_map')->attribute('zoom', 12);
@@ -416,7 +416,7 @@ it('Field::make final alias map routes aliases to explicit classes', function ()
         ->and($imagePickerAlias->getType())->toBe('image_picker');
 });
 
-it('Accordion and tabbed bridge fields keep nested child config contract', function (): void {
+it('Accordion and tabbed fields keep nested child config contract', function (): void {
     $accordion = Field::make('accordion', 'faq')->attribute('sections', [
         [
             'title' => 'Section A',
@@ -442,7 +442,74 @@ it('Accordion and tabbed bridge fields keep nested child config contract', funct
         ->and($tabbedArray['tabs'][0]['fields'][0]['id'])->toBe('tab_title');
 });
 
-it('Bridge field preserves conditional logic structure', function (): void {
+it('layout container fields render nested content in native mode', function (): void {
+    $accordion = Field::make('accordion', 'faq')
+        ->label('FAQ')
+        ->sections([
+            [
+                'title' => 'Section A',
+                'open' => true,
+                'fields' => [
+                    ['id' => 'acc_title', 'type' => 'text', 'label' => 'Accordion Title'],
+                ],
+            ],
+        ]);
+
+    $tabbed = Field::make('tabbed', 'tabs')
+        ->tabs([
+            [
+                'title' => 'General',
+                'active' => true,
+                'fields' => [
+                    ['id' => 'tab_title', 'type' => 'text', 'label' => 'Tab Title'],
+                ],
+            ],
+        ]);
+
+    expect($accordion->render())
+        ->toContain('wp-field-accordion')
+        ->and($accordion->render())->toContain('aria-expanded="true"')
+        ->and($accordion->render())->toContain('Accordion Title')
+        ->and($tabbed->render())->toContain('wp-field-tabbed')
+        ->and($tabbed->render())->toContain('role="tablist"')
+        ->and($tabbed->render())->toContain('Tab Title');
+});
+
+it('sortable and sorter render ordered hidden inputs without legacy bridge', function (): void {
+    $sortable = Field::make('sortable', 'blocks')
+        ->attribute('options', ['hero' => 'Hero', 'gallery' => 'Gallery'])
+        ->value(['gallery', 'hero']);
+
+    $sorter = Field::make('sorter', 'columns')
+        ->attribute('options', ['hero' => 'Hero', 'gallery' => 'Gallery', 'cta' => 'CTA'])
+        ->attribute('groups', ['enabled' => 'Enabled', 'disabled' => 'Disabled'])
+        ->value(['enabled' => ['hero'], 'disabled' => ['gallery']]);
+
+    expect($sortable->render())
+        ->toContain('wp-field-sortable')
+        ->and($sortable->render())->toContain('name="blocks[]"')
+        ->and($sortable->render())->toContain('value="gallery"')
+        ->and($sorter->render())->toContain('wp-field-sorter')
+        ->and($sorter->render())->toContain('data-type="enabled"')
+        ->and($sorter->render())->toContain('name="columns[enabled][]"')
+        ->and($sorter->render())->toContain('name="columns[disabled][]"');
+});
+
+it('color_group keeps grouped values in render and sanitize contract', function (): void {
+    $field = Field::make('color_group', 'palette')
+        ->attribute('options', ['primary' => 'Primary', 'accent' => 'Accent'])
+        ->value(['primary' => '#111111', 'accent' => '#ff0000']);
+
+    $html = $field->render();
+
+    expect($html)
+        ->toContain('wp-field-color-group')
+        ->and($html)->toContain('name="palette[primary]"')
+        ->and($html)->toContain('value="#111111"')
+        ->and($field->sanitize(['primary' => ' <b>#fff</b> ']))->toBe(['primary' => '#fff']);
+});
+
+it('Field preserves conditional logic structure', function (): void {
     $field = Field::make('color', 'accent')
         ->when('layout', '==', 'modern')
         ->orWhen('layout', '==', 'compact');

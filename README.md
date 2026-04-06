@@ -42,6 +42,7 @@
 ### Core Features
 - 🚀 **52 Unique Field Types** — Text, select, repeater, flexible content, and more
 - ♻️ **4 Compatibility Aliases** — `date_time`, `datetime-local`, `image_picker`, `imagepicker`
+- ✅ **Official registry runs in native runtime** — `LegacyWrapperField` is now only unknown/custom fallback
 - 🔗 **Conditional Logic** — 14 operators with AND/OR relations
 - 🧪 **Full Test Coverage** — Pest/PHPUnit tests with 100% pass rate
 - 🎨 **WP Components** — Native WordPress UI integration
@@ -204,7 +205,7 @@ $flexible = Field::flexibleContent('page_sections')
 ### High Complexity Fields (8)
 - `code_editor` — Code editor with syntax highlighting
 - `icon` — Icon picker from library
-- `map` — Google Maps location
+- `map` — Coordinates map field (native baseline + optional provider enhancement)
 - `sortable` — Drag & drop sorting
 - `sorter` — Enabled/disabled sorting
 - `palette` — Color palette
@@ -385,7 +386,7 @@ Field::make('typography', 'heading_typography')
 👉 **Tools → WP_Field Examples** (Classic API demo)  
 👉 `/wp-admin/tools.php?page=wp-field-examples`
 
-👉 **Tools → WP_Field v3.0 Demo** (Modern Fluent API)  
+👉 **Tools → WP_Field Demo** (modern-only / legacy disabled baseline)  
 👉 `/wp-admin/tools.php?page=wp-field-v3-demo`
 
 The demo pages include:

@@ -649,15 +649,38 @@
 }
 
 .wp-field-slider {
+    display: block;
     flex: 1;
     min-width: 200px;
-    height: 0px;
+    height: 24px;
+    margin: 0;
+    border: none;
     border-radius: 4px;
-    background: linear-gradient(to right, #e0e0e0 0%, #e0e0e0 100%);
+    background: transparent;
     outline: none;
+    vertical-align: middle;
     -webkit-appearance: none;
     appearance: none;
     cursor: pointer;
+}
+
+.wp-field-slider::-webkit-slider-runnable-track {
+    height: 8px;
+    border-radius: 999px;
+    background: #e0e0e0;
+}
+
+.wp-field-slider::-moz-range-track {
+    height: 8px;
+    border: none;
+    border-radius: 999px;
+    background: #e0e0e0;
+}
+
+.wp-field-slider::-moz-range-progress {
+    height: 8px;
+    border-radius: 999px;
+    background: #0073aa;
 }
 
 .wp-field-slider::-webkit-slider-thumb {
@@ -665,6 +688,7 @@
     appearance: none;
     width: 24px;
     height: 24px;
+    margin-top: -8px;
     border-radius: 50%;
     background: #0073aa;
     cursor: pointer;
@@ -693,12 +717,42 @@
     transform: scale(1.1);
 }
 
+.wp-field-slider:focus::-webkit-slider-runnable-track {
+    box-shadow: 0 0 0 2px rgba(0, 115, 170, 0.15);
+}
+
+.wp-field-slider:focus::-moz-range-track {
+    box-shadow: 0 0 0 2px rgba(0, 115, 170, 0.15);
+}
+
+.wp-field-slider:disabled::-webkit-slider-runnable-track,
+.wp-field-slider:disabled::-moz-range-track,
+.wp-field-slider:disabled::-moz-range-progress {
+    background: #dcdcde;
+}
+
+.wp-field-slider:disabled::-webkit-slider-thumb,
+.wp-field-slider:disabled::-moz-range-thumb {
+    background: #8c8f94;
+    cursor: not-allowed;
+}
+
+.wp-field-slider::-moz-focus-outer {
+    border: 0;
+}
+
 .wp-field-slider-value {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    align-self: center;
     min-width: 50px;
+    min-height: 32px;
     padding: 4px 12px;
     text-align: center;
     font-weight: 600;
     font-size: 14px;
+    line-height: 1;
     color: white;
     background: #0073aa;
     border-radius: 4px;
@@ -893,77 +947,98 @@
     border: 1px solid #ddd;
     border-radius: 4px;
     overflow: hidden;
-    background: white;
+    background: #fff;
 }
 
 .wp-field-accordion-item {
     border-bottom: 1px solid #ddd;
-    transition: background-color 0.2s ease;
+    background: #fff;
 }
 
 .wp-field-accordion-item:last-child {
     border-bottom: none;
 }
 
-.wp-field-accordion-item:hover {
-    background-color: #fafafa;
-}
-
+/* По визуальному контракту максимально приближаем к .wp-field-tabbed-nav-item */
 .wp-field-accordion-header {
+    width: 100%;
     display: flex;
     align-items: center;
-    padding: 14px 16px;
+    padding: 12px 15px;
     background: #f9f9f9;
+    border: none;
     cursor: pointer;
-    user-select: none;
-    transition: all 0.2s ease;
-    font-size: 15px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #666;
+    transition: all 0.2s;
+    text-align: left;
 }
 
 .wp-field-accordion-header:hover {
     background: #f0f0f0;
+    color: #333;
 }
 
+.wp-field-accordion-header:focus-visible {
+    outline: 2px solid #0073aa;
+    outline-offset: -2px;
+}
+
+/* По контракту как .wp-field-tabbed-nav-item.active, но без нижней границы */
 .wp-field-accordion-item.is-open .wp-field-accordion-header {
-    background: #f5f5f5;
-    border-bottom: 2px solid #0073aa;
-}
-
-.wp-field-accordion-icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 20px;
-    height: 20px;
-    margin-right: 12px;
-    font-size: 12px;
-    font-weight: bold;
+    background: #fff;
     color: #0073aa;
-    transition: transform 0.3s ease;
-    flex-shrink: 0;
-}
-
-.wp-field-accordion-item.is-open .wp-field-accordion-icon {
-    transform: rotate(0deg);
 }
 
 .wp-field-accordion-title {
-    font-weight: 600;
-    color: #333;
+    font-weight: inherit;
+    color: inherit;
     flex: 1;
 }
 
+.wp-field-accordion-indicator {
+    position: relative;
+    width: 16px;
+    height: 16px;
+    margin-left: auto;
+    flex-shrink: 0;
+}
+
+.wp-field-accordion-indicator::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 7px;
+    height: 7px;
+    border-right: 2px solid currentColor;
+    border-bottom: 2px solid currentColor;
+    transform: translate(-50%, -65%) rotate(45deg);
+    transition: transform 0.2s ease;
+}
+
+.wp-field-accordion-item.is-open .wp-field-accordion-indicator::before {
+    transform: translate(-50%, -35%) rotate(-135deg);
+}
+
+/* По контракту как .wp-field-tabbed-content (padding: 15px) */
 .wp-field-accordion-content {
     max-height: 0;
     overflow: hidden;
     transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1), padding 0.3s ease;
-    padding: 0 16px;
-    background: white;
+    padding: 0 15px;
+    background: #fff;
 }
 
 .wp-field-accordion-item.is-open .wp-field-accordion-content {
     max-height: 5000px;
-    padding: 16px;
+    padding: 15px;
+}
+
+/* safety: если где-то осталась legacy-иконка — скрываем */
+.wp-field-accordion-icon {
+    display: none !important;
 }
 
 /* ===== Tabbed (v2.2) ===== */

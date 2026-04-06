@@ -53,7 +53,7 @@
     "test": "./vendor/bin/pest --configuration phpunit.xml",
     "test:unit": "./vendor/bin/pest --configuration phpunit.xml --filter=Unit",
     "test:feature": "./vendor/bin/pest --configuration phpunit.xml --filter=Feature",
-    "test:coverage": "./vendor/bin/pest --coverage-html coverage/ --coverage-clover coverage/clover.xml --coverage-text",
+    "test:coverage": "./vendor/bin/pest --configuration phpunit.xml --coverage-html coverage/ --coverage-clover coverage/clover.xml --coverage-text --coverage --min=100",
     "analyse": "./vendor/bin/phpstan analyse --memory-limit=1G",
     "lint": "./vendor/bin/pint",
     "lint:check": "./vendor/bin/pint --test -v",

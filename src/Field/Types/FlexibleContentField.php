@@ -171,7 +171,12 @@ class FlexibleContentField extends AbstractField
         $rawValue = $this->getValue();
         $blocks = is_array($rawValue) ? $rawValue : [];
 
-        $html = sprintf('<div class="wp-field-flexible" data-name="%s">', $name);
+        $html = sprintf(
+            '<div class="wp-field-flexible" data-name="%s" data-min="%d" data-max="%d">',
+            $name,
+            $this->min,
+            $this->max,
+        );
 
         $rawLabel = $this->getAttribute('label');
         if ($rawLabel !== null && is_string($rawLabel)) {
@@ -197,7 +202,7 @@ class FlexibleContentField extends AbstractField
         $html .= '</div>';
 
         $html .= '<div class="wp-field-flexible-add-block">';
-        $html .= sprintf('<button type="button" class="button">%s</button>', esc_html($this->buttonLabel));
+        $html .= sprintf('<button type="button" class="button wp-field-flexible-add">%s</button>', esc_html($this->buttonLabel));
         $html .= '<div class="wp-field-flexible-layouts" style="display:none;">';
 
         foreach ($this->layouts as $layoutName => $layout) {

@@ -65,14 +65,14 @@ $container->register();
 - `Field::radio(string $name): RadioField` — radio-контрол.
 - `Field::media(string $name): MediaField` — поле выбора медиа.
 - `Field::fieldset(string $name): FieldsetField` — группировка полей.
-- `Field::legacy(string $type, string $name): LegacyWrapperField` — обёртка для типов, которые ещё живут в legacy-слое.
+- `Field::legacy(string $type, string $name): LegacyWrapperField` — compat-обёртка для неизвестных/custom типов вне официального registry.
 - `Field::make(string $type, string $name): FieldInterface` — универсальный вход.
 
-`Field::make()` покрывает весь legacy registry (52 unique типа) и официальные алиасы (`date_time`, `datetime-local`, `image_picker`, `imagepicker`) через native/bridge-классы.
+`Field::make()` покрывает весь legacy registry (52 unique типа) и официальные алиасы (`date_time`, `datetime-local`, `image_picker`, `imagepicker`) через native-классы.
 
 ### Поведение `make()`
 
-`Field::make()` выбирает современную реализацию (native/bridge) для всех официальных типов и алиасов.
+`Field::make()` выбирает современную native-реализацию для всех официальных типов и алиасов.
 `LegacyWrapperField` используется только для неизвестных/кастомных типов вне registry.
 
 Пример:
@@ -273,6 +273,112 @@ On/off переключатель.
 
 > Этот класс сам по себе не создаётся напрямую, но задаёт общий контракт для choice-подобных полей.
 
+### `ImagePickerField`
+
+Селект с визуальным контрактом `data-img-src` для каждой опции.
+
+Дополнительный метод:
+
+- `options(array $options): static`
+
+### `PaletteField`
+
+Выбор палитры через набор цветовых свотчей.
+
+Дополнительные методы:
+
+- `options(array $options): static`
+- `palettes(array $palettes): static`
+
+### `LinkField`
+
+Составное поле ссылки.
+
+Value shape:
+
+- `url: string`
+- `text: string`
+- `target: "_self"|"_blank"`
+
+### `TypographyField`
+
+Составное поле типографики.
+
+Value shape:
+
+- `font_family: string`
+- `font_size: string` (numeric-string or empty)
+- `font_weight: string`
+- `line_height: string` (numeric-string or empty)
+- `text_align: string`
+- `text_transform: string`
+- `color: string`
+
+### `SpacingField`
+
+Составное поле отступов.
+
+Value shape:
+
+- `top: string` (numeric-string or empty)
+- `right: string` (numeric-string or empty)
+- `bottom: string` (numeric-string or empty)
+- `left: string` (numeric-string or empty)
+- `unit: string`
+
+### `DimensionsField`
+
+Составное поле размеров.
+
+Value shape:
+
+- `width: string` (numeric-string or empty)
+- `height: string` (numeric-string or empty)
+- `unit: string`
+
+### `BorderField`
+
+Составное поле границы.
+
+Value shape:
+
+- `style: string`
+- `width: string` (numeric-string or empty)
+- `color: string`
+
+### `BackgroundField`
+
+Составное поле фона.
+
+Value shape:
+
+- `color: string`
+- `image: string`
+- `position: string`
+- `size: string`
+- `repeat: string`
+- `attachment: string`
+
+### `LinkColorField`
+
+Составное поле цветов ссылок.
+
+Value shape:
+
+- `normal: string`
+- `hover: string`
+- `active: string`
+- и дополнительные custom states при использовании `states([...])`
+
+### `BackupField`
+
+UI поля экспорта/импорта JSON-настроек.
+
+Особенности:
+
+- `sanitize()` возвращает trimmed JSON-string;
+- `validate()` проверяет валидность JSON (или пустое значение).
+
 ---
 
 ## 4. Составные поля
@@ -311,9 +417,23 @@ On/off переключатель.
 - `validate(mixed $value): bool` — проверка структуры, layout и вложенных полей.
 - `render(): string` — HTML-рендер.
 
+### `MapField`
+
+Поле карты с baseline-режимом без внешнего провайдера.
+
+Value shape:
+
+- `lat: string` (numeric-string в диапазоне `-90..90` или пусто)
+- `lng: string` (numeric-string в диапазоне `-180..180` или пусто)
+
+Особенности:
+
+- server-render baseline всегда доступен (ручной ввод координат);
+- optional JS enhancement использует `wp-field-integrations.js` (геолокация/интерактив).
+
 ### `LegacyWrapperField`
 
-Мост для старых типов, которые ещё обслуживаются legacy-классом `WP_Field`.
+Compat-обёртка для неизвестных/custom типов вне официального registry.
 
 Методы:
 

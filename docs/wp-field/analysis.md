@@ -1,465 +1,120 @@
-# WP_Field — анализ текущего состояния
+# WP_Field — анализ текущего состояния (сжатая версия)
 
-_Обновлено: 2026-04-05_
+_Обновлено: 2026-04-06_
 
-## Зачем этот файл
-
-Это рабочая карта состояния библиотеки. Его задача — быстро восстановить контекст без чтения всего репозитория.
-
-## 1. Краткое резюме
-
-`lib/wp-field` сейчас — **гибрид из двух слоёв**:
-
-1. **Legacy runtime** — большой файл `WP_Field.php`, который реально обеспечивает основную совместимость и большую часть типов полей.
-2. **Modern v3 API** — `src/` c PSR-4, fluent API, контейнерами, storage-стратегиями и отдельными UI-компонентами.
-
-Важно: **v3 API пока не является полным заменителем legacy API**. На практике это промежуточное состояние, а не завершённый переход.
+## Зачем файл
+Короткая «карта местности» по фактическому состоянию `lib/wp-field` без длинной исторической хроники.
 
 ---
 
-## 2. Структура библиотеки
+## 1) Snapshot
 
-### Корневые точки входа
+`wp-field` остаётся **гибридом**:
+- **Legacy runtime** (`legacy/WP_Field.php`, bootstrap в `legacy/bootstrap.php`) — основной слой обратной совместимости.
+- **Modern layer** (`src/*`) — incremental API/архитектура, но не полный cutover.
 
-- `WP_Field.php` — legacy API, реестр типов, рендеринг, получение значений, assets, demo bootstrap.
-- `composer.json` — PHP-пакет `rwsite/wp-field`, PSR-4 namespace `WpField\\` → `src/`.
-- `package.json` — Vite/React сборка фронтенд-части.
-- `README.md`, `README.ru.md`, `CHANGELOG.md` — документация, местами расходится с фактическим кодом.
+Ключевой факт: modern-слой уже зрелее, чем раньше (широкий `Field::make()` mapping, UI API, контейнеры, storage), но legacy всё ещё важен для runtime-паритета.
 
-### Папка `src/`
-
-#### Поля
-- `src/Field/Field.php` — фабрика fluent API.
-- `src/Field/AbstractField.php` — базовый класс поля.
-- `src/Field/FieldInterface.php` — контракт поля.
-- `src/Field/Types/*` — конкретные типы и адаптеры.
-
-#### Контейнеры
-- `src/Container/MetaboxContainer.php`
-- `src/Container/SettingsContainer.php`
-- `src/Container/TaxonomyContainer.php`
-- `src/Container/UserContainer.php`
-
-#### Storage
-- `src/Storage/PostMetaStorage.php`
-- `src/Storage/TermMetaStorage.php`
-- `src/Storage/UserMetaStorage.php`
-- `src/Storage/OptionStorage.php`
-- `src/Storage/CustomTableStorage.php`
-
-#### Доп. слой
-- `src/Legacy/LegacyAdapter.php` — перевод array-конфига в fluent field.
-- `src/Conditional/ConditionalLogic.php` — серверная оценка условий.
-- `src/UI/*` — Admin Shell, Wizard, Alert, NavItem, конфиги, UIManager.
-- `src/Traits/*` — атрибуты, валидация, conditional logic.
-
-### Frontend assets
-
-- `assets/js/wp-field.js` — основной legacy jQuery/vanilla runtime.
-- `assets/src/repeater.jsx`, `assets/src/flexible-content.jsx` — React для repeater/flexible.
-- `assets/src/admin-shell.jsx`, `assets/src/wizard.jsx` — React UI для shell/wizard.
-- `assets/dist/*` — собранные файлы Vite.
-- `assets/css/wp-field.css` — базовые стили полей.
-- `assets/css/admin-shell.css`, `assets/css/wizard.css` — отдельные UI-слои.
-
-### Тесты
-
-Есть 14 PHP test files в `tests/`.
-
-По факту покрытие смешанное:
-- legacy API (`WP_Field`) покрыт сильнее;
-- modern API покрыт частично;
-- UI-интеграция React почти не проверяется end-to-end.
+Дополнительно после закрытия Stage 2/3/4/5 (2026-04-06):
+- `accordion`, `tabbed`, `sortable`, `sorter`, `color_group` переведены на native render;
+- settings-object типы (`typography`, `spacing`, `dimensions`, `border`, `background`, `link_color`) переведены на native render с canonical value-shape и explicit sanitize/validate;
+- media/editor integration типы (`media`, `color`, `editor`, `image`, `file`, `gallery`, `code_editor`, `icon`) переведены на native render;
+- `map` переведён на native baseline (manual coordinates) + optional enhancement в `assets/js/wp-field-integrations.js`;
+- добавлен modern enhancement runtime `assets/js/wp-field-integrations.js`;
+- в `UIManager` добавлено централизованное подключение WP asset APIs (`wp_enqueue_media`, color picker, editor/code editor);
+- для nested-конфигов добавлен общий helper `HandlesNestedFieldConfigs`;
+- для `sortable`/`sorter` зафиксирован server-render baseline (без обязательного drag-and-drop JS).
 
 ---
 
-## 3. Компоненты и реальные зоны ответственности
+## 2) Точки входа и загрузка
 
-## 3.1 Legacy слой (`WP_Field.php`)
+Актуальный контракт:
+- `wp-field.php` — **canonical entrypoint**.
+- `WP_Field.php` — **deprecated compat-loader** для старых include-путей.
+- `legacy/WP_Field.php` — класс `WP_Field`.
+- `legacy/bootstrap.php` — legacy hooks/enqueues.
 
-Что делает:
-- держит реестр типов полей;
-- рендерит HTML для legacy array API;
-- получает значения из разных storage-типов;
-- подключает JS/CSS;
-- содержит demo bootstrap для страниц примеров;
-- остаётся главным источником обратной совместимости.
-
-Сильные стороны:
-- широкий набор типов;
-- реальная совместимость;
-- уже встроенный фронтенд runtime для зависимостей, media, color picker, repeater, accordion, tabbed и т.д.
-
-Слабые стороны:
-- монолит ~2800 строк;
-- много ответственности в одном классе;
-- сложно расширять и тестировать адресно.
-
-## 3.2 Modern field API (`src/Field/*`)
-
-Фабрика `Field` сейчас реально умеет создавать отдельными методами только:
-- `text()`
-- `repeater()`
-- `flexibleContent()`
-- `radio()`
-- `media()`
-- `fieldset()`
-- `legacy()`
-- `make()`
-
-Реальные concrete classes в `src/Field/Types/`:
-- `TextField`
-- `RepeaterField`
-- `FlexibleContentField`
-- `RadioField`
-- `MediaField`
-- `FieldsetField`
-- `LegacyWrapperField`
-
-Важно:
-- `RadioField`, `MediaField`, `FieldsetField` уже не полностью самостоятельные — они рендерятся через legacy bridge.
-- Для большинства остальных типов fluent API пока работает только через `Field::make(...)->legacy(...)` маршрут.
-
-## 3.3 Контейнеры
-
-Контейнеры уже выглядят полезной основой:
-- metabox
-- settings page
-- taxonomy form
-- user profile
-
-Они загружают значения через storage abstraction и сохраняют через `sanitize()`/`validate()` поля.
-
-## 3.4 Storage слой
-
-Storage слой простой и понятный:
-- post meta
-- term meta
-- user meta
-- options
-- custom table
-
-Это одна из самых зрелых частей v3-слоя.
-
-## 3.5 UI слой
-
-Есть два разных UI-направления:
-
-1. **Поля** — legacy JS + частично React для repeater/flexible.
-2. **Админ-оболочки** — `AdminShell`, `Wizard`, `Alert`, стили и отдельные React entry points.
-
-`AdminShell` и `Wizard` уже выглядят как самостоятельный reusable toolkit.
+Feature-flag:
+- `wp_field_enable_legacy` (default `true`) позволяет сценарий поэтапного отключения legacy.
 
 ---
 
-## 4. Список полей
+## 3) Состояние подсистем
 
-## 4.1 Legacy registry: фактическое состояние
+## 3.1 Поля (`src/Field/*`)
+- `Field::make()` покрывает официальный реестр типов и alias-маршруты.
+- Fallback `LegacyWrapperField` оставлен для неизвестных custom-типов.
+- Bridge-классы используются там, где рендер по-прежнему завязан на legacy-pipeline.
+- Закрыт Этап 1 simple bridge migration: `radio`, `fieldset`, `image_picker`, `palette`, `link`, `backup` переведены на native render.
 
-В `WP_Field::init_field_types()` зарегистрировано **56 ключей**:
-- **52 уникальных типа**
-- **4 алиаса**
+Вывод: surface API заметно стабилизирован; bridge-зона сузилась, но в части типов runtime по факту остаётся bridge/legacy.
 
-### Базовые
-- `text`
-- `password`
-- `email`
-- `url`
-- `tel`
-- `number`
-- `range`
-- `hidden`
-- `textarea`
+## 3.2 Контейнеры (`src/Container/*`)
+- `MetaboxContainer`, `SettingsContainer`, `TaxonomyContainer`, `UserContainer` — рабочая базовая интеграция с WP.
+- Санитизация/валидация делегируется полям, хранение — через storage abstraction.
 
-### Выбор
-- `select`
-- `multiselect`
-- `radio`
-- `checkbox`
-- `checkbox_group`
+## 3.3 Storage (`src/Storage/*`)
+- Один из самых стабильных слоёв: post/term/user/options/custom table.
+- Простой контракт, минимум скрытой логики.
 
-### Продвинутые
-- `editor`
-- `media`
-- `image`
-- `file`
-- `gallery`
-- `color`
-- `date`
-- `time`
-- `datetime`
+## 3.4 UI API (`src/UI/*`)
+- `NavItem`, `AdminShell`, `Wizard`, `Alert`, `UIManager` — выделены как самостоятельный слой.
+- Покрытие unit-тестами добавлено (см. раздел тестов).
 
-### Композитные
-- `group`
-- `repeater`
-
-### Простые
-- `switcher`
-- `spinner`
-- `button_set`
-- `slider`
-- `heading`
-- `subheading`
-- `notice`
-- `content`
-- `fieldset`
-
-### Средней сложности
-- `accordion`
-- `tabbed`
-- `typography`
-- `spacing`
-- `dimensions`
-- `border`
-- `background`
-- `link_color`
-- `color_group`
-- `image_select`
-
-### Высокой сложности
-- `code_editor`
-- `icon`
-- `map`
-- `sortable`
-- `sorter`
-- `palette`
-- `link`
-- `backup`
-
-### Алиасы
-- `date_time`
-- `datetime-local`
-- `image_picker`
-- `imagepicker`
-
-## 4.2 Native fluent API: фактическая поддержка
-
-Нативно реализованы:
-- `text`
-- `group`
-- `heading`
-- `subheading`
-- `notice`
-- `content`
-- `repeater`
-- `flexible_content`
-- `switcher`
-- `spinner`
-- `button_set`
-- `slider`
-- `image_select`
-
-Частично через legacy bridge:
-- `radio`
-- `media`
-- `fieldset`
-
-Через общий fallback:
-- почти всё остальное через `LegacyWrapperField`
-
-Вывод: **modern v3 слой растёт поэтапно, но ещё не покрывает весь legacy registry**.
+## 3.5 Frontend assets
+- Legacy assets: `legacy/assets/js/wp-field.js`, `legacy/assets/css/wp-field.css`.
+- React bundles: `assets/dist/*`.
+- Отдельные стили shell/wizard: `assets/css/admin-shell.css`, `assets/css/wizard.css`.
 
 ---
 
-## 5. React vs classic: реальные различия
+## 4) Тестовое состояние
 
-## 5.1 Classic / legacy режим
+Текущее состояние:
+- Полный прогон: **114 passed**.
+- Добавлены:
+  - `tests/Unit/UI/UIComponentsTest.php`
+  - `tests/Feature/BootstrapFilesTest.php`
+- `tests/bootstrap.php` расширен WP-стабами для UI/bootstrap сценариев.
 
-Источник:
-- `WP_Field.php`
-- `assets/js/wp-field.js`
-- `assets/css/wp-field.css`
+Coverage gate:
+- `composer test:coverage` запускается с `--min=100`.
+- CI (PHP 8.3) использует этот gate.
 
-Поведение:
-- PHP рендерит готовый HTML;
-- jQuery/vanilla инициализирует зависимости, media, color picker, repeater, accordion, tabbed, sorter и т.д.;
-- этот слой реально используется и связан с legacy markup.
-
-Плюсы:
-- покрывает больше возможностей;
-- ближе к боевому состоянию;
-- совместим с существующим array API.
-
-Минусы:
-- монолитный JS;
-- много UI-логики завязано на DOM-структуру legacy renderer.
-
-## 5.2 React режим
-
-Есть четыре React entry point:
-- `repeater.jsx`
-- `flexible-content.jsx`
-- `admin-shell.jsx`
-- `wizard.jsx`
-
-Что реально хорошо выглядит:
-- `AdminShell`
-- `Wizard`
-
-Что проблемно интегрировано:
-- `RepeaterField`
-- `FlexibleContentField`
-
-Причина:
-- React-компоненты ждут mount point вида `data-wp-field-repeater` / `data-wp-field-flexible`;
-- PHP-рендеры `RepeaterField` и `FlexibleContentField` такие атрибуты **не выводят**;
-- в обычном использовании React UI не может автоматически смонтироваться.
-
-Итог:
-- React-поведение сейчас подтверждено в demo-страницах;
-- для реального runtime библиотека по-прежнему сильнее опирается на classic/legacy слой.
+Ограничение локальной машины:
+- в текущем окружении может отсутствовать coverage driver (`xdebug/phpdbg`), поэтому «официальное» подтверждение 100% — в CI.
 
 ---
 
-## 6. Технический долг
+## 5) Что сейчас считать стабильным
 
-## 6.1 Архитектурный долг
-
-1. **Двойная архитектура без чёткого cutover**
-   - legacy слой остаётся главным runtime;
-   - modern слой уже есть, но не завершён.
-
-2. **Один класс `WP_Field` делает слишком много**
-   - registry
-   - render
-   - storage access
-   - assets
-   - examples bootstrap
-
-3. **Нет единого supported matrix**
-   - README/CHANGELOG говорят одно;
-   - код умеет другое;
-   - demos местами обходят реальные ограничения вручную.
-
-## 6.2 Документационный долг
-
-1. README пишет про `48 unique field types`, но фактически legacy registry содержит `52 unique + 4 aliases`.
-2. `examples/v3-demo.php` содержит примеры `Field::email()`, `Field::textarea()`, `Field::image()`, которых в `Field.php` нет.
-3. CHANGELOG и README выглядят более оптимистично, чем реальная интеграция.
-
-## 6.3 Интеграционный долг
-
-1. `UIManager` не совпадает с реальным Vite pipeline.
-2. React mounts для repeater/flexible не встроены в PHP-render слой.
-3. demo-страницы частично живут отдельной жизнью от основного API.
-
-## 6.4 Тестовый долг
-
-1. Много тестов всё ещё крутятся вокруг `WP_Field.php`.
-2. Native field classes покрыты точечно.
-3. Нет нормального integration/e2e покрытия React UI.
-4. Нет тестов на согласованность README/examples vs code surface.
+1. Контракт загрузки (`wp-field.php` как canonical).
+2. Hybrid-стратегию runtime (modern + bridge + legacy).
+3. `Field::make()` как основной вход для типов/alias-ов.
+4. Storage-слой и контейнеры.
+5. UI API (`NavItem/AdminShell/Wizard/Alert/UIManager`) на уровне unit-контрактов.
+6. Regression gate по покрытию в CI.
 
 ---
 
-## 7. Список багов и рисков
+## 6) Актуальные риски/долг
 
-## Критичные баги
+1. **Полный cutover от legacy ещё не завершён**.
+   - После Stage 5 официальный registry больше не использует bridge-маршруты; legacy остаётся для compat-loader, legacy runtime и unknown/custom fallback.
 
-### 1. `LegacyWrapperField` теряет conditional logic
-Файл: `src/Field/Types/LegacyWrapperField.php`
+2. **React runtime для сложных полей требует аккуратной проверки в реальных WP-экранах**.
+   - Unit/feature покрытие есть, но это не заменяет e2e-проверки JS-пайплайна в админке.
 
-Проблема:
-- `HasConditionals` хранит условия как плоский массив условий;
-- `LegacyWrapperField::render()` проходит по ним как по вложенным группам;
-- в итоге `dependency` почти наверняка не маппится в legacy config.
-
-Следствие:
-- fluent `->when()`/`->orWhen()` для legacy-wrapped полей работает ненадёжно или не работает.
-
-### 2. `UIManager` указывает на несуществующие vanilla assets
-Файл: `src/UI/UIManager.php`
-
-Проблема:
-- ожидаются `assets/js/repeater.js` и `assets/js/flexible-content.js`;
-- этих файлов в репозитории нет.
-
-Следствие:
-- vanilla mode в `UIManager` не соответствует фактической структуре проекта.
-
-### 3. `UIManager` подключает React-скрипты не как ES modules
-Файл: `src/UI/UIManager.php`
-
-Проблема:
-- `assets/dist/repeater.js` и `assets/dist/flexible-content.js` импортируют `./client.js`;
-- это модульные сборки Vite;
-- `UIManager` подключает их обычным `wp_enqueue_script`, без `type="module"`.
-
-Следствие:
-- React mode через `UIManager` ненадёжен.
-
-### 4. Native `RepeaterField`/`FlexibleContentField` не публикуют mount config для React
-Файлы:
-- `src/Field/Types/RepeaterField.php`
-- `src/Field/Types/FlexibleContentField.php`
-
-Проблема:
-- React entrypoints ищут `data-wp-field-repeater` и `data-wp-field-flexible`;
-- render-методы выводят обычный HTML, но не mount payload.
-
-Следствие:
-- реальный React runtime для этих полей не активируется сам.
-
-## Средние риски
-
-### 5. Reflection-хак для вложенных имён полей
-Файлы:
-- `src/Field/Types/RepeaterField.php`
-- `src/Field/Types/FlexibleContentField.php`
-
-Проблема:
-- имя поля меняется через reflection и `setAccessible(true)`.
-
-Следствие:
-- хрупкая реализация;
-- сложнее безопасно эволюционировать field internals.
-
-### 6. Глобальное подключение assets на всех admin pages
-Файл: `WP_Field.php`
-
-Проблема:
-- внизу файла есть fallback `admin_enqueue_scripts`, который грузит общий JS/CSS даже без явного использования полей.
-
-Следствие:
-- лишняя нагрузка и размытые границы подключения.
-
-### 7. `examples/modern-api-examples.php` делает `echo` внутри `init`
-Проблема:
-- это не нормальный production usage.
-
-Следствие:
-- пример скорее демонстрационный, чем безопасный шаблон интеграции.
+3. **Документация должна продолжать синхронизироваться с фактическим кодом**.
+   - Источник истины: код и зафиксированные решения, не маркетинговые claims.
 
 ---
 
-## 8. Что уже можно считать стабильным
+## 7) Практический режим для следующих сессий
 
-Относительно стабильные части:
-- legacy array API через `WP_Field`;
-- storage-абстракции в `src/Storage/*`;
-- контейнеры metabox/settings/taxonomy/user;
-- `AdminShell` и `Wizard` как отдельные UI-конструкции;
-- базовый `TextField` и общая идея fluent field API;
-- native B1/A2 простые типы: `group`, `heading`, `subheading`, `notice`, `content`, `switcher`, `spinner`, `button_set`, `slider`, `image_select`.
-
----
-
-## 9. Что нельзя считать завершённым
-
-Не считать завершённым без доп. работ:
-- полный переход на fluent API;
-- заявленный React/Vanilla mode switching как прозрачную runtime-фичу;
-- полное соответствие README/examples фактическому API;
-- “v3 как основной runtime” без оговорок.
-
----
-
-## 10. Практический вывод для следующих сессий
-
-Если нужно быстро ориентироваться:
-
-1. **Для существующего боевого поведения сначала смотреть `WP_Field.php`.**
-2. **Для новой архитектуры смотреть `src/`.**
-3. **Для UI-shell/wizard смотреть `src/UI/*` + `assets/src/*`.**
-4. **README и demo-файлы считать полезными, но не источником истины.**
-5. **Перед изменениями сверять решение с `decision-log.md` и `plan.md`.**
+1. При любом споре: сначала код (`wp-field.php`, `legacy/*`, `src/*`).
+2. Для legacy-поведения: смотреть `legacy/WP_Field.php` + `legacy/bootstrap.php`.
+3. Для modern API: `src/Field/*`, `src/Container/*`, `src/UI/*`.
+4. Для Stage 4 smoke-проверок в WP-админке проходить минимум: color picker, media/image/file/gallery frame, editor/code_editor init, icon fallback (prompt).
+5. Перед финалом задачи обновлять минимум один context-файл (`analysis.md` / `plan.md` / `decision-log.md` / `AGENTS.md`).

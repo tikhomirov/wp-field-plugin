@@ -15,6 +15,7 @@
             this.initColorPicker();
             this.initMediaButtons();
             this.initRepeater();
+            this.initFlexibleContent();
             this.initSpinner();
             this.initSlider();
             this.initButtonSet();
@@ -814,6 +815,129 @@
         },
 
         /**
+         * Инициализация flexible content
+         */
+        initFlexibleContent: function () {
+            const self = this;
+
+            // Открыть/закрыть список layout'ов
+            $(document).on('click', '.wp-field-flexible-add', function (e) {
+                e.preventDefault();
+                const $button = $(this);
+                const $flexible = $button.closest('.wp-field-flexible');
+                const $layouts = $flexible.find('> .wp-field-flexible-add-block > .wp-field-flexible-layouts');
+                const max = parseInt($flexible.data('max'), 10) || 0;
+                const count = $flexible.find('> .wp-field-flexible-blocks > .wp-field-flexible-block').length;
+
+                if (max > 0 && count >= max) {
+                    return;
+                }
+
+                $layouts.toggle();
+            });
+
+            // Добавление блока по выбранному layout
+            $(document).on('click', '.wp-field-flexible-layouts [data-layout]', function (e) {
+                e.preventDefault();
+                const $layoutButton = $(this);
+                const layoutName = $layoutButton.data('layout');
+                const $flexible = $layoutButton.closest('.wp-field-flexible');
+                const $blocks = $flexible.find('> .wp-field-flexible-blocks');
+                const max = parseInt($flexible.data('max'), 10) || 0;
+                const $existingBlocks = $blocks.find('> .wp-field-flexible-block');
+                const count = $existingBlocks.length;
+
+                if (max > 0 && count >= max) {
+                    return;
+                }
+
+                const indices = $existingBlocks.map(function () {
+                    return parseInt($(this).attr('data-index'), 10) || 0;
+                }).get();
+
+                const newIndex = indices.length > 0 ? Math.max.apply(null, indices) + 1 : 0;
+                const $template = $flexible.find('.wp-field-flexible-template[data-layout="' + layoutName + '"]').first();
+                const templateHtml = ($template.html() || '').trim();
+
+                if (!templateHtml) {
+                    return;
+                }
+
+                const blockHtml = templateHtml.replace(/\{\{INDEX\}\}/g, String(newIndex));
+                $blocks.append(blockHtml);
+
+                self.checkFlexibleLimit($flexible);
+                $flexible.find('> .wp-field-flexible-add-block > .wp-field-flexible-layouts').hide();
+            });
+
+            // Удаление блока
+            $(document).on('click', '.wp-field-flexible-remove', function (e) {
+                e.preventDefault();
+
+                const $button = $(this);
+                const $flexible = $button.closest('.wp-field-flexible');
+                const $block = $button.closest('.wp-field-flexible-block');
+                const min = parseInt($button.data('min'), 10) || 0;
+                const count = $flexible.find('> .wp-field-flexible-blocks > .wp-field-flexible-block').length;
+
+                if (min > 0 && count <= min) {
+                    return;
+                }
+
+                $block.remove();
+                self.checkFlexibleLimit($flexible);
+            });
+
+            // Сворачивание/разворачивание блока
+            $(document).on('click', '.wp-field-flexible-collapse', function (e) {
+                e.preventDefault();
+
+                const $button = $(this);
+                const $block = $button.closest('.wp-field-flexible-block');
+                const $content = $block.find('> .wp-field-flexible-block-content');
+                const isCollapsed = $block.hasClass('is-collapsed');
+
+                if (isCollapsed) {
+                    $block.removeClass('is-collapsed');
+                    $content.show();
+                    $button.text('−');
+                } else {
+                    $block.addClass('is-collapsed');
+                    $content.hide();
+                    $button.text('+');
+                }
+            });
+
+            // Инициализация лимитов при загрузке
+            $('.wp-field-flexible').each(function () {
+                self.checkFlexibleLimit($(this));
+            });
+        },
+
+        /**
+         * Проверка лимитов flexible content
+         */
+        checkFlexibleLimit: function ($flexible) {
+            if (!($flexible && $flexible.length)) {
+                return;
+            }
+
+            const max = parseInt($flexible.data('max'), 10) || 0;
+            const min = parseInt($flexible.data('min'), 10) || 0;
+            const count = $flexible.find('> .wp-field-flexible-blocks > .wp-field-flexible-block').length;
+            const $addButton = $flexible.find('> .wp-field-flexible-add-block > .wp-field-flexible-add');
+            const $removeButtons = $flexible.find('> .wp-field-flexible-blocks .wp-field-flexible-remove');
+
+            if ($addButton.length) {
+                $addButton.prop('disabled', max > 0 && count >= max);
+            }
+
+            if ($removeButtons.length) {
+                $removeButtons.prop('disabled', min > 0 && count <= min);
+            }
+        },
+
+        /**
          * Инициализация spinner (счётчик с кнопками)
          */
         initSpinner: function () {
@@ -905,15 +1029,12 @@
                         $accordion.find('.wp-field-accordion-item').each(function(index) {
                             const $item = $(this);
                             const $content = $item.find('.wp-field-accordion-content');
-                            const $icon = $item.find('.wp-field-accordion-icon');
-                            
+
                             if (openItems.includes(index)) {
                                 $item.addClass('is-open');
-                                $icon.text('▼');
                                 $content.css('max-height', 'none');
                             } else {
                                 $item.removeClass('is-open');
-                                $icon.text('▶');
                                 $content.css('max-height', '0');
                             }
                         });
@@ -939,7 +1060,6 @@
                 const $header = $(this);
                 const $item = $header.closest('.wp-field-accordion-item');
                 const $content = $item.find('.wp-field-accordion-content');
-                const $icon = $item.find('.wp-field-accordion-icon');
                 const $accordion = $item.closest('.wp-field-accordion');
                 const fieldId = $accordion.data('field-id') || 'accordion_' + Math.random().toString(36).substr(2, 9);
 
@@ -956,13 +1076,13 @@
                     $content[0].offsetHeight;
                     $content.css('max-height', '0');
                     $item.removeClass('is-open');
-                    $icon.text('▶');
+                    $header.attr('aria-expanded', 'false');
                 } else {
                     // Открываем
                     $content.css('max-height', contentHeight + 'px');
                     $item.addClass('is-open');
-                    $icon.text('▼');
-                    
+                    $header.attr('aria-expanded', 'true');
+
                     // После завершения анимации убираем max-height для гибкости контента
                     setTimeout(() => {
                         if ($item.hasClass('is-open')) {
