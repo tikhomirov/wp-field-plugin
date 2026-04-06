@@ -1522,9 +1522,10 @@
 }
 
 .CodeMirror.cm-s-default {
-    width: 60vw;
-    position: initial;
-    overflow: auto;
+    width: 100%;
+    max-width: 100%;
+    position: relative;
+    overflow: hidden;
 }
 
 /* ===== Icon Picker (v2.3) ===== */
