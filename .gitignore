@@ -25,3 +25,6 @@ node_modules/
 vendor
 sessions
 .rector.cache
+/.playwright-mcp/page-2026-04-08T21-58-42-973Z.yml
+/.playwright-mcp/page-2026-04-08T21-58-43-404Z.yml
+/.playwright-mcp/

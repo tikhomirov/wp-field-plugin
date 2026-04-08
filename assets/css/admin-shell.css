@@ -863,18 +863,42 @@
 }
 
 /* ─── Button Set (Flux-style pill group) ─────────────────── */
+.wp-field-shell .wp-field-button-set {
+  display: inline-flex !important;
+  flex-wrap: nowrap;
+  width: auto !important;
+}
+
+.wp-field-shell .wp-field-button-set-item {
+  display: inline-flex;
+  flex: 0 0 auto;
+}
+
 .wp-field-shell .wp-field-button-set-item span {
-  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 36px;
+  min-width: 96px;
+  border-radius: 0;
   border-color: #d1d5db;
   font-size: 13.5px;
   font-weight: 500;
   color: var(--shell-text-secondary);
-  padding: 7px 14px;
+  padding: 0 14px;
   transition:
     background 0.12s ease,
     border-color 0.12s ease,
     color 0.12s ease;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.wp-field-shell .wp-field-button-set-item:first-child span {
+  border-radius: 6px 0 0 6px;
+}
+
+.wp-field-shell .wp-field-button-set-item:last-child span {
+  border-radius: 0 6px 6px 0;
 }
 
 .wp-field-shell .wp-field-button-set-item span:hover {

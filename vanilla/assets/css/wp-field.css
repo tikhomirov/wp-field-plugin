@@ -139,15 +139,41 @@
 
 /* Group */
 .wp-field-group {
-    padding: 15px;
+    padding: 18px;
     background-color: #f9f9f9;
     border: 1px solid #e0e0e0;
-    border-radius: 4px;
+    border-radius: 6px;
     margin-top: 10px;
 }
 
+.wp-field-group-label {
+    margin: 0 0 14px;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.wp-field-group-fields {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.wp-field-group-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.wp-field-group-field label,
+.wp-field-fieldset legend,
+.wp-field-flexible-block-label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 600;
+}
+
 .wp-field-group .wp-field {
-    margin-bottom: 15px;
+    margin-bottom: 0;
 }
 
 .wp-field-group .wp-field:last-child {
@@ -329,11 +355,11 @@
     border: 1px solid #ddd;
     border-radius: 4px;
     min-height: 60px;
+    box-sizing: border-box;
 }
 
-.wp-field-gallery-preview:empty::before {
-    content: 'Нет изображений';
-    display: block;
+.wp-field-gallery-placeholder {
+    grid-column: 1 / -1;
     text-align: center;
     color: #999;
     font-size: 13px;
@@ -603,13 +629,20 @@
 
 /* ===== Button Set (v2.1) ===== */
 .wp-field-button-set {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
+    display: inline-flex !important;
+    flex-wrap: nowrap;
+    gap: 0;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    overflow: hidden;
+    background: white;
+    width: auto !important;
 }
 
 .wp-field-button-set-item {
     position: relative;
+    display: inline-flex;
+    flex: 0 0 auto;
 }
 
 .wp-field-button-set-item input {
@@ -618,14 +651,22 @@
 }
 
 .wp-field-button-set-item span {
-    display: inline-block;
-    padding: 8px 16px;
-    border: 2px solid #ddd;
-    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 36px;
+    min-width: 72px;
+    padding: 0 16px;
+    border-right: 1px solid #d1d5db;
     background: white;
     cursor: pointer;
     transition: all 0.2s;
     user-select: none;
+    box-sizing: border-box;
+}
+
+.wp-field-button-set-item:last-child span {
+    border-right: none;
 }
 
 .wp-field-button-set-item input:checked + span {
@@ -642,7 +683,8 @@
 
 /* ===== Slider (v2.1) ===== */
 .wp-field-slider-wrapper {
-    display: flex;
+    display: grid;
+    grid-template-columns: minmax(240px, 1fr) auto;
     align-items: center;
     gap: 12px;
     padding: 8px 0;
@@ -650,9 +692,9 @@
 
 .wp-field-slider {
     display: block;
-    flex: 1;
-    min-width: 200px;
-    height: 24px;
+    width: 100%;
+    max-width: none;
+    min-width: 0;
     margin: 0;
     border: none;
     border-radius: 4px;
@@ -668,6 +710,7 @@
     height: 8px;
     border-radius: 999px;
     background: #e0e0e0;
+    width: 100%;
 }
 
 .wp-field-slider::-moz-range-track {
@@ -745,7 +788,6 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    align-self: center;
     min-width: 50px;
     min-height: 32px;
     padding: 4px 12px;
@@ -757,6 +799,8 @@
     background: #0073aa;
     border-radius: 4px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    white-space: nowrap;
+    align-self: center;
 }
 
 /* ===== Color Picker с альфа-каналом ===== */
@@ -916,12 +960,22 @@
     border-radius: 4px;
     padding: 15px;
     margin: 10px 0;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
 }
 
 .wp-field-fieldset legend {
     padding: 0 10px;
     font-weight: 600;
     color: #333;
+}
+
+.wp-field-fieldset > .wp-field,
+.wp-field-fieldset > .wp-field-group,
+.wp-field-fieldset > .wp-field-flexible {
+    margin-top: 0;
 }
 
 /* Utility classes */
@@ -1304,9 +1358,27 @@
     border-radius: 4px;
 }
 
+.wp-field-background .wp-field-background-image-preview,
+.wp-field-background .wp-field-background-image-id {
+    width: 100%;
+}
+
 .wp-field-background-item {
     display: flex;
     flex-direction: column;
+    gap: 8px;
+}
+
+.wp-field-background-image-preview {
+    min-height: 80px;
+}
+
+.wp-field-background-image-preview-img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 4px;
+    border: 1px solid #ddd;
 }
 
 .wp-field-background-item label {
@@ -1506,6 +1578,12 @@
     white-space: pre-wrap;
     max-width: 100%;
     width: 100%;
+    min-height: 300px;
+}
+
+.wp-field-code-editor + .description,
+.wp-field-code-editor + p.description {
+    margin-top: 8px;
 }
 
 .CodeMirror {
@@ -1531,6 +1609,22 @@
 /* ===== Icon Picker (v2.3) ===== */
 .wp-field-icon-picker {
     position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+}
+
+.wp-field-icon-wrapper .wp-field-icon-preview {
+    display: inline-flex;
+    width: 24px;
+    height: 24px;
+    align-items: center;
+    justify-content: center;
+}
+
+.wp-field-icon-value {
+    min-width: 220px;
 }
 
 .wp-field-icon-button {
@@ -1553,16 +1647,19 @@
 
 .wp-field-icon-button span[class*="dashicons"] {
     font-size: 20px;
+    line-height: 1;
+    vertical-align: middle;
+    position: relative;
+    top: -1px;
 }
 
 .wp-field-icon-modal {
     position: absolute;
-    top: 100%;
+    top: calc(100% + 5px);
     left: 0;
     z-index: 1000;
     width: 500px;
     max-height: 500px;
-    margin-top: 5px;
     background: white;
     border: 1px solid #ddd;
     border-radius: 4px;
@@ -1634,6 +1731,18 @@
 /* ===== Map (v2.3) ===== */
 .wp-field-map-wrapper {
     position: relative;
+}
+
+.wp-field-map-coordinates {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.wp-field-map-coordinates input {
+    min-width: 180px;
 }
 
 .wp-field-map {

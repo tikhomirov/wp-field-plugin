@@ -50,12 +50,13 @@ class BackgroundField extends AbstractField
 
         if ($enabled['image']) {
             $html .= sprintf(
-                '<div class="wp-field-background-item"><label>%s</label><input type="hidden" name="%s[image]" value="%s" class="wp-field-background-image-id"><button type="button" class="button wp-field-background-image-button" data-field-name="%s">%s</button></div>',
+                '<div class="wp-field-background-item"><label>%s</label><input type="hidden" name="%s[image]" value="%s" class="wp-field-background-image-id"><button type="button" class="button wp-field-background-image-button" data-field-name="%s">%s</button><div class="wp-field-background-image-preview">%s</div></div>',
                 esc_html__('Background Image', 'wp-field'),
                 $name,
                 esc_attr($value['image']),
                 $name,
                 esc_html__('Choose Image', 'wp-field'),
+                $value['image'] !== '' ? sprintf('<img src="%s" alt="" class="wp-field-background-image-preview-img">', esc_url($value['image'])) : '<span class="description">'.esc_html__('Image is not selected yet.', 'wp-field').'</span>',
             );
         }
 

@@ -69,7 +69,7 @@ class SliderField extends AbstractField
         );
 
         if ($showValue) {
-            $html .= sprintf('<span class="wp-field-slider-value">%s</span>', esc_html($this->stringify($rawValue)));
+            $html .= sprintf('<div class="wp-field-slider-value">%s</div>', esc_html($this->stringify($rawValue)));
         }
 
         $html .= '</div>';

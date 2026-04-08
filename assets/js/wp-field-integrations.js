@@ -82,6 +82,11 @@
                 mediaButtons: $field.data('media-buttons') === 1 || $field.data('media-buttons') === '1',
             });
 
+            const editorWrap = document.getElementById('wp-' + id + '-wrap');
+            if (editorWrap) {
+                editorWrap.classList.add('tmce-active');
+            }
+
             $field.data('wpFieldEditorInit', true);
         });
     }
@@ -92,7 +97,11 @@
             $preview = $('<div class="wp-field-image-preview-wrapper"></div>').appendTo($wrapper);
         }
 
-        $preview.html('<img src="' + url + '" alt="" class="wp-field-image-preview">');
+        if (url) {
+            $preview.html('<img src="' + url + '" alt="" class="wp-field-image-preview">');
+        } else {
+            $preview.empty();
+        }
     }
 
     function bindMediaButtons() {
@@ -239,14 +248,49 @@
                 return;
             }
 
-            const current = String($input.val() || '');
-            const next = window.prompt('Введите CSS-класс иконки', current);
-            if (next === null) {
+            const $picker = $button.closest('.wp-field-icon-picker');
+            const $modal = $picker.find('.wp-field-icon-modal');
+            if (!$modal.length) {
+                const current = String($input.val() || '');
+                const next = window.prompt('Введите CSS-класс иконки', current);
+                if (next === null) {
+                    return;
+                }
+
+                $input.val(next).trigger('change');
+                $picker.find('.wp-field-icon-preview').attr('class', 'wp-field-icon-preview ' + next.trim());
                 return;
             }
 
-            $input.val(next).trigger('change');
-            $button.closest('.wp-field-icon-wrapper').find('.wp-field-icon-preview').attr('class', 'wp-field-icon-preview ' + next.trim());
+            const positionModal = function () {
+                const pickerRect = $picker[0].getBoundingClientRect();
+                const modalWidth = Math.min(500, Math.max(320, pickerRect.width));
+                const viewportPadding = 16;
+                const left = Math.max(viewportPadding, -Math.min(0, pickerRect.left));
+                const maxHeight = Math.max(220, window.innerHeight - pickerRect.bottom - 32);
+
+                $modal.css({
+                    top: (pickerRect.height + 8) + 'px',
+                    left: left + 'px',
+                    width: modalWidth + 'px',
+                    maxHeight: maxHeight + 'px',
+                });
+            };
+
+            positionModal();
+            $modal.show();
+
+            const current = String($input.val() || '');
+            $modal.find('.wp-field-icon-search').val('');
+            $modal.find('.wp-field-icon-grid span').show();
+            if (current) {
+                const $current = $modal.find('.wp-field-icon-grid span[data-icon="' + current + '"]');
+                if ($current.length) {
+                    $current.first().scrollIntoView({ block: 'nearest', inline: 'nearest' });
+                }
+                const iconClass = current.split(' ')[0] || '';
+                $button.html('<span class="' + iconClass + '"></span> ' + current);
+            }
         });
     }
 
@@ -266,6 +310,8 @@
                 $latHidden.val(String($latInput.val() || '').trim());
                 $lngHidden.val(String($lngInput.val() || '').trim());
             };
+
+            syncToHidden();
 
             $latInput.on('input change', syncToHidden);
             $lngInput.on('input change', syncToHidden);

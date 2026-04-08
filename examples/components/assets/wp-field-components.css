@@ -217,6 +217,10 @@
     color: #64748b;
 }
 
+.wfc-card__preview .wp-field-map {
+    min-height: 260px;
+}
+
 .wfc-card__preview table {
     width: 100%;
 }
@@ -224,14 +228,84 @@
 .wfc-card__preview .wp-field-group-fields,
 .wfc-card__preview .wp-field-flexible-block-content,
 .wfc-card__preview .wp-field-checkbox-group,
-.wfc-card__preview .wp-field-button-set,
 .wfc-card__preview .wp-field-image-select {
     display: grid;
     gap: 10px;
 }
 
+.wfc-card__preview .wp-field-editor-wrapper,
+.wfc-card__preview .wp-editor-wrap,
+.wfc-card__preview .wp-core-ui {
+    max-width: 100%;
+}
+
+.wfc-card__preview .wp-field-button-set {
+    display: inline-flex !important;
+    width: auto !important;
+    flex-wrap: nowrap;
+}
+
+.wfc-card__preview .wp-field-button-set-item span {
+    min-width: 82px;
+    border-right: 1px solid #d1d5db;
+}
+
 .wfc-card__preview .wp-field-switcher {
     display: inline-flex;
+}
+
+.wfc-card__preview .wp-field-slider-wrapper {
+    align-items: center;
+    grid-template-columns: minmax(200px, 1fr) auto;
+}
+
+.wfc-card__preview .wp-field-slider-value {
+    margin-top: 0;
+    min-width: 64px;
+    align-self: center;
+}
+
+.wfc-card:has(.wp-field-icon-picker) {
+    overflow: visible;
+}
+
+.wfc-card__preview .wp-field-icon-picker {
+    position: relative;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+.wfc-card__preview .wp-field-icon-preview {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    vertical-align: middle;
+    position: relative;
+    top: -1px;
+}
+
+.wfc-card__preview .wp-field-icon-button span[class*="dashicons"] {
+    line-height: 1;
+    vertical-align: middle;
+    position: relative;
+    top: -1px;
+}
+
+.wfc-card__preview .wp-field-icon-value {
+    min-width: 320px;
+    width: 100%;
+    max-width: 100%;
+}
+
+.wfc-card__preview .wp-field-icon-modal {
+    top: calc(100% + 8px);
+    width: 100%;
+    max-width: 500px;
+}
+
+.wfc-card__preview .wp-field-icon-grid {
+    grid-template-columns: repeat(auto-fill, minmax(32px, 1fr));
 }
 
 .wfc-card__preview .wp-field-image-select img {
@@ -242,7 +316,8 @@
 
 .wfc-card__preview .wp-field-flexible-block,
 .wfc-card__preview .wp-field-repeater-row,
-.wfc-card__preview .wp-field-group {
+.wfc-card__preview .wp-field-group,
+.wfc-card__preview .wp-field-fieldset {
     padding: 12px;
     border: 1px solid #e2e8f0;
     border-radius: 8px;

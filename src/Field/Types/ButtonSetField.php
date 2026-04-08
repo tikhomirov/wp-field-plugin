@@ -45,7 +45,7 @@ class ButtonSetField extends ChoiceField
             $itemClass = $checked ? ' active' : '';
 
             $html .= sprintf(
-                '<label class="wp-field-button-set-item%s"><input type="%s" name="%s" value="%s"%s /> <span>%s</span></label>',
+                '<label class="wp-field-button-set-item%s"><input type="%s" name="%s" value="%s"%s /><span>%s</span></label>',
                 $itemClass,
                 $inputType,
                 esc_attr($inputName),
