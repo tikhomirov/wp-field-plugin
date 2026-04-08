@@ -65,3 +65,31 @@ Always produce the following sections:
 - Format:
   ```md
   - [ ] Step description
+```
+
+---
+
+### 3. PlanArtifact Protocol (Protocol-Version: 1)
+
+When the output is intended to be consumed as `plan.md` by a supervisor/workflow, it MUST follow this Markdown protocol:
+
+- First line: `Protocol-Version: 1`
+- Must contain these headings (exact text):
+  - `## Constraints`
+  - `## Assumptions`
+  - `## Phases`
+  - `## Tests/Validation`
+  - `## Rollback`
+  - `## Risks`
+  - `## Changelog`
+
+Additional rules:
+
+- `## Phases` must have **≤ 5** phases.
+- Each phase must contain atomic steps (one logical act each).
+- Every assumption must be either:
+  - backed by a repo fact, or
+  - turned into a clarifying question / verification step.
+- `## Changelog` is mandatory for revisions (v1+) and must list what changed vs previous version.
+- Include explicit validation steps (unit/integration/manual smoke) appropriate to the changes.
+- Include rollback steps appropriate to the change type (config/db/feature flag).

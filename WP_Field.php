@@ -5,7 +5,7 @@ declare(strict_types=1);
 // Deprecated entrypoint notice for direct includes in WordPress context.
 if (defined('ABSPATH') && ! defined('WP_FIELD_PLUGIN_FILE') && function_exists('add_action')) {
     add_action('admin_notices', static function (): void {
-//        echo '<div class="notice notice-warning"><p><strong>WP_Field:</strong> подключение через <code>WP_Field.php</code> устарело. Используйте <code>wp-field.php</code> как основную точку входа.</p></div>';
+        echo '<div class="notice notice-warning"><p><strong>WP_Field:</strong> подключение через <code>WP_Field.php</code> устарело. Используйте <code>wp-field.php</code> как основную точку входа.</p></div>';
     });
 }
 
