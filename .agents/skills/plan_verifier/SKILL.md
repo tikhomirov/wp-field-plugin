@@ -1,6 +1,6 @@
 ---
 name: plan_verifier
-description: Deterministically lint a PlanArtifact against invariants and produce a VerificationReport (Protocol-Version: 1).
+description: "Deterministically lint a PlanArtifact against invariants and produce a VerificationReport (Protocol-Version: 1)."
 ---
 
 # Plan Verifier Skill

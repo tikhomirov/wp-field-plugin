@@ -1,6 +1,6 @@
 ---
 name: plan_critic
-description: Critique a PlanArtifact using a severity rubric and produce a CritiqueArtifact (Protocol-Version: 1).
+description: "Critique a PlanArtifact using a severity rubric and produce a CritiqueArtifact (Protocol-Version: 1)."
 ---
 
 # Plan Critic Skill
