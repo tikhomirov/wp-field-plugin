@@ -79,7 +79,6 @@
   background: #2d2d2d;
   border: 1px solid #1e1e1e;
 }
-
 .wp-field-example .wp-field-button-set + .description {
   margin-top: 0;
 }
@@ -108,14 +107,6 @@
 .wp-field-description p {
   margin: 0;
   color: #333;
-}
-
-.wp-field-preview {
-  background: #fff;
-  padding: 20px;
-  border: 1px solid #e0e0e0;
-  border-radius: 4px;
-  margin: 15px 0;
 }
 
 .wp-field-arguments,

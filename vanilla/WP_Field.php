@@ -2427,29 +2427,52 @@ class WP_Field
         $value = $this->get_field_value($field);
         $value = is_array($value) ? $value : ['lat' => '', 'lng' => ''];
         $api_key = $field['api_key'] ?? '';
+        $provider = strtolower((string) ($field['provider'] ?? 'google'));
         $name = $field['name'] ?? $field['id'];
 
-        if (empty($api_key)) {
+        echo '<div class="wp-field-map-wrapper" data-map-provider="'.esc_attr($provider).'" data-api-key="'.esc_attr($api_key).'">';
+
+        if ($provider === 'google' && empty($api_key)) {
             echo '<p class="description">'.esc_html__('Google Maps API key required', 'wp-field').'</p>';
             $this->render_description($field);
 
+            echo '</div>';
             return;
         }
 
-        // Подключаем Google Maps API
-        if (function_exists('wp_enqueue_script')) {
-            wp_enqueue_script(
-                'google-maps-api',
-                'https://maps.googleapis.com/maps/api/js?key='.urlencode($api_key),
-                [],
-                null,
-                true,
-            );
+        if ($provider === 'google') {
+            // Подключаем Google Maps API
+            if (function_exists('wp_enqueue_script')) {
+                wp_enqueue_script(
+                    'google-maps-api',
+                    'https://maps.googleapis.com/maps/api/js?key='.urlencode($api_key),
+                    [],
+                    null,
+                    true,
+                );
+            } else {
+                echo '<script src="https://maps.googleapis.com/maps/api/js?key='.urlencode($api_key).'"></script>';
+            }
         } else {
-            echo '<script src="https://maps.googleapis.com/maps/api/js?key='.urlencode($api_key).'"></script>';
+            if (function_exists('wp_enqueue_script')) {
+                wp_enqueue_script(
+                    'leaflet',
+                    'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js',
+                    [],
+                    '1.9.4',
+                    true,
+                );
+                wp_enqueue_style(
+                    'leaflet',
+                    'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css',
+                    [],
+                    '1.9.4',
+                );
+            } else {
+                echo '<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">';
+                echo '<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>';
+            }
         }
-
-        echo '<div class="wp-field-map-wrapper">';
 
         printf(
             '<input type="hidden" name="%s[lat]" value="%s" class="wp-field-map-lat" />',

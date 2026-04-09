@@ -103,7 +103,6 @@
 /* Checkbox и Radio */
 .wp-field input[type="checkbox"],
 .wp-field input[type="radio"] {
-    width: auto;
     margin-right: 8px;
     cursor: pointer;
     vertical-align: middle;
@@ -186,7 +185,7 @@
 }
 
 .wp-field-repeater-item {
-    padding: 15px;
+    padding: 48px 15px 15px;
     background-color: #f9f9f9;
     border: 1px solid #e0e0e0;
     border-radius: 4px;
@@ -208,8 +207,8 @@
 
 .wp-field-repeater-remove {
     position: absolute;
-    top: 10px;
-    right: 10px;
+    top: 15px;
+    right: 15px;
     padding: 5px 10px;
     background-color: #dc3545;
     color: #fff;
@@ -217,6 +216,7 @@
     border-radius: 3px;
     cursor: pointer;
     font-size: 12px;
+    line-height: 1.2;
 }
 
 .wp-field-repeater-remove:hover {
@@ -924,8 +924,6 @@
 .wp-field-notice {
     padding: 12px 15px;
     border-radius: 4px;
-    margin: 10px 0;
-    border-left: 4px solid;
 }
 
 .wp-field-notice-info {

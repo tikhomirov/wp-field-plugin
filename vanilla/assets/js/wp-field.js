@@ -1253,19 +1253,56 @@
          * Инициализация map (Google Maps)
          */
         initMap: function () {
-            if (typeof google === 'undefined' || typeof google.maps === 'undefined') {
-                return;
-            }
-
             $('.wp-field-map').each(function () {
                 const $mapEl = $(this);
                 const $wrapper = $mapEl.closest('.wp-field-map-wrapper');
                 const $lat = $wrapper.find('.wp-field-map-lat');
                 const $lng = $wrapper.find('.wp-field-map-lng');
-
+                const provider = String($wrapper.data('map-provider') || 'google').toLowerCase();
                 const zoom = parseInt($mapEl.data('zoom')) || 12;
                 const centerLat = parseFloat($lat.val()) || parseFloat($mapEl.data('center-lat')) || 55.7558;
                 const centerLng = parseFloat($lng.val()) || parseFloat($mapEl.data('center-lng')) || 37.6173;
+
+                if (provider === 'leaflet' || provider === 'osm') {
+                    if (typeof L === 'undefined') {
+                        return;
+                    }
+
+                    if ($mapEl.data('leaflet-init')) {
+                        return;
+                    }
+
+                    const map = L.map($mapEl[0]).setView([centerLat, centerLng], zoom);
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                        maxZoom: 19,
+                        attribution: '&copy; OpenStreetMap contributors'
+                    }).addTo(map);
+
+                    const marker = L.marker([centerLat, centerLng], { draggable: true }).addTo(map);
+
+                    marker.on('dragend', function (event) {
+                        const pos = event.target.getLatLng();
+                        $lat.val(pos.lat);
+                        $lng.val(pos.lng);
+                    });
+
+                    map.on('click', function (event) {
+                        marker.setLatLng(event.latlng);
+                        $lat.val(event.latlng.lat);
+                        $lng.val(event.latlng.lng);
+                    });
+
+                    $mapEl.data('leaflet-init', true);
+                    return;
+                }
+
+                if (typeof google === 'undefined' || typeof google.maps === 'undefined') {
+                    return;
+                }
+
+                if ($mapEl.data('google-init')) {
+                    return;
+                }
 
                 const map = new google.maps.Map($mapEl[0], {
                     center: { lat: centerLat, lng: centerLng },
@@ -1284,12 +1321,13 @@
                     $lng.val(pos.lng());
                 });
 
-                // Клик по карте для установки маркера
                 google.maps.event.addListener(map, 'click', function (event) {
                     marker.setPosition(event.latLng);
                     $lat.val(event.latLng.lat());
                     $lng.val(event.latLng.lng());
                 });
+
+                $mapEl.data('google-init', true);
             });
         },
 

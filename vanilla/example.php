@@ -938,15 +938,15 @@ class WP_Field_Examples
                         'label' => 'Image Select — Выбор с изображениями',
                         'options' => [
                             'layout1' => [
-                                'src' => plugins_url('placeholder.svg', __FILE__),
+                                'src' => WP_FIELD_PLUGIN_URL . 'placeholder.svg',
                                 'label' => 'Макет 1',
                             ],
                             'layout2' => [
-                                'src' => plugins_url('placeholder.svg', __FILE__),
+                                'src' => WP_FIELD_PLUGIN_URL . 'placeholder.svg',
                                 'label' => 'Макет 2',
                             ],
                             'layout3' => [
-                                'src' => plugins_url('placeholder.svg', __FILE__),
+                                'src' => WP_FIELD_PLUGIN_URL . 'placeholder.svg',
                                 'label' => 'Макет 3',
                             ],
                         ],
@@ -1037,24 +1037,27 @@ class WP_Field_Examples
                         'type' => 'map',
                         'label' => 'Map — Карта',
                         'zoom' => 12,
-                        'desc' => 'Выбор координат на карте (требует Google Maps API)',
-                        'example_desc' => 'Интерактивная карта для выбора местоположения',
-                        'example_code' => "WP_Field::make([\n    'type' => 'map',\n    'zoom' => 12,\n    'center' => [55.7558, 37.6173]\n]);",
+                        'provider' => 'leaflet',
+                        'desc' => 'Выбор координат на карте с поддержкой OpenStreetMap',
+                        'example_desc' => 'Интерактивная карта для выбора местоположения без Google API',
+                        'example_code' => "WP_Field::make([\n    'type' => 'map',\n    'provider' => 'leaflet',\n    'zoom' => 12,\n    'center' => [55.7558, 37.6173]\n]);",
                     ],
                     [
                         'id' => 'sorter_field',
                         'type' => 'sorter',
                         'label' => 'Sorter — Сортировщик',
-                        'enabled' => [
+                        'options' => [
                             'item1' => 'Включенный элемент 1',
                             'item2' => 'Включенный элемент 2',
-                        ],
-                        'disabled' => [
                             'item3' => 'Отключенный элемент 3',
                             'item4' => 'Отключенный элемент 4',
                         ],
+                        'groups' => [
+                            'enabled' => 'Включено',
+                            'disabled' => 'Отключено',
+                        ],
                         'desc' => 'Две колонки: включено/отключено с сортировкой',
-                        'example_code' => "WP_Field::make([\n    'type' => 'sorter',\n    'enabled' => [...],\n    'disabled' => [...]\n]);",
+                        'example_code' => "WP_Field::make([\n    'type' => 'sorter',\n    'options' => [...],\n    'groups' => [...]\n]);",
                     ],
                     [
                         'id' => 'backup_field',

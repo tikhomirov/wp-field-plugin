@@ -31,6 +31,11 @@ class MapField extends AbstractField
         return $this->attribute('api_key', $apiKey);
     }
 
+    public function provider(string $provider): static
+    {
+        return $this->attribute('provider', $provider);
+    }
+
     public function render(): string
     {
         $name = esc_attr($this->name);
@@ -39,6 +44,7 @@ class MapField extends AbstractField
         $center = $this->normalizeCenter($this->getAttribute('center', []));
         $zoomAttr = $this->getAttribute('zoom', 12);
         $zoom = max(1, is_numeric($zoomAttr) ? (int) $zoomAttr : 12);
+        $provider = strtolower($this->attributeString('provider', 'google'));
         $apiKey = $this->attributeString('api_key');
 
         $html = '';
@@ -48,7 +54,8 @@ class MapField extends AbstractField
         }
 
         $html .= sprintf(
-            '<div class="wp-field-map-wrapper" data-map-provider="google" data-api-key="%s">',
+            '<div class="wp-field-map-wrapper" data-map-provider="%s" data-api-key="%s">',
+            esc_attr($provider),
             esc_attr($apiKey),
         );
 
@@ -68,8 +75,8 @@ class MapField extends AbstractField
             esc_attr($center['lng']),
         );
 
-        if ($apiKey === '') {
-            $html .= sprintf('<p class="description">%s</p>', esc_html__('Map provider API key is not set. You can still enter coordinates manually.', 'wp-field'));
+        if ($provider === 'google' && $apiKey === '') {
+            $html .= sprintf('<p class="description">%s</p>', esc_html__('Google Maps API key required', 'wp-field'));
         }
 
         $html .= '</div>';
