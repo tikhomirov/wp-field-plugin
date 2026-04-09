@@ -938,15 +938,15 @@ class WP_Field_Examples
                         'label' => 'Image Select — Выбор с изображениями',
                         'options' => [
                             'layout1' => [
-                                'src' => WP_FIELD_PLUGIN_URL . 'placeholder.svg',
+                                'src' => WP_FIELD_PLUGIN_URL.'placeholder.svg',
                                 'label' => 'Макет 1',
                             ],
                             'layout2' => [
-                                'src' => WP_FIELD_PLUGIN_URL . 'placeholder.svg',
+                                'src' => WP_FIELD_PLUGIN_URL.'placeholder.svg',
                                 'label' => 'Макет 2',
                             ],
                             'layout3' => [
-                                'src' => WP_FIELD_PLUGIN_URL . 'placeholder.svg',
+                                'src' => WP_FIELD_PLUGIN_URL.'placeholder.svg',
                                 'label' => 'Макет 3',
                             ],
                         ],

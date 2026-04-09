@@ -60,16 +60,16 @@ $legacy_enabled = function_exists('apply_filters')
 
 if ($legacy_enabled) {
     // Legacy class + isolated vanilla bootstrap.
-    require_once WP_FIELD_PLUGIN_DIR . 'vanilla/bootstrap.php';
+    require_once WP_FIELD_PLUGIN_DIR.'vanilla/bootstrap.php';
 }
 
 // Loading demo pages strictly within WordPress admin debug context.
 if (function_exists('is_admin') && is_admin() && defined('WP_DEBUG') && WP_DEBUG) {
     if ($legacy_enabled) {
-        require_once WP_FIELD_PLUGIN_DIR . 'vanilla/example.php';
+        require_once WP_FIELD_PLUGIN_DIR.'vanilla/example.php';
     }
 
     // Modern demos: wp-field-components (React docs) + wp-field-ui-demo (Flux UI showcase).
-    require_once WP_FIELD_PLUGIN_DIR . 'examples/components/index.php';
-    require_once WP_FIELD_PLUGIN_DIR . 'examples/ui-demo/index.php';
+    require_once WP_FIELD_PLUGIN_DIR.'examples/components/index.php';
+    require_once WP_FIELD_PLUGIN_DIR.'examples/ui-demo/index.php';
 }

@@ -27,7 +27,7 @@ use WpField\Field\Field;
 function wp_field_get_demo_catalog(): array
 {
     $placeholderUrl = defined('WP_FIELD_PLUGIN_URL')
-        ? WP_FIELD_PLUGIN_URL . 'placeholder.svg'
+        ? WP_FIELD_PLUGIN_URL.'placeholder.svg'
         : '';
 
     return [

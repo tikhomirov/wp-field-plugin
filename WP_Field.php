@@ -41,4 +41,4 @@ if (file_exists(WP_FIELD_PLUGIN_DIR.'vendor/autoload.php')) {
     });
 }
 
-require_once WP_FIELD_PLUGIN_DIR . 'vanilla/WP_Field.php';
+require_once WP_FIELD_PLUGIN_DIR.'vanilla/WP_Field.php';

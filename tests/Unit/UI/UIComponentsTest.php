@@ -12,7 +12,7 @@ use WpField\UI\WizardConfig;
 
 beforeEach(function (): void {
     require_once dirname(__DIR__, 2).'/bootstrap.php';
-    $reflection = new \ReflectionClass(UIManager::class);
+    $reflection = new ReflectionClass(UIManager::class);
     $reflection->getProperty('mode')->setValue(null, 'vanilla');
     $reflection->getProperty('assetsEnqueued')->setValue(null, false);
 
@@ -167,7 +167,7 @@ it('ui manager respects modes and enqueues assets once', function (): void {
     apply_filters('wp_field_ui_mode', 'react');
     unset($GLOBALS['wp_test_filters']['wp_field_ui_mode']);
 
-    $reflection = new \ReflectionClass(UIManager::class);
+    $reflection = new ReflectionClass(UIManager::class);
     $reflection->getProperty('mode')->setValue(null, 'vanilla');
     $reflection->getProperty('assetsEnqueued')->setValue(null, false);
 

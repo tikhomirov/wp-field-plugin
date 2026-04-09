@@ -7,7 +7,7 @@ beforeEach(function (): void {
 });
 
 it('hides field when dependency not met', function (): void {
-    $html = \WP_Field::make([
+    $html = WP_Field::make([
         'id' => 'dependent_field',
         'type' => 'text',
         'label' => 'Dependent Field',
@@ -22,7 +22,7 @@ it('hides field when dependency not met', function (): void {
 it('shows field when dependency met', function (): void {
     // For testing we will just check that dependency data is printed correctly
     // and the field does not crash, since getting actual values requires DB/WP setup.
-    $html = \WP_Field::make([
+    $html = WP_Field::make([
         'id' => 'dependent_field',
         'type' => 'text',
         'label' => 'Dependent Field',
@@ -38,7 +38,7 @@ it('shows field when dependency met', function (): void {
 });
 
 it('renders dependency data attribute', function (): void {
-    $html = \WP_Field::make([
+    $html = WP_Field::make([
         'id' => 'field_with_dep',
         'type' => 'text',
         'label' => 'Field',
@@ -51,7 +51,7 @@ it('renders dependency data attribute', function (): void {
 });
 
 it('handles multiple dependencies with and', function (): void {
-    $html = \WP_Field::make([
+    $html = WP_Field::make([
         'id' => 'field_with_deps',
         'type' => 'text',
         'label' => 'Field',
@@ -68,7 +68,7 @@ it('handles multiple dependencies with and', function (): void {
 });
 
 it('handles multiple dependencies with or', function (): void {
-    $html = \WP_Field::make([
+    $html = WP_Field::make([
         'id' => 'field_with_deps',
         'type' => 'text',
         'label' => 'Field',
@@ -85,7 +85,7 @@ it('handles multiple dependencies with or', function (): void {
 });
 
 it('supports in operator', function (): void {
-    $html = \WP_Field::make([
+    $html = WP_Field::make([
         'id' => 'field_with_in',
         'type' => 'text',
         'label' => 'Field',
@@ -98,7 +98,7 @@ it('supports in operator', function (): void {
 });
 
 it('supports contains operator', function (): void {
-    $html = \WP_Field::make([
+    $html = WP_Field::make([
         'id' => 'field_with_contains',
         'type' => 'text',
         'label' => 'Field',
@@ -111,7 +111,7 @@ it('supports contains operator', function (): void {
 });
 
 it('supports empty operator', function (): void {
-    $html = \WP_Field::make([
+    $html = WP_Field::make([
         'id' => 'field_with_empty',
         'type' => 'text',
         'label' => 'Field',
@@ -127,7 +127,7 @@ it('supports comparison operators', function (): void {
     $operators = ['==', '!=', '>', '>=', '<', '<='];
 
     foreach ($operators as $op) {
-        $html = \WP_Field::make([
+        $html = WP_Field::make([
             'id' => 'field_with_op',
             'type' => 'text',
             'label' => 'Field',

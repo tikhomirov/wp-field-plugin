@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace WpField\Field\Types;
 
 use WpField\Field\AbstractField;
+use WpField\Field\FieldInterface;
 
 class LegacyWrapperField extends AbstractField
 {
@@ -74,7 +75,7 @@ class LegacyWrapperField extends AbstractField
 
         if (isset($config['fields']) && is_array($config['fields'])) {
             $config['fields'] = array_map(function ($field) {
-                if ($field instanceof \WpField\Field\FieldInterface) {
+                if ($field instanceof FieldInterface) {
                     return $field->toArray();
                 }
 

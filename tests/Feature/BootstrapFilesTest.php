@@ -18,10 +18,10 @@ it('bootstrap and legacy loaders cover guards and hooks', function (): void {
     expect($result)->toBeNull()
         ->and(defined('WP_FIELD_PLUGIN_FILE'))->toBeFalse();
 
-    if (!defined('ABSPATH')) {
+    if (! defined('ABSPATH')) {
         define('ABSPATH', __DIR__);
     }
-    if (!defined('WP_DEBUG')) {
+    if (! defined('WP_DEBUG')) {
         define('WP_DEBUG', false);
     }
 
@@ -33,7 +33,7 @@ it('bootstrap and legacy loaders cover guards and hooks', function (): void {
         ->and(defined('WP_FIELD_PLUGIN_DIR'))->toBeTrue()
         ->and(defined('WP_FIELD_PLUGIN_URL'))->toBeTrue();
 
-    include dirname(__DIR__, 2) . '/vanilla/bootstrap.php';
+    include dirname(__DIR__, 2).'/vanilla/bootstrap.php';
 
     expect($GLOBALS['wp_test_actions'])->not->toBeEmpty();
     $hooks = array_column($GLOBALS['wp_test_actions'], 'hook');

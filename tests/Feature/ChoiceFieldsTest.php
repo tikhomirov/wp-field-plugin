@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature;
 
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 class ChoiceFieldsTest extends TestCase
@@ -14,7 +15,7 @@ class ChoiceFieldsTest extends TestCase
         require_once dirname(__DIR__, 2).'/WP_Field.php';
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_renders_select_with_options(): void
     {
         $html = \WP_Field::make([
@@ -33,7 +34,7 @@ class ChoiceFieldsTest extends TestCase
         $this->assertStringContainsString('UK', $html);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_renders_multiselect(): void
     {
         $html = \WP_Field::make([
@@ -48,7 +49,7 @@ class ChoiceFieldsTest extends TestCase
         $this->assertStringContainsString('Feature B', $html);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_renders_radio_with_options(): void
     {
         $html = \WP_Field::make([
@@ -66,7 +67,7 @@ class ChoiceFieldsTest extends TestCase
         $this->assertStringContainsString('Pickup', $html);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_renders_checkbox_group(): void
     {
         $html = \WP_Field::make([
@@ -86,7 +87,7 @@ class ChoiceFieldsTest extends TestCase
         $this->assertStringContainsString('Push', $html);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_renders_select_with_selected_value(): void
     {
         $html = \WP_Field::make([
@@ -103,7 +104,7 @@ class ChoiceFieldsTest extends TestCase
         $this->assertStringContainsString('selected', $html);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_renders_radio_with_checked_value(): void
     {
         $html = \WP_Field::make([
@@ -120,7 +121,7 @@ class ChoiceFieldsTest extends TestCase
         $this->assertStringContainsString('checked', $html);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_renders_checkbox_group_with_multiple_values(): void
     {
         $html = \WP_Field::make([
@@ -141,7 +142,7 @@ class ChoiceFieldsTest extends TestCase
         $this->assertStringContainsString('Tag 3', $html);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_supports_parse_options(): void
     {
         $html = \WP_Field::make([
@@ -159,7 +160,7 @@ class ChoiceFieldsTest extends TestCase
         $this->assertStringContainsString('Option 2', $html);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_renders_radio_group_with_labels(): void
     {
         $html = \WP_Field::make([

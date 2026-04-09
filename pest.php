@@ -51,9 +51,9 @@ function createField(array $config = []): array
     ], $config);
 }
 
-function createWPField(array $config = [], string $storage_type = 'options'): \WP_Field
+function createWPField(array $config = [], string $storage_type = 'options'): WP_Field
 {
-    return new \WP_Field(createField($config), $storage_type);
+    return new WP_Field(createField($config), $storage_type);
 }
 
 /*

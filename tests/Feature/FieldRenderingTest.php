@@ -7,7 +7,7 @@ beforeEach(function (): void {
 });
 
 it('renders text field', function (): void {
-    $html = \WP_Field::make([
+    $html = WP_Field::make([
         'id' => 'test_text',
         'type' => 'text',
         'label' => 'Test Text',
@@ -21,7 +21,7 @@ it('renders text field', function (): void {
 });
 
 it('renders select field', function (): void {
-    $html = \WP_Field::make([
+    $html = WP_Field::make([
         'id' => 'test_select',
         'type' => 'select',
         'label' => 'Test Select',
@@ -36,7 +36,7 @@ it('renders select field', function (): void {
 });
 
 it('renders radio field', function (): void {
-    $html = \WP_Field::make([
+    $html = WP_Field::make([
         'id' => 'test_radio',
         'type' => 'radio',
         'label' => 'Test Radio',
@@ -50,7 +50,7 @@ it('renders radio field', function (): void {
 });
 
 it('renders checkbox field', function (): void {
-    $html = \WP_Field::make([
+    $html = WP_Field::make([
         'id' => 'test_checkbox',
         'type' => 'checkbox',
         'label' => 'Test Checkbox',
@@ -62,7 +62,7 @@ it('renders checkbox field', function (): void {
 });
 
 it('renders textarea field', function (): void {
-    $html = \WP_Field::make([
+    $html = WP_Field::make([
         'id' => 'test_textarea',
         'type' => 'textarea',
         'label' => 'Test Textarea',
@@ -74,7 +74,7 @@ it('renders textarea field', function (): void {
 });
 
 it('renders number field', function (): void {
-    $html = \WP_Field::make([
+    $html = WP_Field::make([
         'id' => 'test_number',
         'type' => 'number',
         'label' => 'Test Number',
@@ -89,7 +89,7 @@ it('renders number field', function (): void {
 });
 
 it('renders email field', function (): void {
-    $html = \WP_Field::make([
+    $html = WP_Field::make([
         'id' => 'test_email',
         'type' => 'email',
         'label' => 'Test Email',
@@ -101,7 +101,7 @@ it('renders email field', function (): void {
 });
 
 it('renders color field', function (): void {
-    $html = \WP_Field::make([
+    $html = WP_Field::make([
         'id' => 'test_color',
         'type' => 'color',
         'label' => 'Test Color',
@@ -113,7 +113,7 @@ it('renders color field', function (): void {
 });
 
 it('renders date field', function (): void {
-    $html = \WP_Field::make([
+    $html = WP_Field::make([
         'id' => 'test_date',
         'type' => 'date',
         'label' => 'Test Date',
@@ -125,7 +125,7 @@ it('renders date field', function (): void {
 });
 
 it('renders time field', function (): void {
-    $html = \WP_Field::make([
+    $html = WP_Field::make([
         'id' => 'test_time',
         'type' => 'time',
         'label' => 'Test Time',
@@ -137,7 +137,7 @@ it('renders time field', function (): void {
 });
 
 it('renders field with placeholder', function (): void {
-    $html = \WP_Field::make([
+    $html = WP_Field::make([
         'id' => 'test_field',
         'type' => 'text',
         'label' => 'Test',
@@ -148,7 +148,7 @@ it('renders field with placeholder', function (): void {
 });
 
 it('renders field with description', function (): void {
-    $html = \WP_Field::make([
+    $html = WP_Field::make([
         'id' => 'test_field',
         'type' => 'text',
         'label' => 'Test',
@@ -161,7 +161,7 @@ it('renders field with description', function (): void {
 });
 
 it('renders field with custom class', function (): void {
-    $html = \WP_Field::make([
+    $html = WP_Field::make([
         'id' => 'test_field',
         'type' => 'text',
         'label' => 'Test',
@@ -172,7 +172,7 @@ it('renders field with custom class', function (): void {
 });
 
 it('renders field with custom attributes', function (): void {
-    $html = \WP_Field::make([
+    $html = WP_Field::make([
         'id' => 'test_field',
         'type' => 'text',
         'label' => 'Test',
@@ -185,7 +185,7 @@ it('renders field with custom attributes', function (): void {
 });
 
 it('renders readonly field', function (): void {
-    $html = \WP_Field::make([
+    $html = WP_Field::make([
         'id' => 'test_field',
         'type' => 'text',
         'label' => 'Test',
@@ -196,7 +196,7 @@ it('renders readonly field', function (): void {
 });
 
 it('renders disabled field', function (): void {
-    $html = \WP_Field::make([
+    $html = WP_Field::make([
         'id' => 'test_field',
         'type' => 'text',
         'label' => 'Test',

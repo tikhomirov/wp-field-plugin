@@ -18,7 +18,7 @@ if (! defined('ABSPATH')) {
     exit;
 }
 
-require_once dirname(__DIR__) . '/shared-catalog.php';
+require_once dirname(__DIR__).'/shared-catalog.php';
 
 class WP_Field_Components
 {
@@ -46,21 +46,21 @@ class WP_Field_Components
             return;
         }
 
-        $cssPath = __DIR__ . '/assets/wp-field-components.css';
+        $cssPath = __DIR__.'/assets/wp-field-components.css';
         if (file_exists($cssPath)) {
             wp_enqueue_style(
                 'wp-field-components',
-                plugin_dir_url(__FILE__) . 'assets/wp-field-components.css',
+                plugin_dir_url(__FILE__).'assets/wp-field-components.css',
                 [],
                 (string) filemtime($cssPath),
             );
         }
 
-        $jsPath = __DIR__ . '/assets/wp-field-components.js';
+        $jsPath = __DIR__.'/assets/wp-field-components.js';
         if (file_exists($jsPath)) {
             wp_enqueue_script(
                 'wp-field-components',
-                plugin_dir_url(__FILE__) . 'assets/wp-field-components.js',
+                plugin_dir_url(__FILE__).'assets/wp-field-components.js',
                 [],
                 (string) filemtime($jsPath),
                 true,
@@ -78,7 +78,7 @@ class WP_Field_Components
 
         $navJson = wp_json_encode(array_map(static function (array $section): array {
             return [
-                'id'    => $section['id'],
+                'id' => $section['id'],
                 'title' => $section['title'],
                 'count' => count($section['fields']),
             ];
@@ -98,29 +98,29 @@ class WP_Field_Components
                     <label class="screen-reader-text" for="wfc-search">Search fields</label>
                     <input type="search" class="wfc-sidebar__search" placeholder="Search fields..." id="wfc-search" />
                     <nav class="wfc-sidebar__nav" id="wfc-nav">
-                        <?php foreach ($catalog as $section): ?>
+                        <?php foreach ($catalog as $section) { ?>
                             <a href="#<?php echo esc_attr($section['id']); ?>" class="wfc-sidebar__link" data-section="<?php echo esc_attr($section['id']); ?>">
                                 <?php echo esc_html($section['title']); ?>
                                 <span class="wfc-sidebar__count"><?php echo count($section['fields']); ?></span>
                             </a>
-                        <?php endforeach; ?>
+                        <?php } ?>
                     </nav>
                 </aside>
 
                 <main class="wfc-content">
-                    <?php foreach ($catalog as $section): ?>
+                    <?php foreach ($catalog as $section) { ?>
                         <section class="wfc-section" id="<?php echo esc_attr($section['id']); ?>">
                             <div class="wfc-section__header">
                                 <h2><?php echo esc_html($section['title']); ?></h2>
                                 <p><?php echo esc_html($section['description']); ?></p>
                             </div>
                             <div class="wfc-grid">
-                                <?php foreach ($section['fields'] as $fieldDef): ?>
+                                <?php foreach ($section['fields'] as $fieldDef) { ?>
                                     <?php echo $this->render_card($fieldDef); ?>
-                                <?php endforeach; ?>
+                                <?php } ?>
                             </div>
                         </section>
-                    <?php endforeach; ?>
+                    <?php } ?>
                 </main>
             </div>
         </div>
@@ -129,10 +129,10 @@ class WP_Field_Components
 
     private function render_card(array $fieldDef): string
     {
-        $type  = esc_html($fieldDef['type']);
+        $type = esc_html($fieldDef['type']);
         $title = esc_html($fieldDef['title']);
-        $desc  = esc_html($fieldDef['description']);
-        $code  = esc_html($fieldDef['code'] ?? '');
+        $desc = esc_html($fieldDef['description']);
+        $code = esc_html($fieldDef['code'] ?? '');
         $props = $fieldDef['props'] ?? [];
 
         $renderedField = $fieldDef['field']->render();
@@ -141,7 +141,7 @@ class WP_Field_Components
         if ($props) {
             $propsHtml = '<div class="wfc-card__props">';
             foreach ($props as $prop) {
-                $propsHtml .= '<span class="wfc-card__prop">' . esc_html($prop) . '</span>';
+                $propsHtml .= '<span class="wfc-card__prop">'.esc_html($prop).'</span>';
             }
             $propsHtml .= '</div>';
         }

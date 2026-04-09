@@ -2437,6 +2437,7 @@ class WP_Field
             $this->render_description($field);
 
             echo '</div>';
+
             return;
         }
 

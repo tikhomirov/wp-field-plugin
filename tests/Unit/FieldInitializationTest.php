@@ -7,10 +7,10 @@ beforeEach(function (): void {
 });
 
 it('initializes field types registry', function (): void {
-    \WP_Field::init_field_types();
+    WP_Field::init_field_types();
 
     // Проверяем, что реестр инициализирован
-    $reflection = new \ReflectionClass(\WP_Field::class);
+    $reflection = new ReflectionClass(WP_Field::class);
     $property = $reflection->getProperty('field_types');
     $property->setAccessible(true);
     $types = $property->getValue();
@@ -23,7 +23,7 @@ it('initializes field types registry', function (): void {
 });
 
 it('supports field aliases', function (): void {
-    $field = new \WP_Field([
+    $field = new WP_Field([
         'id' => 'test',
         'type' => 'text',
         'title' => 'Test Field',  // alias для label
@@ -33,7 +33,7 @@ it('supports field aliases', function (): void {
 });
 
 it('supports value alias', function (): void {
-    $field = new \WP_Field([
+    $field = new WP_Field([
         'id' => 'test',
         'type' => 'text',
         'label' => 'Test',
@@ -44,7 +44,7 @@ it('supports value alias', function (): void {
 });
 
 it('supports custom attributes aliases', function (): void {
-    $field = new \WP_Field([
+    $field = new WP_Field([
         'id' => 'test',
         'type' => 'text',
         'label' => 'Test',
@@ -55,7 +55,7 @@ it('supports custom attributes aliases', function (): void {
 });
 
 it('creates field with static make', function (): void {
-    $html = \WP_Field::make([[
+    $html = WP_Field::make([[
         'id' => 'test',
         'type' => 'text',
         'label' => 'Test',
@@ -68,7 +68,7 @@ it('creates field with static make', function (): void {
 
 it('creates field with make and output', function (): void {
     ob_start();
-    $result = \WP_Field::make([[
+    $result = WP_Field::make([[
         'id' => 'test',
         'type' => 'text',
         'label' => 'Test',
@@ -82,7 +82,7 @@ it('creates field with make and output', function (): void {
 // Skipping validation test - validate_field_data() uses trigger_error() by design, not exceptions
 
 it('sets default storage type', function (): void {
-    $field = new \WP_Field([
+    $field = new WP_Field([
         'id' => 'test',
         'type' => 'text',
         'label' => 'Test',
@@ -95,7 +95,7 @@ it('supports different storage types', function (): void {
     $types = ['post', 'options', 'term', 'user', 'comment'];
 
     foreach ($types as $type) {
-        $field = new \WP_Field([
+        $field = new WP_Field([
             'id' => 'test',
             'type' => 'text',
             'label' => 'Test',
@@ -106,7 +106,7 @@ it('supports different storage types', function (): void {
 });
 
 it('handles field with default value', function (): void {
-    $field = new \WP_Field([
+    $field = new WP_Field([
         'id' => 'test',
         'type' => 'text',
         'label' => 'Test',
@@ -117,7 +117,7 @@ it('handles field with default value', function (): void {
 });
 
 it('handles field with explicit value', function (): void {
-    $field = new \WP_Field([
+    $field = new WP_Field([
         'id' => 'test',
         'type' => 'text',
         'label' => 'Test',
@@ -128,7 +128,7 @@ it('handles field with explicit value', function (): void {
 });
 
 it('supports field with options', function (): void {
-    $field = new \WP_Field([
+    $field = new WP_Field([
         'id' => 'test',
         'type' => 'select',
         'label' => 'Test',
@@ -139,7 +139,7 @@ it('supports field with options', function (): void {
 });
 
 it('supports field with nested fields', function (): void {
-    $field = new \WP_Field([
+    $field = new WP_Field([
         'id' => 'test',
         'type' => 'group',
         'label' => 'Test',

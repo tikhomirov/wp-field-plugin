@@ -7,7 +7,7 @@ beforeEach(function (): void {
 });
 
 it('renders group field', function (): void {
-    $html = \WP_Field::make([
+    $html = WP_Field::make([
         'id' => 'address',
         'type' => 'group',
         'label' => 'Address',
@@ -24,7 +24,7 @@ it('renders group field', function (): void {
 });
 
 it('renders repeater field', function (): void {
-    $html = \WP_Field::make([
+    $html = WP_Field::make([
         'id' => 'work_times',
         'type' => 'repeater',
         'label' => 'Work Times',
@@ -43,7 +43,7 @@ it('renders repeater field', function (): void {
 });
 
 it('renders repeater with min max', function (): void {
-    $html = \WP_Field::make([
+    $html = WP_Field::make([
         'id' => 'items',
         'type' => 'repeater',
         'label' => 'Items',
@@ -60,7 +60,7 @@ it('renders repeater with min max', function (): void {
 });
 
 it('renders repeater add button', function (): void {
-    $html = \WP_Field::make([
+    $html = WP_Field::make([
         'id' => 'items',
         'type' => 'repeater',
         'label' => 'Items',
@@ -76,7 +76,7 @@ it('renders repeater add button', function (): void {
 });
 
 it('renders group with nested fields', function (): void {
-    $html = \WP_Field::make([
+    $html = WP_Field::make([
         'id' => 'contact',
         'type' => 'group',
         'label' => 'Contact',
@@ -95,7 +95,7 @@ it('renders group with nested fields', function (): void {
 });
 
 it('renders repeater with select options', function (): void {
-    $html = \WP_Field::make([
+    $html = WP_Field::make([
         'id' => 'schedule',
         'type' => 'repeater',
         'label' => 'Schedule',
