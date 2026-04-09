@@ -2,65 +2,58 @@
 
 declare(strict_types=1);
 
-namespace Tests\Feature;
+beforeEach(function (): void {
+    require_once dirname(__DIR__).'/bootstrap.php';
+    $GLOBALS['wp_test_actions'] = [];
+    $GLOBALS['wp_test_scripts'] = [];
+    $GLOBALS['wp_test_styles'] = [];
+    $GLOBALS['wp_test_script_is'] = [];
+    $GLOBALS['wp_test_style_is'] = [];
+    $GLOBALS['wp_test_filters'] = [];
+    $GLOBALS['wp_test_media_enqueued'] = false;
+});
 
-use PHPUnit\Framework\TestCase;
+it('bootstrap and legacy loaders cover guards and hooks', function (): void {
+    $result = include dirname(__DIR__, 2).'/wp-field.php';
+    expect($result)->toBeNull()
+        ->and(defined('WP_FIELD_PLUGIN_FILE'))->toBeFalse();
 
-class BootstrapFilesTest extends TestCase
-{
-    protected function setUp(): void
-    {
-        parent::setUp();
-        require_once dirname(__DIR__).'/bootstrap.php';
-        $GLOBALS['wp_test_actions'] = [];
-        $GLOBALS['wp_test_scripts'] = [];
-        $GLOBALS['wp_test_styles'] = [];
-        $GLOBALS['wp_test_script_is'] = [];
-        $GLOBALS['wp_test_style_is'] = [];
-        $GLOBALS['wp_test_filters'] = [];
-        $GLOBALS['wp_test_media_enqueued'] = false;
-    }
-
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function bootstrap_and_legacy_loaders_cover_guards_and_hooks(): void
-    {
-        $result = include dirname(__DIR__, 2).'/wp-field.php';
-        $this->assertNull($result);
-        $this->assertFalse(defined('WP_FIELD_PLUGIN_FILE'));
-
+    if (!defined('ABSPATH')) {
         define('ABSPATH', __DIR__);
-        define('WP_DEBUG', false);
-
-        $GLOBALS['wp_test_filters']['wp_field_enable_legacy'] = static fn (bool $enabled): bool => false;
-
-        include dirname(__DIR__, 2).'/wp-field.php';
-
-        $this->assertTrue(defined('WP_FIELD_PLUGIN_FILE'));
-        $this->assertTrue(defined('WP_FIELD_PLUGIN_DIR'));
-        $this->assertTrue(defined('WP_FIELD_PLUGIN_URL'));
-
-        include dirname(__DIR__, 2) . '/vanilla/bootstrap.php';
-
-        $this->assertNotEmpty($GLOBALS['wp_test_actions']);
-        $hooks = array_column($GLOBALS['wp_test_actions'], 'hook');
-        $this->assertContains('admin_enqueue_scripts', $hooks);
-        $callbacks = array_column($GLOBALS['wp_test_actions'], 'callback');
-        $this->assertNotEmpty($callbacks);
-
-        $GLOBALS['wp_test_script_is']['wp-field-main'] = true;
-        $GLOBALS['wp_test_style_is']['wp-field-main'] = true;
-        foreach ($callbacks as $callback) {
-            if (is_callable($callback)) {
-                $callback();
-            }
-        }
-
-        $this->assertTrue($GLOBALS['wp_test_media_enqueued']);
-        $this->assertArrayNotHasKey('wp-field-main', $GLOBALS['wp_test_scripts']);
-        $this->assertArrayNotHasKey('wp-field-main', $GLOBALS['wp_test_styles']);
-
-        include dirname(__DIR__, 2).'/WP_Field.php';
-
-        $this->assertTrue(class_exists('WP_Field'));
     }
-}
+    if (!defined('WP_DEBUG')) {
+        define('WP_DEBUG', false);
+    }
+
+    $GLOBALS['wp_test_filters']['wp_field_enable_legacy'] = static fn (bool $enabled): bool => false;
+
+    include dirname(__DIR__, 2).'/wp-field.php';
+
+    expect(defined('WP_FIELD_PLUGIN_FILE'))->toBeTrue()
+        ->and(defined('WP_FIELD_PLUGIN_DIR'))->toBeTrue()
+        ->and(defined('WP_FIELD_PLUGIN_URL'))->toBeTrue();
+
+    include dirname(__DIR__, 2) . '/vanilla/bootstrap.php';
+
+    expect($GLOBALS['wp_test_actions'])->not->toBeEmpty();
+    $hooks = array_column($GLOBALS['wp_test_actions'], 'hook');
+    expect($hooks)->toContain('admin_enqueue_scripts');
+    $callbacks = array_column($GLOBALS['wp_test_actions'], 'callback');
+    expect($callbacks)->not->toBeEmpty();
+
+    $GLOBALS['wp_test_script_is']['wp-field-main'] = true;
+    $GLOBALS['wp_test_style_is']['wp-field-main'] = true;
+    foreach ($callbacks as $callback) {
+        if (is_callable($callback)) {
+            $callback();
+        }
+    }
+
+    expect($GLOBALS['wp_test_media_enqueued'])->toBeTrue()
+        ->and($GLOBALS['wp_test_scripts'])->not->toHaveKey('wp-field-main')
+        ->and($GLOBALS['wp_test_styles'])->not->toHaveKey('wp-field-main');
+
+    include dirname(__DIR__, 2).'/WP_Field.php';
+
+    expect(class_exists('WP_Field'))->toBeTrue();
+});

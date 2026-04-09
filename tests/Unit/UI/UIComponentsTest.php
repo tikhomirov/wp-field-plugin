@@ -2,9 +2,6 @@
 
 declare(strict_types=1);
 
-namespace Tests\Unit\UI;
-
-use PHPUnit\Framework\TestCase;
 use WpField\UI\AdminShell;
 use WpField\UI\AdminShellConfig;
 use WpField\UI\Alert;
@@ -13,205 +10,191 @@ use WpField\UI\UIManager;
 use WpField\UI\Wizard;
 use WpField\UI\WizardConfig;
 
-class UIComponentsTest extends TestCase
-{
-    protected function setUp(): void
-    {
-        parent::setUp();
-        require_once dirname(__DIR__, 2).'/bootstrap.php';
-        $reflection = new \ReflectionClass(UIManager::class);
-        $reflection->getProperty('mode')->setValue(null, 'vanilla');
-        $reflection->getProperty('assetsEnqueued')->setValue(null, false);
+beforeEach(function (): void {
+    require_once dirname(__DIR__, 2).'/bootstrap.php';
+    $reflection = new \ReflectionClass(UIManager::class);
+    $reflection->getProperty('mode')->setValue(null, 'vanilla');
+    $reflection->getProperty('assetsEnqueued')->setValue(null, false);
 
-        $GLOBALS['wp_test_actions'] = [];
-        $GLOBALS['wp_test_scripts'] = [];
-        $GLOBALS['wp_test_styles'] = [];
-        $GLOBALS['wp_test_script_data'] = [];
-        $GLOBALS['wp_test_script_is'] = [];
-        $GLOBALS['wp_test_style_is'] = [];
-        $GLOBALS['wp_test_filters'] = [];
-        $_GET = [];
-    }
+    $GLOBALS['wp_test_actions'] = [];
+    $GLOBALS['wp_test_scripts'] = [];
+    $GLOBALS['wp_test_styles'] = [];
+    $GLOBALS['wp_test_script_data'] = [];
+    $GLOBALS['wp_test_script_is'] = [];
+    $GLOBALS['wp_test_style_is'] = [];
+    $GLOBALS['wp_test_filters'] = [];
+    $_GET = [];
+});
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function nav_item_helpers_work_for_groups_and_leaves(): void
-    {
-        $nav = [
-            NavItem::leaf('general', 'General'),
-            NavItem::group('advanced', 'Advanced', [
-                NavItem::leaf('cache', 'Cache', [['id' => 'warmup', 'label' => 'Warmup']]),
+it('nav item helpers work for groups and leaves', function (): void {
+    $nav = [
+        NavItem::leaf('general', 'General'),
+        NavItem::group('advanced', 'Advanced', [
+            NavItem::leaf('cache', 'Cache', [['id' => 'warmup', 'label' => 'Warmup']]),
+        ]),
+    ];
+
+    $flat = NavItem::flatSections(['first' => 'First', 'second' => 'Second']);
+    $leaves = NavItem::collectLeaves($nav);
+    $json = NavItem::toJsonArray($nav);
+
+    expect($flat)->toHaveCount(2)
+        ->and(NavItem::firstLeafId($nav))->toBe('general')
+        ->and(NavItem::findLeaf($nav, 'cache')?->id)->toBe('cache')
+        ->and(NavItem::findLeaf($nav, 'missing'))->toBeNull()
+        ->and($leaves)->toHaveCount(2)
+        ->and($nav[1]->isGroup())->toBeTrue()
+        ->and($nav[0]->isLeaf())->toBeTrue()
+        ->and($json[1]['id'])->toBe('advanced')
+        ->and($json[1])->toHaveKey('children')
+        ->and($json[1]['children'][0])->toHaveKey('panels');
+});
+
+it('admin shell renders and resolves request', function (): void {
+    $nav = [
+        NavItem::group('settings', 'Settings', [
+            NavItem::leaf('general', 'General', [
+                ['id' => 'main', 'label' => 'Main'],
+                ['id' => 'advanced', 'label' => 'Advanced'],
             ]),
-        ];
+        ]),
+    ];
 
-        $flat = NavItem::flatSections(['first' => 'First', 'second' => 'Second']);
-        $leaves = NavItem::collectLeaves($nav);
-        $json = NavItem::toJsonArray($nav);
+    $config = new AdminShellConfig('section_key', 'tab_key', 'save_action', 'Save now', 'extra-shell');
 
-        $this->assertCount(2, $flat);
-        $this->assertSame('general', NavItem::firstLeafId($nav));
-        $this->assertSame('cache', NavItem::findLeaf($nav, 'cache')?->id);
-        $this->assertNull(NavItem::findLeaf($nav, 'missing'));
-        $this->assertCount(2, $leaves);
-        $this->assertTrue($nav[1]->isGroup());
-        $this->assertTrue($nav[0]->isLeaf());
-        $this->assertSame('advanced', $json[1]['id']);
-        $this->assertArrayHasKey('children', $json[1]);
-        $this->assertArrayHasKey('panels', $json[1]['children'][0]);
-    }
+    ob_start();
+    AdminShell::render(
+        $nav,
+        '',
+        '',
+        'Plugin Page',
+        'https://example.com/save',
+        '<input type="hidden" name="nonce" value="123">',
+        static function (string $segment, string $panel): void {
+            echo '<span data-rendered="'.$segment.'-'.$panel.'"></span>';
+        },
+        $config,
+    );
+    $html = (string) ob_get_clean();
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function admin_shell_renders_and_resolves_request(): void
-    {
-        $nav = [
-            NavItem::group('settings', 'Settings', [
-                NavItem::leaf('general', 'General', [
-                    ['id' => 'main', 'label' => 'Main'],
-                    ['id' => 'advanced', 'label' => 'Advanced'],
-                ]),
-            ]),
-        ];
+    expect($html)
+        ->toContain('wp-field-shell extra-shell')
+        ->toContain('data-active="general"')
+        ->toContain('data-active-panel="main"')
+        ->toContain('name="action" value="save_action"')
+        ->toContain('Save now')
+        ->toContain('data-rendered="general-main"')
+        ->toContain('data-rendered="general-advanced"')
+        ->toContain('style="display:none"');
 
-        $config = new AdminShellConfig('section_key', 'tab_key', 'save_action', 'Save now', 'extra-shell');
+    $_GET['section_key'] = 'custom-section';
+    $_GET['tab_key'] = 'custom-tab';
 
-        ob_start();
-        AdminShell::render(
-            $nav,
-            '',
-            '',
-            'Plugin Page',
-            'https://example.com/save',
-            '<input type="hidden" name="nonce" value="123">',
-            static function (string $segment, string $panel): void {
-                echo '<span data-rendered="'.$segment.'-'.$panel.'"></span>';
-            },
-            $config,
-        );
-        $html = (string) ob_get_clean();
+    $resolved = AdminShell::resolveFromRequest($nav, $config);
 
-        $this->assertStringContainsString('wp-field-shell extra-shell', $html);
-        $this->assertStringContainsString('data-active="general"', $html);
-        $this->assertStringContainsString('data-active-panel="main"', $html);
-        $this->assertStringContainsString('name="action" value="save_action"', $html);
-        $this->assertStringContainsString('Save now', $html);
-        $this->assertStringContainsString('data-rendered="general-main"', $html);
-        $this->assertStringContainsString('data-rendered="general-advanced"', $html);
-        $this->assertStringContainsString('style="display:none"', $html);
+    expect($resolved)->toBe(['segment' => 'custom-section', 'panel' => 'custom-tab']);
+});
 
-        $_GET['section_key'] = 'custom-section';
-        $_GET['tab_key'] = 'custom-tab';
+it('wizard renders and resolves request', function (): void {
+    $steps = [
+        ['id' => 'start', 'title' => 'Start', 'description' => 'First step'],
+        ['id' => 'finish', 'title' => 'Finish'],
+    ];
 
-        $resolved = AdminShell::resolveFromRequest($nav, $config);
+    $config = new WizardConfig('wizard_save', 'wizard_key', 'Next step', 'Back step', 'Skip step', 'Finish now', 'extra-wizard');
 
-        $this->assertSame(['segment' => 'custom-section', 'panel' => 'custom-tab'], $resolved);
-    }
+    ob_start();
+    Wizard::render(
+        $steps,
+        'unknown',
+        'https://example.com/wizard',
+        '<input type="hidden" name="nonce" value="456">',
+        static function (string $step_id): void {
+            echo '<div data-step-render="'.$step_id.'"></div>';
+        },
+        $config,
+    );
+    $html = (string) ob_get_clean();
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function wizard_renders_and_resolves_request(): void
-    {
-        $steps = [
-            ['id' => 'start', 'title' => 'Start', 'description' => 'First step'],
-            ['id' => 'finish', 'title' => 'Finish'],
-        ];
+    expect($html)
+        ->toContain('wp-field-wizard extra-wizard')
+        ->toContain('data-initial-step="start"')
+        ->toContain('name="action" value="wizard_save"')
+        ->toContain('First step')
+        ->toContain('data-step-render="start"')
+        ->toContain('data-step-render="finish"')
+        ->toContain('style="display:none"');
 
-        $config = new WizardConfig('wizard_save', 'wizard_key', 'Next step', 'Back step', 'Skip step', 'Finish now', 'extra-wizard');
+    $_GET['wizard_key'] = 'finish';
+    expect(Wizard::resolveFromRequest($steps, $config))->toBe('finish');
 
-        ob_start();
-        Wizard::render(
-            $steps,
-            'unknown',
-            'https://example.com/wizard',
-            '<input type="hidden" name="nonce" value="456">',
-            static function (string $step_id): void {
-                echo '<div data-step-render="'.$step_id.'"></div>';
-            },
-            $config,
-        );
-        $html = (string) ob_get_clean();
+    $_GET['wizard_key'] = 'invalid';
+    expect(Wizard::resolveFromRequest($steps, $config))->toBe('start')
+        ->and(Wizard::resolveFromRequest([], $config))->toBe('');
 
-        $this->assertStringContainsString('wp-field-wizard extra-wizard', $html);
-        $this->assertStringContainsString('data-initial-step="start"', $html);
-        $this->assertStringContainsString('name="action" value="wizard_save"', $html);
-        $this->assertStringContainsString('First step', $html);
-        $this->assertStringContainsString('data-step-render="start"', $html);
-        $this->assertStringContainsString('data-step-render="finish"', $html);
-        $this->assertStringContainsString('style="display:none"', $html);
+    ob_start();
+    Wizard::render([], 'anything', 'https://example.com', '', static function (): void {});
+    $empty = (string) ob_get_clean();
+    expect($empty)->toBe('');
+});
 
-        $_GET['wizard_key'] = 'finish';
-        $this->assertSame('finish', Wizard::resolveFromRequest($steps, $config));
+it('alert renders with defaults and custom attributes', function (): void {
+    $error = Alert::render('error', 'Boom', '<strong>Fail</strong>', ['class' => 'custom', 'data-id' => '42']);
+    $fallback = Alert::render('weird', '', '', ['role' => 'log', 'empty' => '']);
 
-        $_GET['wizard_key'] = 'invalid';
-        $this->assertSame('start', Wizard::resolveFromRequest($steps, $config));
-        $this->assertSame('', Wizard::resolveFromRequest([], $config));
+    expect($error)
+        ->toContain('wp-field-alert--error')
+        ->toContain('role="alert"')
+        ->toContain('class="wp-field-alert wp-field-alert--error custom"')
+        ->toContain('data-id="42"')
+        ->toContain('<strong>Fail</strong>')
+        ->toContain('Boom')
+        ->and($fallback)
+        ->toContain('wp-field-alert--neutral')
+        ->toContain('role="log"')
+        ->not->toContain('empty=""');
+});
 
-        ob_start();
-        Wizard::render([], 'anything', 'https://example.com', '', static function (): void {});
-        $empty = (string) ob_get_clean();
-        $this->assertSame('', $empty);
-    }
+it('ui manager respects modes and enqueues assets once', function (): void {
+    UIManager::setMode('invalid');
+    expect(UIManager::getMode())->toBe('vanilla')
+        ->and(UIManager::isReactMode())->toBeFalse();
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function alert_renders_with_defaults_and_custom_attributes(): void
-    {
-        $error = Alert::render('error', 'Boom', '<strong>Fail</strong>', ['class' => 'custom', 'data-id' => '42']);
-        $fallback = Alert::render('weird', '', '', ['role' => 'log', 'empty' => '']);
+    UIManager::setMode('react');
+    expect(UIManager::isReactMode())->toBeTrue();
 
-        $this->assertStringContainsString('wp-field-alert--error', $error);
-        $this->assertStringContainsString('role="alert"', $error);
-        $this->assertStringContainsString('class="wp-field-alert wp-field-alert--error custom"', $error);
-        $this->assertStringContainsString('data-id="42"', $error);
-        $this->assertStringContainsString('<strong>Fail</strong>', $error);
-        $this->assertStringContainsString('Boom', $error);
+    $GLOBALS['wp_test_filters']['wp_field_ui_mode'] = static fn (string $mode): string => 'vanilla';
+    apply_filters('wp_field_ui_mode', 'react');
+    unset($GLOBALS['wp_test_filters']['wp_field_ui_mode']);
 
-        $this->assertStringContainsString('wp-field-alert--neutral', $fallback);
-        $this->assertStringContainsString('role="log"', $fallback);
-        $this->assertStringNotContainsString('empty=""', $fallback);
-    }
+    $reflection = new \ReflectionClass(UIManager::class);
+    $reflection->getProperty('mode')->setValue(null, 'vanilla');
+    $reflection->getProperty('assetsEnqueued')->setValue(null, false);
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function ui_manager_respects_modes_and_enqueues_assets_once(): void
-    {
-        UIManager::setMode('invalid');
-        $this->assertSame('vanilla', UIManager::getMode());
-        $this->assertFalse(UIManager::isReactMode());
+    $GLOBALS['wp_test_scripts'] = [];
+    $GLOBALS['wp_test_styles'] = [];
+    $GLOBALS['wp_test_script_data'] = [];
+    $GLOBALS['wp_test_media_enqueued'] = false;
+    $GLOBALS['wp_test_editor_enqueued'] = false;
+    $GLOBALS['wp_test_code_editor_settings'] = [];
 
-        UIManager::setMode('react');
-        $this->assertTrue(UIManager::isReactMode());
+    UIManager::enqueueAssets();
 
-        $GLOBALS['wp_test_filters']['wp_field_ui_mode'] = static fn (string $mode): string => 'vanilla';
-        apply_filters('wp_field_ui_mode', 'react');
-        unset($GLOBALS['wp_test_filters']['wp_field_ui_mode']);
+    expect($GLOBALS['wp_test_media_enqueued'])->toBeTrue()
+        ->and($GLOBALS['wp_test_editor_enqueued'])->toBeTrue()
+        ->and($GLOBALS['wp_test_code_editor_settings'])->toBe(['type' => 'text/html'])
+        ->and($reflection->getProperty('assetsEnqueued')->getValue())->toBeTrue();
 
-        $reflection = new \ReflectionClass(UIManager::class);
-        $reflection->getProperty('mode')->setValue(null, 'vanilla');
-        $reflection->getProperty('assetsEnqueued')->setValue(null, false);
+    $scriptsCount = count($GLOBALS['wp_test_scripts']);
+    UIManager::enqueueAssets();
+    expect(count($GLOBALS['wp_test_scripts']))->toBe($scriptsCount);
+});
 
-        $GLOBALS['wp_test_scripts'] = [];
-        $GLOBALS['wp_test_styles'] = [];
-        $GLOBALS['wp_test_script_data'] = [];
-        $GLOBALS['wp_test_media_enqueued'] = false;
-        $GLOBALS['wp_test_editor_enqueued'] = false;
-        $GLOBALS['wp_test_code_editor_settings'] = [];
+it('ui manager registers admin enqueue hook', function (): void {
+    UIManager::init();
 
-        UIManager::enqueueAssets();
-
-        $this->assertTrue($GLOBALS['wp_test_media_enqueued']);
-        $this->assertTrue($GLOBALS['wp_test_editor_enqueued']);
-        $this->assertSame(['type' => 'text/html'], $GLOBALS['wp_test_code_editor_settings']);
-        $this->assertTrue($reflection->getProperty('assetsEnqueued')->getValue());
-
-        $scriptsCount = count($GLOBALS['wp_test_scripts']);
-        UIManager::enqueueAssets();
-        $this->assertSame($scriptsCount, count($GLOBALS['wp_test_scripts']));
-    }
-
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function ui_manager_registers_admin_enqueue_hook(): void
-    {
-        UIManager::init();
-
-        $this->assertContains([
-            'hook' => 'admin_enqueue_scripts',
-            'callback' => [UIManager::class, 'enqueueAssets'],
-        ], $GLOBALS['wp_test_actions']);
-    }
-}
+    expect($GLOBALS['wp_test_actions'])->toContain([
+        'hook' => 'admin_enqueue_scripts',
+        'callback' => [UIManager::class, 'enqueueAssets'],
+    ]);
+});

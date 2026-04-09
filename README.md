@@ -183,6 +183,10 @@ $flexible = Field::flexibleContent('page_sections')
 - `switcher` — On/off switcher
 - `spinner` — Number spinner
 - `button_set` — Button selection
+
+### Frontend dev
+- `npm run dev` starts Vite and also watches `vanilla/assets/scss/wp-field-examples-vanilla.scss` to rebuild `vanilla/assets/css/wp-field-examples-vanilla.css`.
+- Edit SCSS sources under `vanilla/assets/scss/`; do not edit generated CSS by hand.
 - `slider` — Value slider
 - `heading` — Heading
 - `subheading` — Subheading

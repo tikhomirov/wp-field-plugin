@@ -2,235 +2,206 @@
 
 declare(strict_types=1);
 
-namespace Tests\Feature;
+beforeEach(function (): void {
+    require_once dirname(__DIR__, 2).'/WP_Field.php';
+});
 
-use PHPUnit\Framework\TestCase;
+it('renders text field', function (): void {
+    $html = \WP_Field::make([
+        'id' => 'test_text',
+        'type' => 'text',
+        'label' => 'Test Text',
+    ], false);
 
-class FieldRenderingTest extends TestCase
-{
-    protected function setUp(): void
-    {
-        parent::setUp();
-        require_once dirname(__DIR__, 2).'/WP_Field.php';
-    }
+    expect($html)
+        ->toContain('wp-field')
+        ->toContain('test_text')
+        ->toContain('Test Text')
+        ->toContain('type="text"');
+});
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_renders_text_field(): void
-    {
-        $html = \WP_Field::make([
-            'id' => 'test_text',
-            'type' => 'text',
-            'label' => 'Test Text',
-        ], false);
+it('renders select field', function (): void {
+    $html = \WP_Field::make([
+        'id' => 'test_select',
+        'type' => 'select',
+        'label' => 'Test Select',
+        'options' => ['a' => 'Option A', 'b' => 'Option B'],
+    ], false);
 
-        $this->assertStringContainsString('wp-field', $html);
-        $this->assertStringContainsString('test_text', $html);
-        $this->assertStringContainsString('Test Text', $html);
-        $this->assertStringContainsString('type="text"', $html);
-    }
+    expect($html)
+        ->toContain('<select')
+        ->toContain('Option A')
+        ->toContain('Option B')
+        ->toContain('test_select');
+});
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_renders_select_field(): void
-    {
-        $html = \WP_Field::make([
-            'id' => 'test_select',
-            'type' => 'select',
-            'label' => 'Test Select',
-            'options' => ['a' => 'Option A', 'b' => 'Option B'],
-        ], false);
+it('renders radio field', function (): void {
+    $html = \WP_Field::make([
+        'id' => 'test_radio',
+        'type' => 'radio',
+        'label' => 'Test Radio',
+        'options' => ['yes' => 'Yes', 'no' => 'No'],
+    ], false);
 
-        $this->assertStringContainsString('<select', $html);
-        $this->assertStringContainsString('Option A', $html);
-        $this->assertStringContainsString('Option B', $html);
-        $this->assertStringContainsString('test_select', $html);
-    }
+    expect($html)
+        ->toContain('type="radio"')
+        ->toContain('Yes')
+        ->toContain('No');
+});
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_renders_radio_field(): void
-    {
-        $html = \WP_Field::make([
-            'id' => 'test_radio',
-            'type' => 'radio',
-            'label' => 'Test Radio',
-            'options' => ['yes' => 'Yes', 'no' => 'No'],
-        ], false);
+it('renders checkbox field', function (): void {
+    $html = \WP_Field::make([
+        'id' => 'test_checkbox',
+        'type' => 'checkbox',
+        'label' => 'Test Checkbox',
+    ], false);
 
-        $this->assertStringContainsString('type="radio"', $html);
-        $this->assertStringContainsString('Yes', $html);
-        $this->assertStringContainsString('No', $html);
-    }
+    expect($html)
+        ->toContain('type="checkbox"')
+        ->toContain('test_checkbox');
+});
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_renders_checkbox_field(): void
-    {
-        $html = \WP_Field::make([
-            'id' => 'test_checkbox',
-            'type' => 'checkbox',
-            'label' => 'Test Checkbox',
-        ], false);
+it('renders textarea field', function (): void {
+    $html = \WP_Field::make([
+        'id' => 'test_textarea',
+        'type' => 'textarea',
+        'label' => 'Test Textarea',
+    ], false);
 
-        $this->assertStringContainsString('type="checkbox"', $html);
-        $this->assertStringContainsString('test_checkbox', $html);
-    }
+    expect($html)
+        ->toContain('<textarea')
+        ->toContain('test_textarea');
+});
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_renders_textarea_field(): void
-    {
-        $html = \WP_Field::make([
-            'id' => 'test_textarea',
-            'type' => 'textarea',
-            'label' => 'Test Textarea',
-        ], false);
+it('renders number field', function (): void {
+    $html = \WP_Field::make([
+        'id' => 'test_number',
+        'type' => 'number',
+        'label' => 'Test Number',
+        'min' => 0,
+        'max' => 100,
+    ], false);
 
-        $this->assertStringContainsString('<textarea', $html);
-        $this->assertStringContainsString('test_textarea', $html);
-    }
+    expect($html)
+        ->toContain('type="number"')
+        ->toContain('min="0"')
+        ->toContain('max="100"');
+});
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_renders_number_field(): void
-    {
-        $html = \WP_Field::make([
-            'id' => 'test_number',
-            'type' => 'number',
-            'label' => 'Test Number',
-            'min' => 0,
-            'max' => 100,
-        ], false);
+it('renders email field', function (): void {
+    $html = \WP_Field::make([
+        'id' => 'test_email',
+        'type' => 'email',
+        'label' => 'Test Email',
+    ], false);
 
-        $this->assertStringContainsString('type="number"', $html);
-        $this->assertStringContainsString('min="0"', $html);
-        $this->assertStringContainsString('max="100"', $html);
-    }
+    expect($html)
+        ->toContain('type="email"')
+        ->toContain('test_email');
+});
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_renders_email_field(): void
-    {
-        $html = \WP_Field::make([
-            'id' => 'test_email',
-            'type' => 'email',
-            'label' => 'Test Email',
-        ], false);
+it('renders color field', function (): void {
+    $html = \WP_Field::make([
+        'id' => 'test_color',
+        'type' => 'color',
+        'label' => 'Test Color',
+    ], false);
 
-        $this->assertStringContainsString('type="email"', $html);
-        $this->assertStringContainsString('test_email', $html);
-    }
+    expect($html)
+        ->toContain('wp-color-picker-field')
+        ->toContain('test_color');
+});
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_renders_color_field(): void
-    {
-        $html = \WP_Field::make([
-            'id' => 'test_color',
-            'type' => 'color',
-            'label' => 'Test Color',
-        ], false);
+it('renders date field', function (): void {
+    $html = \WP_Field::make([
+        'id' => 'test_date',
+        'type' => 'date',
+        'label' => 'Test Date',
+    ], false);
 
-        $this->assertStringContainsString('wp-color-picker-field', $html);
-        $this->assertStringContainsString('test_color', $html);
-    }
+    expect($html)
+        ->toContain('type="date"')
+        ->toContain('test_date');
+});
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_renders_date_field(): void
-    {
-        $html = \WP_Field::make([
-            'id' => 'test_date',
-            'type' => 'date',
-            'label' => 'Test Date',
-        ], false);
+it('renders time field', function (): void {
+    $html = \WP_Field::make([
+        'id' => 'test_time',
+        'type' => 'time',
+        'label' => 'Test Time',
+    ], false);
 
-        $this->assertStringContainsString('type="date"', $html);
-        $this->assertStringContainsString('test_date', $html);
-    }
+    expect($html)
+        ->toContain('type="time"')
+        ->toContain('test_time');
+});
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_renders_time_field(): void
-    {
-        $html = \WP_Field::make([
-            'id' => 'test_time',
-            'type' => 'time',
-            'label' => 'Test Time',
-        ], false);
+it('renders field with placeholder', function (): void {
+    $html = \WP_Field::make([
+        'id' => 'test_field',
+        'type' => 'text',
+        'label' => 'Test',
+        'placeholder' => 'Enter value',
+    ], false);
 
-        $this->assertStringContainsString('type="time"', $html);
-        $this->assertStringContainsString('test_time', $html);
-    }
+    expect($html)->toContain('placeholder="Enter value"');
+});
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_renders_field_with_placeholder(): void
-    {
-        $html = \WP_Field::make([
-            'id' => 'test_field',
-            'type' => 'text',
-            'label' => 'Test',
-            'placeholder' => 'Enter value',
-        ], false);
+it('renders field with description', function (): void {
+    $html = \WP_Field::make([
+        'id' => 'test_field',
+        'type' => 'text',
+        'label' => 'Test',
+        'desc' => 'This is a description',
+    ], false);
 
-        $this->assertStringContainsString('placeholder="Enter value"', $html);
-    }
+    expect($html)
+        ->toContain('This is a description')
+        ->toContain('description');
+});
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_renders_field_with_description(): void
-    {
-        $html = \WP_Field::make([
-            'id' => 'test_field',
-            'type' => 'text',
-            'label' => 'Test',
-            'desc' => 'This is a description',
-        ], false);
+it('renders field with custom class', function (): void {
+    $html = \WP_Field::make([
+        'id' => 'test_field',
+        'type' => 'text',
+        'label' => 'Test',
+        'class' => 'my-custom-class',
+    ], false);
 
-        $this->assertStringContainsString('This is a description', $html);
-        $this->assertStringContainsString('description', $html);
-    }
+    expect($html)->toContain('my-custom-class');
+});
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_renders_field_with_custom_class(): void
-    {
-        $html = \WP_Field::make([
-            'id' => 'test_field',
-            'type' => 'text',
-            'label' => 'Test',
-            'class' => 'my-custom-class',
-        ], false);
+it('renders field with custom attributes', function (): void {
+    $html = \WP_Field::make([
+        'id' => 'test_field',
+        'type' => 'text',
+        'label' => 'Test',
+        'custom_attributes' => ['data-test' => 'value', 'aria-label' => 'Test Label'],
+    ], false);
 
-        $this->assertStringContainsString('my-custom-class', $html);
-    }
+    expect($html)
+        ->toContain('data-test="value"')
+        ->toContain('aria-label="Test Label"');
+});
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_renders_field_with_custom_attributes(): void
-    {
-        $html = \WP_Field::make([
-            'id' => 'test_field',
-            'type' => 'text',
-            'label' => 'Test',
-            'custom_attributes' => ['data-test' => 'value', 'aria-label' => 'Test Label'],
-        ], false);
+it('renders readonly field', function (): void {
+    $html = \WP_Field::make([
+        'id' => 'test_field',
+        'type' => 'text',
+        'label' => 'Test',
+        'readonly' => true,
+    ], false);
 
-        $this->assertStringContainsString('data-test="value"', $html);
-        $this->assertStringContainsString('aria-label="Test Label"', $html);
-    }
+    expect($html)->toContain('readonly');
+});
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_renders_readonly_field(): void
-    {
-        $html = \WP_Field::make([
-            'id' => 'test_field',
-            'type' => 'text',
-            'label' => 'Test',
-            'readonly' => true,
-        ], false);
+it('renders disabled field', function (): void {
+    $html = \WP_Field::make([
+        'id' => 'test_field',
+        'type' => 'text',
+        'label' => 'Test',
+        'disabled' => true,
+    ], false);
 
-        $this->assertStringContainsString('readonly', $html);
-    }
-
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_renders_disabled_field(): void
-    {
-        $html = \WP_Field::make([
-            'id' => 'test_field',
-            'type' => 'text',
-            'label' => 'Test',
-            'disabled' => true,
-        ], false);
-
-        $this->assertStringContainsString('disabled', $html);
-    }
-}
+    expect($html)->toContain('disabled');
+});

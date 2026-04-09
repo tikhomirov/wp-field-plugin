@@ -2,129 +2,114 @@
 
 declare(strict_types=1);
 
-namespace Tests\Feature;
+beforeEach(function (): void {
+    require_once dirname(__DIR__, 2).'/WP_Field.php';
+});
 
-use PHPUnit\Framework\TestCase;
+it('renders group field', function (): void {
+    $html = \WP_Field::make([
+        'id' => 'address',
+        'type' => 'group',
+        'label' => 'Address',
+        'fields' => [
+            ['id' => 'city', 'type' => 'text', 'label' => 'City'],
+            ['id' => 'street', 'type' => 'text', 'label' => 'Street'],
+        ],
+    ], false);
 
-class CompositeFieldsTest extends TestCase
-{
-    protected function setUp(): void
-    {
-        parent::setUp();
-        require_once dirname(__DIR__, 2).'/WP_Field.php';
-    }
+    expect($html)
+        ->toContain('wp-field-group')
+        ->toContain('City')
+        ->toContain('Street');
+});
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_renders_group_field(): void
-    {
-        $html = \WP_Field::make([
-            'id' => 'address',
-            'type' => 'group',
-            'label' => 'Address',
-            'fields' => [
-                ['id' => 'city', 'type' => 'text', 'label' => 'City'],
-                ['id' => 'street', 'type' => 'text', 'label' => 'Street'],
+it('renders repeater field', function (): void {
+    $html = \WP_Field::make([
+        'id' => 'work_times',
+        'type' => 'repeater',
+        'label' => 'Work Times',
+        'min' => 1,
+        'max' => 7,
+        'fields' => [
+            ['id' => 'day', 'type' => 'select', 'label' => 'Day', 'options' => ['mon' => 'Monday']],
+            ['id' => 'from', 'type' => 'time', 'label' => 'From'],
+        ],
+    ], false);
+
+    expect($html)
+        ->toContain('wp-field-repeater')
+        ->toContain('wp-field-repeater-add')
+        ->toContain('Monday');
+});
+
+it('renders repeater with min max', function (): void {
+    $html = \WP_Field::make([
+        'id' => 'items',
+        'type' => 'repeater',
+        'label' => 'Items',
+        'min' => 2,
+        'max' => 5,
+        'fields' => [
+            ['id' => 'name', 'type' => 'text', 'label' => 'Name'],
+        ],
+    ], false);
+
+    expect($html)
+        ->toContain('data-min="2"')
+        ->toContain('data-max="5"');
+});
+
+it('renders repeater add button', function (): void {
+    $html = \WP_Field::make([
+        'id' => 'items',
+        'type' => 'repeater',
+        'label' => 'Items',
+        'add_text' => 'Add Item',
+        'fields' => [
+            ['id' => 'name', 'type' => 'text', 'label' => 'Name'],
+        ],
+    ], false);
+
+    expect($html)
+        ->toContain('Add Item')
+        ->toContain('wp-field-repeater-add');
+});
+
+it('renders group with nested fields', function (): void {
+    $html = \WP_Field::make([
+        'id' => 'contact',
+        'type' => 'group',
+        'label' => 'Contact',
+        'fields' => [
+            ['id' => 'name', 'type' => 'text', 'label' => 'Name'],
+            ['id' => 'email', 'type' => 'email', 'label' => 'Email'],
+            ['id' => 'phone', 'type' => 'tel', 'label' => 'Phone'],
+        ],
+    ], false);
+
+    expect($html)
+        ->toContain('wp-field-group')
+        ->toContain('Name')
+        ->toContain('Email')
+        ->toContain('Phone');
+});
+
+it('renders repeater with select options', function (): void {
+    $html = \WP_Field::make([
+        'id' => 'schedule',
+        'type' => 'repeater',
+        'label' => 'Schedule',
+        'fields' => [
+            [
+                'id' => 'day',
+                'type' => 'select',
+                'label' => 'Day',
+                'options' => ['mon' => 'Monday', 'tue' => 'Tuesday'],
             ],
-        ], false);
+        ],
+    ], false);
 
-        $this->assertStringContainsString('wp-field-group', $html);
-        $this->assertStringContainsString('City', $html);
-        $this->assertStringContainsString('Street', $html);
-    }
-
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_renders_repeater_field(): void
-    {
-        $html = \WP_Field::make([
-            'id' => 'work_times',
-            'type' => 'repeater',
-            'label' => 'Work Times',
-            'min' => 1,
-            'max' => 7,
-            'fields' => [
-                ['id' => 'day', 'type' => 'select', 'label' => 'Day', 'options' => ['mon' => 'Monday']],
-                ['id' => 'from', 'type' => 'time', 'label' => 'From'],
-            ],
-        ], false);
-
-        $this->assertStringContainsString('wp-field-repeater', $html);
-        $this->assertStringContainsString('wp-field-repeater-add', $html);
-        $this->assertStringContainsString('Monday', $html);
-    }
-
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_renders_repeater_with_min_max(): void
-    {
-        $html = \WP_Field::make([
-            'id' => 'items',
-            'type' => 'repeater',
-            'label' => 'Items',
-            'min' => 2,
-            'max' => 5,
-            'fields' => [
-                ['id' => 'name', 'type' => 'text', 'label' => 'Name'],
-            ],
-        ], false);
-
-        $this->assertStringContainsString('data-min="2"', $html);
-        $this->assertStringContainsString('data-max="5"', $html);
-    }
-
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_renders_repeater_add_button(): void
-    {
-        $html = \WP_Field::make([
-            'id' => 'items',
-            'type' => 'repeater',
-            'label' => 'Items',
-            'add_text' => 'Add Item',
-            'fields' => [
-                ['id' => 'name', 'type' => 'text', 'label' => 'Name'],
-            ],
-        ], false);
-
-        $this->assertStringContainsString('Add Item', $html);
-        $this->assertStringContainsString('wp-field-repeater-add', $html);
-    }
-
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_renders_group_with_nested_fields(): void
-    {
-        $html = \WP_Field::make([
-            'id' => 'contact',
-            'type' => 'group',
-            'label' => 'Contact',
-            'fields' => [
-                ['id' => 'name', 'type' => 'text', 'label' => 'Name'],
-                ['id' => 'email', 'type' => 'email', 'label' => 'Email'],
-                ['id' => 'phone', 'type' => 'tel', 'label' => 'Phone'],
-            ],
-        ], false);
-
-        $this->assertStringContainsString('wp-field-group', $html);
-        $this->assertStringContainsString('Name', $html);
-        $this->assertStringContainsString('Email', $html);
-        $this->assertStringContainsString('Phone', $html);
-    }
-
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_renders_repeater_with_select_options(): void
-    {
-        $html = \WP_Field::make([
-            'id' => 'schedule',
-            'type' => 'repeater',
-            'label' => 'Schedule',
-            'fields' => [
-                [
-                    'id' => 'day',
-                    'type' => 'select',
-                    'label' => 'Day',
-                    'options' => ['mon' => 'Monday', 'tue' => 'Tuesday'],
-                ],
-            ],
-        ], false);
-
-        $this->assertStringContainsString('Monday', $html);
-        $this->assertStringContainsString('Tuesday', $html);
-    }
-}
+    expect($html)
+        ->toContain('Monday')
+        ->toContain('Tuesday');
+});

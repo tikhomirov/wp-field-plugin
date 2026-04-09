@@ -93,6 +93,13 @@ if (! function_exists('esc_attr')) {
     }
 }
 
+if (! function_exists('esc_attr__')) {
+    function esc_attr__($text, $domain = 'default')
+    {
+        return esc_attr(__($text, $domain));
+    }
+}
+
 if (! function_exists('esc_html')) {
     function esc_html($text)
     {

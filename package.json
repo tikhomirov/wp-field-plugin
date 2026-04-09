@@ -4,8 +4,10 @@
   "description": "Universal HTML field generator for WordPress with React UI support",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build && vite build --config vite.admin-shell.config.js && vite build --config vite.wizard.config.js && vite build --config vite.components.config.js",
+    "dev": "npm run dev:scss & vite",
+    "dev:scss": "sass --watch vanilla/assets/scss/wp-field-examples-vanilla.scss:vanilla/assets/css/wp-field-examples-vanilla.css",
+    "build": "npm run build:scss && vite build && vite build --config vite.admin-shell.config.js && vite build --config vite.wizard.config.js && vite build --config vite.components.config.js",
+    "build:scss": "sass vanilla/assets/scss/wp-field-examples-vanilla.scss:vanilla/assets/css/wp-field-examples-vanilla.css",
     "build:shell": "vite build --config vite.admin-shell.config.js",
     "build:wizard": "vite build --config vite.wizard.config.js",
     "build:components": "vite build --config vite.components.config.js",
@@ -16,7 +18,8 @@
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",
     "@vitejs/plugin-react": "^4.2.0",
-    "vite": "^5.0.0"
+    "vite": "^5.0.0",
+    "sass": "^1.77.8"
   },
   "dependencies": {
     "react": "^18.2.0",

@@ -2,183 +2,152 @@
 
 declare(strict_types=1);
 
-namespace Tests\Unit;
+beforeEach(function (): void {
+    require_once dirname(__DIR__, 2).'/WP_Field.php';
+});
 
-use PHPUnit\Framework\TestCase;
+it('initializes field types registry', function (): void {
+    \WP_Field::init_field_types();
 
-class FieldInitializationTest extends TestCase
-{
-    protected function setUp(): void
-    {
-        parent::setUp();
-        require_once dirname(__DIR__, 2).'/WP_Field.php';
-    }
+    // Проверяем, что реестр инициализирован
+    $reflection = new \ReflectionClass(\WP_Field::class);
+    $property = $reflection->getProperty('field_types');
+    $property->setAccessible(true);
+    $types = $property->getValue();
 
-    /** @test */
-    public function test_initializes_field_types_registry(): void
-    {
-        \WP_Field::init_field_types();
+    expect($types)
+        ->not->toBeEmpty()
+        ->and(isset($types['text']))->toBeTrue()
+        ->and(isset($types['select']))->toBeTrue()
+        ->and(isset($types['repeater']))->toBeTrue();
+});
 
-        // Проверяем, что реестр инициализирован
-        $reflection = new \ReflectionClass(\WP_Field::class);
-        $property = $reflection->getProperty('field_types');
-        $property->setAccessible(true);
-        $types = $property->getValue();
+it('supports field aliases', function (): void {
+    $field = new \WP_Field([
+        'id' => 'test',
+        'type' => 'text',
+        'title' => 'Test Field',  // alias для label
+    ], 'options');
 
-        $this->assertNotEmpty($types);
-        $this->assertTrue(isset($types['text']));
-        $this->assertTrue(isset($types['select']));
-        $this->assertTrue(isset($types['repeater']));
-    }
+    expect($field->field['label'])->toBe('Test Field');
+});
 
-    /** @test */
-    public function test_supports_field_aliases(): void
-    {
-        $field = new \WP_Field([
-            'id' => 'test',
-            'type' => 'text',
-            'title' => 'Test Field',  // alias для label
-        ], 'options');
+it('supports value alias', function (): void {
+    $field = new \WP_Field([
+        'id' => 'test',
+        'type' => 'text',
+        'label' => 'Test',
+        'val' => 'test value',  // alias для value
+    ], 'options');
 
-        $this->assertEquals('Test Field', $field->field['label']);
-    }
+    expect($field->field['value'])->toBe('test value');
+});
 
-    /** @test */
-    public function test_supports_value_alias(): void
-    {
-        $field = new \WP_Field([
-            'id' => 'test',
-            'type' => 'text',
-            'label' => 'Test',
-            'val' => 'test value',  // alias для value
-        ], 'options');
+it('supports custom attributes aliases', function (): void {
+    $field = new \WP_Field([
+        'id' => 'test',
+        'type' => 'text',
+        'label' => 'Test',
+        'attributes' => ['data-test' => 'value'],  // alias для custom_attributes
+    ], 'options');
 
-        $this->assertEquals('test value', $field->field['value']);
-    }
+    expect($field->field['custom_attributes'])->not->toBeNull();
+});
 
-    /** @test */
-    public function test_supports_custom_attributes_aliases(): void
-    {
-        $field = new \WP_Field([
-            'id' => 'test',
-            'type' => 'text',
-            'label' => 'Test',
-            'attributes' => ['data-test' => 'value'],  // alias для custom_attributes
-        ], 'options');
+it('creates field with static make', function (): void {
+    $html = \WP_Field::make([[
+        'id' => 'test',
+        'type' => 'text',
+        'label' => 'Test',
+    ], 'options'], false);
 
-        $this->assertNotNull($field->field['custom_attributes']);
-    }
+    expect($html)
+        ->toBeString()
+        ->toContain('wp-field');
+});
 
-    /** @test */
-    public function test_creates_field_with_static_make(): void
-    {
-        $html = \WP_Field::make([[
-            'id' => 'test',
-            'type' => 'text',
-            'label' => 'Test',
-        ], 'options'], false);
+it('creates field with make and output', function (): void {
+    ob_start();
+    $result = \WP_Field::make([[
+        'id' => 'test',
+        'type' => 'text',
+        'label' => 'Test',
+    ], 'options'], true);
+    $output = ob_get_clean();
 
-        $this->assertIsString($html);
-        $this->assertStringContainsString('wp-field', $html);
-    }
+    expect($result)->toBeNull()
+        ->and($output)->toContain('wp-field');
+});
 
-    /** @test */
-    public function test_creates_field_with_make_and_output(): void
-    {
-        ob_start();
-        $result = \WP_Field::make([[
-            'id' => 'test',
-            'type' => 'text',
-            'label' => 'Test',
-        ], 'options'], true);
-        $output = ob_get_clean();
+// Skipping validation test - validate_field_data() uses trigger_error() by design, not exceptions
 
-        $this->assertNull($result);
-        $this->assertStringContainsString('wp-field', $output);
-    }
+it('sets default storage type', function (): void {
+    $field = new \WP_Field([
+        'id' => 'test',
+        'type' => 'text',
+        'label' => 'Test',
+    ], 'post', 1);
 
-    // Skipping validation test - validate_field_data() uses trigger_error() by design, not exceptions
+    expect($field->storage_type)->toBe('post');
+});
 
-    /** @test */
-    public function test_sets_default_storage_type(): void
-    {
+it('supports different storage types', function (): void {
+    $types = ['post', 'options', 'term', 'user', 'comment'];
+
+    foreach ($types as $type) {
         $field = new \WP_Field([
             'id' => 'test',
             'type' => 'text',
             'label' => 'Test',
-        ], 'post', 1);
+        ], $type, 1);
 
-        $this->assertEquals('post', $field->storage_type);
+        expect($field->storage_type)->toBe($type);
     }
+});
 
-    /** @test */
-    public function test_supports_different_storage_types(): void
-    {
-        $types = ['post', 'options', 'term', 'user', 'comment'];
+it('handles field with default value', function (): void {
+    $field = new \WP_Field([
+        'id' => 'test',
+        'type' => 'text',
+        'label' => 'Test',
+        'default' => 'default value',
+    ], 'options');
 
-        foreach ($types as $type) {
-            $field = new \WP_Field([
-                'id' => 'test',
-                'type' => 'text',
-                'label' => 'Test',
-            ], $type, 1);
+    expect($field->field['default'])->toBe('default value');
+});
 
-            $this->assertEquals($type, $field->storage_type);
-        }
-    }
+it('handles field with explicit value', function (): void {
+    $field = new \WP_Field([
+        'id' => 'test',
+        'type' => 'text',
+        'label' => 'Test',
+        'value' => 'explicit value',
+    ], 'options');
 
-    /** @test */
-    public function test_handles_field_with_default_value(): void
-    {
-        $field = new \WP_Field([
-            'id' => 'test',
-            'type' => 'text',
-            'label' => 'Test',
-            'default' => 'default value',
-        ], 'options');
+    expect($field->field['value'])->toBe('explicit value');
+});
 
-        $this->assertEquals('default value', $field->field['default']);
-    }
+it('supports field with options', function (): void {
+    $field = new \WP_Field([
+        'id' => 'test',
+        'type' => 'select',
+        'label' => 'Test',
+        'options' => ['a' => 'Option A', 'b' => 'Option B'],
+    ], 'options');
 
-    /** @test */
-    public function test_handles_field_with_explicit_value(): void
-    {
-        $field = new \WP_Field([
-            'id' => 'test',
-            'type' => 'text',
-            'label' => 'Test',
-            'value' => 'explicit value',
-        ], 'options');
+    expect($field->field['options'])->toHaveCount(2);
+});
 
-        $this->assertEquals('explicit value', $field->field['value']);
-    }
+it('supports field with nested fields', function (): void {
+    $field = new \WP_Field([
+        'id' => 'test',
+        'type' => 'group',
+        'label' => 'Test',
+        'fields' => [
+            ['id' => 'sub1', 'type' => 'text', 'label' => 'Sub 1'],
+            ['id' => 'sub2', 'type' => 'text', 'label' => 'Sub 2'],
+        ],
+    ], 'options');
 
-    /** @test */
-    public function test_supports_field_with_options(): void
-    {
-        $field = new \WP_Field([
-            'id' => 'test',
-            'type' => 'select',
-            'label' => 'Test',
-            'options' => ['a' => 'Option A', 'b' => 'Option B'],
-        ], 'options');
-
-        $this->assertCount(2, $field->field['options']);
-    }
-
-    /** @test */
-    public function test_supports_field_with_nested_fields(): void
-    {
-        $field = new \WP_Field([
-            'id' => 'test',
-            'type' => 'group',
-            'label' => 'Test',
-            'fields' => [
-                ['id' => 'sub1', 'type' => 'text', 'label' => 'Sub 1'],
-                ['id' => 'sub2', 'type' => 'text', 'label' => 'Sub 2'],
-            ],
-        ], 'options');
-
-        $this->assertCount(2, $field->field['fields']);
-    }
-}
+    expect($field->field['fields'])->toHaveCount(2);
+});

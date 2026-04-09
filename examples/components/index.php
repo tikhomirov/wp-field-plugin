@@ -56,35 +56,12 @@ class WP_Field_Components
             );
         }
 
-        if (function_exists('wp_enqueue_media')) {
-            wp_enqueue_media();
-        }
-
-        if (function_exists('wp_enqueue_editor')) {
-            wp_enqueue_editor();
-        }
-
-        if (function_exists('wp_enqueue_code_editor')) {
-            wp_enqueue_code_editor(['type' => 'text/css']);
-        }
-
-        $integrationPath = dirname(__DIR__, 2) . '/assets/js/wp-field-integrations.js';
-        if (file_exists($integrationPath)) {
-            wp_enqueue_script(
-                'wp-field-integrations',
-                plugin_dir_url(dirname(__DIR__, 2) . '/wp-field.php') . 'assets/js/wp-field-integrations.js',
-                ['jquery', 'wp-color-picker', 'jquery-ui-slider'],
-                (string) filemtime($integrationPath),
-                true,
-            );
-        }
-
         $jsPath = __DIR__ . '/assets/wp-field-components.js';
         if (file_exists($jsPath)) {
             wp_enqueue_script(
                 'wp-field-components',
                 plugin_dir_url(__FILE__) . 'assets/wp-field-components.js',
-                ['wp-field-integrations'],
+                [],
                 (string) filemtime($jsPath),
                 true,
             );

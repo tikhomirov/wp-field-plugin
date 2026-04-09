@@ -79,6 +79,10 @@
   background: #2d2d2d;
   border: 1px solid #1e1e1e;
 }
+
+.wp-field-example .wp-field-button-set + .description {
+  margin-top: 0;
+}
 .wp-field-example .wp-field-code pre code,
 .wp-field-example .wp-field-advanced-item pre code {
   display: block;
@@ -224,3 +228,5 @@
   border-radius: 4px;
   border: 1px solid #bae6fd;
 }
+
+/*# sourceMappingURL=wp-field-examples-vanilla.css.map */

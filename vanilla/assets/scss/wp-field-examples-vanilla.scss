@@ -90,6 +90,10 @@
         border: 1px solid #1e1e1e;
     }
 
+    .wp-field-button-set + .description {
+        margin-top: 0;
+    }
+
     .wp-field-code pre code,
     .wp-field-advanced-item pre code {
         display: block;

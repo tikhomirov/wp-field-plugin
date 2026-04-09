@@ -639,6 +639,10 @@
     width: auto !important;
 }
 
+.wp-field-button-set + .description {
+    margin-top: 0;
+}
+
 .wp-field-button-set-item {
     position: relative;
     display: inline-flex;
