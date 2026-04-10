@@ -171,7 +171,12 @@ class FlexibleContentField extends AbstractField
         $rawValue = $this->getValue();
         $blocks = is_array($rawValue) ? $rawValue : [];
 
-        $html = sprintf('<div class="wp-field-flexible" data-name="%s">', $name);
+        $html = sprintf(
+            '<div class="wp-field-flexible" data-name="%s" data-min="%d" data-max="%d">',
+            $name,
+            $this->min,
+            $this->max,
+        );
 
         $rawLabel = $this->getAttribute('label');
         if ($rawLabel !== null && is_string($rawLabel)) {
@@ -197,7 +202,7 @@ class FlexibleContentField extends AbstractField
         $html .= '</div>';
 
         $html .= '<div class="wp-field-flexible-add-block">';
-        $html .= sprintf('<button type="button" class="button">%s</button>', esc_html($this->buttonLabel));
+        $html .= sprintf('<button type="button" class="button wp-field-flexible-add">%s</button>', esc_html($this->buttonLabel));
         $html .= '<div class="wp-field-flexible-layouts" style="display:none;">';
 
         foreach ($this->layouts as $layoutName => $layout) {
@@ -210,7 +215,7 @@ class FlexibleContentField extends AbstractField
 
         $html .= '</div></div>';
 
-        foreach ($this->layouts as $layoutName => $layout) {
+        foreach (array_keys($this->layouts) as $layoutName) {
             $html .= sprintf('<script type="text/template" class="wp-field-flexible-template" data-layout="%s">', esc_attr($layoutName));
             $html .= $this->renderBlock('{{INDEX}}', $layoutName, []);
             $html .= '</script>';
@@ -235,14 +240,16 @@ class FlexibleContentField extends AbstractField
             esc_attr($layoutName),
         );
 
-        $html .= sprintf('<div class="wp-field-flexible-block-header">');
+        $html .= '<div class="wp-field-flexible-block-header">';
         $html .= sprintf('<h4>%s</h4>', esc_html($layout['label']));
         $html .= '<div class="wp-field-flexible-block-controls">';
         $html .= '<button type="button" class="button wp-field-flexible-collapse">−</button>';
+        $removeLabel = function_exists('esc_html__') ? esc_html__('Remove', 'wp-field') : 'Remove';
+
         $html .= sprintf(
             '<button type="button" class="button wp-field-flexible-remove" data-min="%d">%s</button>',
             $this->min,
-            esc_html__('Remove', 'wp-field'),
+            esc_html($removeLabel),
         );
         $html .= '</div></div>';
 
@@ -259,11 +266,9 @@ class FlexibleContentField extends AbstractField
             $fieldName = $field->getName();
             $fieldValue = $blockData[$fieldName] ?? null;
 
-            $clonedField = clone $field;
-            $clonedField->value($fieldValue);
-
             $fullName = sprintf('%s[%s][%s]', $name, $index, $fieldName);
-            $clonedField = $this->updateFieldName($clonedField, $fullName);
+            $clonedField = $this->cloneSubFieldWithName($field, $fullName);
+            $clonedField->value($fieldValue);
 
             $html .= '<div class="wp-field-flexible-field">';
             $html .= $clonedField->render();
@@ -275,13 +280,15 @@ class FlexibleContentField extends AbstractField
         return $html;
     }
 
-    protected function updateFieldName(FieldInterface $field, string $newName): FieldInterface
+    protected function cloneSubFieldWithName(FieldInterface $field, string $newName): FieldInterface
     {
-        $reflection = new \ReflectionClass($field);
-        $nameProperty = $reflection->getProperty('name');
-        $nameProperty->setAccessible(true);
-        $nameProperty->setValue($field, $newName);
+        if (method_exists($field, 'cloneWithName')) {
+            /** @var FieldInterface $renamed */
+            $renamed = $field->cloneWithName($newName);
 
-        return $field;
+            return $renamed;
+        }
+
+        return clone $field;
     }
 }

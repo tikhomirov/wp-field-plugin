@@ -51,9 +51,9 @@ function createField(array $config = []): array
     ], $config);
 }
 
-function createWPField(array $config = [], string $storage_type = 'options'): \WP_Field
+function createWPField(array $config = [], string $storage_type = 'options'): WP_Field
 {
-    return new \WP_Field(createField($config), $storage_type);
+    return new WP_Field(createField($config), $storage_type);
 }
 
 /*
@@ -93,10 +93,31 @@ if (! function_exists('esc_attr')) {
     }
 }
 
+if (! function_exists('esc_attr__')) {
+    function esc_attr__($text, $domain = 'default')
+    {
+        return esc_attr(__($text, $domain));
+    }
+}
+
 if (! function_exists('esc_html')) {
     function esc_html($text)
     {
         return htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
+    }
+}
+
+if (! function_exists('__')) {
+    function __($text, $domain = 'default')
+    {
+        return $text;
+    }
+}
+
+if (! function_exists('esc_html__')) {
+    function esc_html__($text, $domain = 'default')
+    {
+        return esc_html(__($text, $domain));
     }
 }
 
@@ -150,11 +171,27 @@ if (! function_exists('get_post_meta')) {
 }
 
 if (! function_exists('get_term_meta')) {
-    function get_term_meta($term_id, $key, $single = false): void {}
+    function get_term_meta($term_id, $key, $single = false)
+    {
+        global $wp_test_meta_storage;
+        if (! isset($wp_test_meta_storage['term'][$term_id][$key])) {
+            return $single ? '' : [];
+        }
+
+        return $single ? $wp_test_meta_storage['term'][$term_id][$key] : [$wp_test_meta_storage['term'][$term_id][$key]];
+    }
 }
 
 if (! function_exists('get_user_meta')) {
-    function get_user_meta($user_id, $key, $single = false): void {}
+    function get_user_meta($user_id, $key, $single = false)
+    {
+        global $wp_test_meta_storage;
+        if (! isset($wp_test_meta_storage['user'][$user_id][$key])) {
+            return $single ? '' : [];
+        }
+
+        return $single ? $wp_test_meta_storage['user'][$user_id][$key] : [$wp_test_meta_storage['user'][$user_id][$key]];
+    }
 }
 
 if (! function_exists('get_comment_meta')) {
@@ -242,6 +279,9 @@ if (! function_exists('metadata_exists')) {
 if (! function_exists('update_term_meta')) {
     function update_term_meta($term_id, $meta_key, $meta_value)
     {
+        global $wp_test_meta_storage;
+        $wp_test_meta_storage['term'][$term_id][$meta_key] = $meta_value;
+
         return true;
     }
 }
@@ -249,6 +289,9 @@ if (! function_exists('update_term_meta')) {
 if (! function_exists('delete_term_meta')) {
     function delete_term_meta($term_id, $meta_key)
     {
+        global $wp_test_meta_storage;
+        unset($wp_test_meta_storage['term'][$term_id][$meta_key]);
+
         return true;
     }
 }
@@ -256,6 +299,9 @@ if (! function_exists('delete_term_meta')) {
 if (! function_exists('update_user_meta')) {
     function update_user_meta($user_id, $meta_key, $meta_value)
     {
+        global $wp_test_meta_storage;
+        $wp_test_meta_storage['user'][$user_id][$meta_key] = $meta_value;
+
         return true;
     }
 }
@@ -263,6 +309,9 @@ if (! function_exists('update_user_meta')) {
 if (! function_exists('delete_user_meta')) {
     function delete_user_meta($user_id, $meta_key)
     {
+        global $wp_test_meta_storage;
+        unset($wp_test_meta_storage['user'][$user_id][$meta_key]);
+
         return true;
     }
 }
@@ -281,5 +330,130 @@ if (! function_exists('delete_option')) {
     function delete_option($option)
     {
         return true;
+    }
+}
+
+if (! function_exists('add_action')) {
+    function add_action($hook, $callback, $priority = 10, $accepted_args = 1)
+    {
+        $GLOBALS['wp_test_actions'] ??= [];
+        $GLOBALS['wp_test_actions'][] = ['hook' => $hook, 'callback' => $callback];
+    }
+}
+
+if (! function_exists('add_meta_box')) {
+    function add_meta_box($id, $title, $callback, $screen, $context = 'advanced', $priority = 'default', $callback_args = null)
+    {
+        $GLOBALS['wp_test_meta_boxes'] ??= [];
+        $GLOBALS['wp_test_meta_boxes'][] = compact('id', 'title', 'callback', 'screen', 'context', 'priority', 'callback_args');
+    }
+}
+
+if (! function_exists('wp_nonce_field')) {
+    function wp_nonce_field($action = -1, $name = '_wpnonce', $referer = true, $echo = true)
+    {
+        $nonce = 'test_nonce';
+        if ($echo) {
+            echo '<input type="hidden" name="'.$name.'" value="'.$nonce.'" />';
+        }
+
+        return $nonce;
+    }
+}
+
+if (! function_exists('wp_verify_nonce')) {
+    function wp_verify_nonce($nonce, $action = -1)
+    {
+        return $GLOBALS['wp_test_verify_nonce'] ?? true;
+    }
+}
+
+if (! function_exists('current_user_can')) {
+    function current_user_can($capability, ...$args)
+    {
+        $can = $GLOBALS['wp_test_current_user_can'] ?? true;
+        if ($capability === 'edit_post' && isset($args[0]) && $args[0] === 999999) {
+            return false;
+        }
+
+        return $can;
+    }
+}
+
+if (! function_exists('add_menu_page')) {
+    function add_menu_page($page_title, $menu_title, $capability, $menu_slug, $callback = '', $icon = '', $position = null)
+    {
+        $GLOBALS['wp_test_menu_pages'] ??= [];
+        $GLOBALS['wp_test_menu_pages'][] = compact('page_title', 'menu_title', 'capability', 'menu_slug', 'icon', 'position');
+
+        return $menu_slug;
+    }
+}
+
+if (! function_exists('add_submenu_page')) {
+    function add_submenu_page($parent_slug, $page_title, $menu_title, $capability, $menu_slug, $callback = '')
+    {
+        $GLOBALS['wp_test_submenu_pages'] ??= [];
+        $GLOBALS['wp_test_submenu_pages'][] = compact('parent_slug', 'page_title', 'menu_title', 'capability', 'menu_slug');
+
+        return $menu_slug;
+    }
+}
+
+if (! function_exists('register_setting')) {
+    function register_setting($option_group, $option_name, $args = [])
+    {
+        $GLOBALS['wp_test_registered_settings'] ??= [];
+        $GLOBALS['wp_test_registered_settings'][] = compact('option_group', 'option_name', 'args');
+    }
+}
+
+if (! function_exists('settings_fields')) {
+    function settings_fields($option_group)
+    {
+        echo '<input type="hidden" name="option_page" value="'.$option_group.'" />';
+    }
+}
+
+if (! function_exists('submit_button')) {
+    function submit_button($text = null, $type = 'primary', $name = 'submit', $wrap = true, $other_attributes = [])
+    {
+        echo '<button type="'.$type.'" name="'.$name.'">'.($text ?? 'Save Changes').'</button>';
+    }
+}
+
+if (! class_exists('WP_Term')) {
+    class WP_Term
+    {
+        public $term_id;
+
+        public $name;
+
+        public $slug;
+
+        public $term_group;
+
+        public $term_taxonomy_id;
+
+        public $taxonomy;
+
+        public $description;
+
+        public $parent;
+
+        public $count;
+
+        public function __construct($term_id)
+        {
+            $this->term_id = $term_id;
+            $this->name = 'Test Term';
+            $this->slug = 'test-term';
+            $this->term_group = 0;
+            $this->term_taxonomy_id = $term_id;
+            $this->taxonomy = 'category';
+            $this->description = '';
+            $this->parent = 0;
+            $this->count = 0;
+        }
     }
 }

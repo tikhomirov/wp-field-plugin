@@ -1,8 +1,18 @@
 import React, { useState } from 'react';
 import { createRoot } from 'react-dom/client';
 
-const RepeaterField = ({ name, fields, value = [], min = 0, max = 0, buttonLabel = 'Add Row', layout = 'table' }) => {
-  const [rows, setRows] = useState(value.length > 0 ? value : (min > 0 ? Array(min).fill({}) : []));
+const RepeaterField = ({
+  name,
+  fields,
+  value = [],
+  min = 0,
+  max = 0,
+  buttonLabel = 'Add Row',
+  layout = 'table',
+}) => {
+  const [rows, setRows] = useState(
+    value.length > 0 ? value : min > 0 ? Array(min).fill({}) : []
+  );
 
   const addRow = () => {
     if (max > 0 && rows.length >= max) return;
@@ -37,7 +47,9 @@ const RepeaterField = ({ name, fields, value = [], min = 0, max = 0, buttonLabel
           required={field.required || false}
           className={field.class || ''}
         />
-        {field.description && <p className="description">{field.description}</p>}
+        {field.description && (
+          <p className="description">{field.description}</p>
+        )}
       </div>
     );
   };

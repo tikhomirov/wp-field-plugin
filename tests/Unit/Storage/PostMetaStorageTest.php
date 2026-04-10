@@ -5,8 +5,15 @@ declare(strict_types=1);
 use WpField\Storage\PostMetaStorage;
 
 beforeEach(function (): void {
+    global $wp_test_meta_storage;
+    $this->postId = random_int(10000, 99999);
+    $wp_test_meta_storage['post'][$this->postId] = [];
     $this->storage = new PostMetaStorage;
-    $this->postId = 1;
+});
+
+afterEach(function (): void {
+    global $wp_test_meta_storage;
+    unset($wp_test_meta_storage['post'][$this->postId]);
 });
 
 it('PostMetaStorage can set and get values', function (): void {

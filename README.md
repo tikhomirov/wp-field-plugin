@@ -6,8 +6,8 @@
 
 <p align="center">
   <strong>HTML Fields Library for WordPress</strong><br>
-  A foundation for building custom frameworks, settings systems, and admin UIs.<br>
-  Fluent API, 48 unique field types (+4 aliases), React/Vanilla UI, and modern v3 architecture.
+  Final v4 release for building custom frameworks, settings systems, and admin UI.<br>
+  Fluent API, 52 field types, legacy compatibility, and React/Vanilla integrations where needed.
 </p>
 
 <p align="center">
@@ -20,80 +20,137 @@
   <a href="#features">Features</a> •
   <a href="#installation">Installation</a> •
   <a href="#quick-start">Quick Start</a> •
+  <a href="#architecture">Architecture</a> •
   <a href="#field-types">Field Types</a> •
-  <a href="#examples">Examples</a> •
-  <a href="#dependencies">Dependencies</a> •
+  <a href="#demo-pages">Demo Pages</a> •
+  <a href="#development">Development</a> •
   <a href="README.ru.md">RU version</a>
 </p>
 
 ---
 
+## Modern version
+
+WP_Field v4 is the production-ready release of the modern field API. Use it for new integrations and for migrations away from ad-hoc legacy arrays. The modern layer gives you a typed, fluent field builder and a cleaner server-rendered integration model for WordPress forms.
+
+This is not a WordPress-free browser runtime. Interactive fields still rely on core WordPress admin assets where that is the correct production integration.
+
 ## Features
 
-### v3.0 — Modern Laravel-Style API
-- ✨ **Fluent Interface** — Chain methods like Laravel: `Field::text('name')->label('Name')->required()`
-- 🔁 **Repeater Fields** — Infinite nesting support with min/max constraints
-- 🎨 **Flexible Content** — ACF-style layout builder with multiple block types
-- ⚛️ **React UI** — Modern React components with Vanilla JS fallback
-- 🏗️ **SOLID Architecture** — Interfaces, traits, dependency injection
-- 📦 **Storage Strategies** — PostMeta, TermMeta, UserMeta, Options, CustomTable
-- 🛡️ **Type Safety** — PHPStan Level 9, strict types, full PHPDoc
+### What's new in v4
+- Modern API is the primary integration layer for new code.
+- Legacy runtime is isolated in `vanilla/` and remains available for compatibility.
+- Standalone vanilla export builds a separate installable plugin archive.
+- Demo pages are split by purpose: legacy examples, modern field docs, and UI showcase.
+- Map fields expose provider configuration through the public field API.
+- Quality tooling is aligned across PHP, JS, and documentation updates.
 
-### Core Features
-- 🚀 **48 Unique Field Types** — Text, select, repeater, flexible content, and more
-- ♻️ **4 Compatibility Aliases** — `date_time`, `datetime-local`, `image_picker`, `imagepicker`
-- 🔗 **Conditional Logic** — 14 operators with AND/OR relations
-- 🧪 **Full Test Coverage** — Pest/PHPUnit tests with 100% pass rate
-- 🎨 **WP Components** — Native WordPress UI integration
-- 🌍 **i18n Ready** — Multilingual support
+### Core capabilities
+- Fluent field builder through `WpField\Field\Field`
+- 52 supported field types across simple, composite, layout, and WordPress-integrated controls
+- Conditional logic with AND/OR relations
+- Repeater and flexible content for nested data structures
+- Containers for metaboxes, settings pages, taxonomies, and users
+- Storage strategies for post meta, term meta, user meta, options, and custom tables
+- React/Vanilla UI layer for admin shell, wizard, repeater, and flexible content flows
+- Legacy compatibility layer for older integrations and unsupported custom field types
 
-## Requirements
+## Architecture
 
-- PHP 8.3+
-- WordPress 6.0+
-- Composer (for installation)
+WP_Field has two layers:
+
+- **Modern API** — `WpField\Field\Field` and classes under `src/Field/Types/`
+- **Legacy compatibility layer** — `WP_Field.php` and `vanilla/`
+
+Use the modern API for new code. Keep the legacy layer for existing integrations, unsupported custom field types, or the standalone vanilla package.
+
+### How the field lifecycle works
+1. Create a field with `Field::make()` or a typed shortcut.
+2. Configure label, description, defaults, options, validation, and field-specific settings.
+3. Render the field inside a WordPress admin form.
+4. Save through a container or your own save flow.
+5. Pass the stored value back into the same field definition to render the saved state.
+
+## WordPress dependencies that remain
+
+The modern layer still uses WordPress-provided functionality for these features:
+
+- `wp.media` / Media Modal — `media`, `image`, `file`, `gallery`, `background`
+- `wp-color-picker` — `color`, `palette`, and color-based composite controls
+- `wp.editor` — classic editor fields
+- `wp.codeEditor` — code editor fields
+- `jquery-ui-sortable` — `sortable`, `sorter`, `repeater`, `flexible_content`
+- `jquery-ui-datepicker` — date and time UI where WordPress-native pickers are expected
+- `dashicons` or another icon library — `icon`
+- provider-specific assets when a map provider requires them
+
+Do not unload these assets on screens that render interactive fields unless you replace them with an equivalent setup.
 
 ## Installation
 
-### Via Composer (Recommended)
+### Via Composer
 
 ```bash
 composer require rwsite/wp-field
 ```
 
-### Manual Installation
+### Manual installation
 
-1. Clone or download to `wp-content/plugins/wp-field-plugin`
+1. Copy the package into `wp-content/plugins/wp-field-plugin`
 2. Run `composer install --no-dev`
 3. Activate the plugin in WordPress admin
 
-### Build React Components (Optional)
+### Build frontend assets
 
 ```bash
 npm install
 npm run build
 ```
 
+## Standalone vanilla build
+
+You can export the legacy runtime as a separate WordPress plugin that does not depend on the original `woo2iiko` plugin directory.
+
+```bash
+npm run build:standalone
+```
+
+The build script:
+- copies the minimal runtime from `vanilla/`
+- includes legacy assets and translations
+- generates a dedicated plugin bootstrap
+- writes the plugin to `dist/wp-field-vanilla/`
+- creates `dist/wp-field-vanilla.zip`
+
+The standalone package includes only the runtime required for the vanilla version:
+- `wp-field-vanilla.php`
+- `README.txt`
+- `vanilla/bootstrap.php`
+- `vanilla/WP_Field.php`
+- `vanilla/assets/css/wp-field.css`
+- `vanilla/assets/js/wp-field.js`
+- `lang/wp-field.pot`
+- `lang/wp-field-ru_RU.po`
+- `lang/wp-field-ru_RU.mo`
+- `lang/wp-field-ru_RU.l10n.php`
+
+It does not include the modern React layer, demo pages, tests, source SCSS, or repository-only development files.
+
 ## Quick Start
 
-### Modern API (v3.0)
+### Modern API (v4.0)
 
 ```php
-use WpField\Field\Field;
 use WpField\Container\MetaboxContainer;
+use WpField\Field\Field;
 
-// Fluent interface
 $field = Field::text('email')
     ->label('Email Address')
     ->placeholder('user@example.com')
-    ->required()
-    ->email()
-    ->class('regular-text');
+    ->required();
 
-// Render field
 echo $field->render();
 
-// Create metabox with fields
 $metabox = new MetaboxContainer('product_details', [
     'title' => 'Product Details',
     'post_types' => ['product'],
@@ -110,15 +167,15 @@ $metabox->addField(
 $metabox->register();
 ```
 
-### Repeater Field
+### Repeater field
 
 ```php
-$repeater = Field::repeater('team_members')
+Field::repeater('team_members')
     ->label('Team Members')
     ->fields([
         Field::text('name')->label('Name')->required(),
         Field::text('position')->label('Position'),
-        Field::text('email')->label('Email')->email(),
+        Field::make('email', 'email')->label('Email'),
     ])
     ->min(1)
     ->max(10)
@@ -126,339 +183,171 @@ $repeater = Field::repeater('team_members')
     ->layout('table');
 ```
 
-### Flexible Content Field
+### Flexible content field
 
 ```php
-$flexible = Field::flexibleContent('page_sections')
+Field::flexibleContent('page_sections')
     ->label('Page Sections')
     ->addLayout('text_block', 'Text Block', [
         Field::text('heading')->label('Heading'),
-        Field::text('content')->label('Content'),
+        Field::make('textarea', 'content')->label('Content'),
     ])
-    ->addLayout('image', 'Image', [
-        Field::text('image_url')->label('Image URL')->url(),
+    ->addLayout('image_block', 'Image Block', [
+        Field::make('image', 'image')->label('Image'),
         Field::text('caption')->label('Caption'),
     ])
     ->min(1)
     ->buttonLabel('Add Section');
 ```
 
-## Field Types (48 unique + 4 aliases)
-
-### Basic (9)
-- `text` — Text input
-- `password` — Password field
-- `email` — Email input
-- `url` — URL input
-- `tel` — Telephone input
-- `number` — Number input
-- `range` — Range slider
-- `hidden` — Hidden field
-- `textarea` — Multi-line text
-
-### Choice (5)
-- `select` — Dropdown list
-- `multiselect` — Multiple selection
-- `radio` — Radio buttons
-- `checkbox` — Single checkbox
-- `checkbox_group` — Checkbox group
-
-### Advanced (9)
-- `editor` — wp_editor
-- `media` — Media library (ID or URL)
-- `image` — Image with preview
-- `file` — File upload
-- `gallery` — Image gallery
-- `color` — Color picker
-- `date` — Date picker
-- `time` — Time picker
-- `datetime` — Date and time
-
-### Composite (2)
-- `group` — Nested fields
-- `repeater` — Repeating elements
-
-### Simple Fields (9)
-- `switcher` — On/off switcher
-- `spinner` — Number spinner
-- `button_set` — Button selection
-- `slider` — Value slider
-- `heading` — Heading
-- `subheading` — Subheading
-- `notice` — Notice (info/success/warning/error)
-- `content` — Custom HTML content
-- `fieldset` — Field grouping
-
-### Medium Complexity Fields (10)
-- `accordion` — Collapsible sections
-- `tabbed` — Tabs
-- `typography` — Typography settings
-- `spacing` — Spacing controls
-- `dimensions` — Size controls
-- `border` — Border settings
-- `background` — Background options
-- `link_color` — Link colors
-- `color_group` — Color group
-- `image_select` — Image selection
-
-### High Complexity Fields (8)
-- `code_editor` — Code editor with syntax highlighting
-- `icon` — Icon picker from library
-- `map` — Google Maps location
-- `sortable` — Drag & drop sorting
-- `sorter` — Enabled/disabled sorting
-- `palette` — Color palette
-- `link` — Link field (URL + text + target)
-- `backup` — Settings export/import
-
-## Examples
-
-### Dependencies
-
-```php
-// Show field only if another field has specific value
-Field::text('courier_address')
-    ->label('Delivery Address')
-    ->when('delivery_type', '==', 'courier');
-
-// Multiple conditions (AND)
-Field::text('special_field')
-    ->label('Special Field')
-    ->when('field1', '==', 'value1')
-    ->when('field2', '!=', 'value2');
-
-// Multiple conditions (OR)
-Field::text('notification')
-    ->label('Notification')
-    ->when('type', '==', 'sms')
-    ->orWhen('type', '==', 'email');
-```
-
-### Repeater
-
-```php
-Field::repeater('work_times')
-    ->label('Work Times')
-    ->min(1)
-    ->max(7)
-    ->buttonLabel('Add Day')
-    ->fields([
-        Field::make('select', 'day')
-            ->label('Day')
-            ->options(['mon' => 'Mon', 'tue' => 'Tue']),
-        Field::make('time', 'from')
-            ->label('From'),
-        Field::make('time', 'to')
-            ->label('To'),
-    ]);
-```
-
-### Group
-
-```php
-Field::make('group', 'address')
-    ->label('Address')
-    ->fields([
-        Field::text('city')->label('City'),
-        Field::text('street')->label('Street'),
-        Field::text('number')->label('Number'),
-    ]);
-```
-
-### Code Editor
-
-```php
-Field::make('code_editor', 'custom_css')
-    ->label('Custom CSS')
-    ->mode('css') // css, javascript, php, html
-    ->height('400px');
-```
-
-### Icon Picker
-
-```php
-Field::make('icon', 'menu_icon')
-    ->label('Menu Icon')
-    ->library('dashicons');
-```
-
-### Map
+### Map field provider contract
 
 ```php
 Field::make('map', 'location')
     ->label('Location')
-    ->apiKey('YOUR_GOOGLE_MAPS_API_KEY')
+    ->provider('google')
+    ->apiKey('your-api-key')
     ->zoom(12)
     ->center(['lat' => 55.7558, 'lng' => 37.6173]);
 ```
 
-### Sortable
+## Containers and storage
 
-```php
-Field::make('sortable', 'menu_order')
-    ->label('Menu Order')
-    ->options([
-        'home'     => 'Home',
-        'about'    => 'About',
-        'services' => 'Services',
-        'contact'  => 'Contact',
-    ]);
+Containers integrate fields with WordPress screens and persistence:
+
+- `MetaboxContainer` — post meta and metaboxes
+- `SettingsContainer` — settings pages and options
+- `TaxonomyContainer` — taxonomy forms and term meta
+- `UserContainer` — user profile forms and user meta
+
+Storage strategies:
+
+- `PostMetaStorage`
+- `TermMetaStorage`
+- `UserMetaStorage`
+- `OptionStorage`
+- `CustomTableStorage`
+
+## Field Types
+
+### Basic (9)
+- `text`
+- `password`
+- `email`
+- `url`
+- `tel`
+- `number`
+- `range`
+- `hidden`
+- `textarea`
+
+### Choice (5)
+- `select`
+- `multiselect`
+- `radio`
+- `checkbox`
+- `checkbox_group`
+
+### WordPress-integrated (9)
+- `editor`
+- `media`
+- `image`
+- `file`
+- `gallery`
+- `color`
+- `date`
+- `time`
+- `datetime-local`
+
+### Composite (2)
+- `group`
+- `repeater`
+
+### Simple UI (9)
+- `switcher`
+- `spinner`
+- `button_set`
+- `slider`
+- `heading`
+- `subheading`
+- `notice`
+- `content`
+- `fieldset`
+
+### Medium complexity (10)
+- `accordion`
+- `tabbed`
+- `typography`
+- `spacing`
+- `dimensions`
+- `border`
+- `background`
+- `link_color`
+- `color_group`
+- `image_select`
+
+### High complexity (8)
+- `code_editor`
+- `icon`
+- `map`
+- `sortable`
+- `sorter`
+- `palette`
+- `link`
+- `backup`
+
+### Compatibility aliases
+- `date_time` → `datetime-local`
+- `datetime` → `datetime-local`
+- `imagepicker` → `image_picker`
+
+## Demo Pages
+
+In WordPress admin debug mode, the plugin registers demo pages under **Tools**:
+
+- **WP_Field Examples** — legacy/classic API reference page
+- **WP_Field Components** — modern field documentation and live examples
+- **Admin Shell UI Demo** — UI showcase for the shell and wizard layer
+
+Routes:
+
+- `/wp-admin/tools.php?page=wp-field-examples`
+- `/wp-admin/tools.php?page=wp-field-components`
+- `/wp-admin/tools.php?page=wp-field-ui-demo`
+
+## Development
+
+### Frontend
+
+```bash
+npm run dev
+npm run lint
+npm run build
 ```
 
-### Palette
+`npm run dev` starts Vite and watches `vanilla/assets/scss/wp-field-examples-vanilla.scss` to rebuild `vanilla/assets/css/wp-field-examples-vanilla.css`.
 
-```php
-Field::make('palette', 'color_scheme')
-    ->label('Color Scheme')
-    ->palettes([
-        'blue'   => ['#0073aa', '#005a87', '#003d82'],
-        'green'  => ['#28a745', '#218838', '#1e7e34'],
-        'red'    => ['#dc3545', '#c82333', '#bd2130'],
-    ]);
+Edit SCSS sources under `vanilla/assets/scss/`. Do not edit generated CSS manually.
+
+### PHP and repository checks
+
+```bash
+composer test
+composer analyse
+composer lint:check
+./.agents/skills/qa-gate/scripts/verify.sh
 ```
 
-### Link
+## Limitations
 
-```php
-Field::make('link', 'cta_button')
-    ->label('CTA Button');
-
-// Get value:
-// $link = get_post_meta($post_id, 'cta_button', true);
-// ['url' => '...', 'text' => '...', 'target' => '_blank']
-```
-
-### Accordion
-
-```php
-Field::make('accordion', 'settings_accordion')
-    ->label('Settings')
-    ->sections([
-        [
-            'title'  => 'General',
-            'open'   => true,
-            'fields' => [
-                Field::text('title')->label('Title'),
-            ],
-        ],
-        [
-            'title'  => 'Advanced',
-            'fields' => [
-                Field::make('textarea', 'desc')->label('Description'),
-            ],
-        ],
-    ]);
-```
-
-### Typography
-
-```php
-Field::make('typography', 'heading_typography')
-    ->label('Heading Typography');
-
-// Saved as:
-// [
-//     'font_family' => 'Arial',
-//     'font_size' => '24',
-//     'font_weight' => '700',
-//     'line_height' => '1.5',
-//     'text_align' => 'center',
-//     'color' => '#333333'
-// ]
-```
-
-## Dependency Operators
-
-- `==` — Equal
-- `!=` — Not equal
-- `>`, `>=`, `<`, `<=` — Comparison
-- `in` — In array
-- `not_in` — Not in array
-- `contains` — Contains
-- `not_contains` — Not contains
-- `empty` — Empty
-- `not_empty` — Not empty
-
-## Interactive Demo
-
-**See all 48 field types in action:**
-
-👉 **Tools → WP_Field Examples** (Classic API demo)  
-👉 `/wp-admin/tools.php?page=wp-field-examples`
-
-👉 **Tools → WP_Field v3.0 Demo** (Modern Fluent API)  
-👉 `/wp-admin/tools.php?page=wp-field-v3-demo`
-
-The demo pages include:
-- ✅ All 48 field types with live examples
-- ✅ Code for each field
-- ✅ Fluent API demonstrations (v3.0)
-- ✅ Repeater and Flexible Content examples
-- ✅ Conditional Logic with 14 operators
-- ✅ React/Vanilla UI mode switching
-- ✅ Dependency system demonstration
-- ✅ Ability to save and test
-
-## Extensibility
-
-### Adding Custom Field Types
-
-```php
-add_filter('wp_field_types', function($types) {
-    $types['custom_type'] = ['render_custom', ['default' => 'value']];
-    return $types;
-});
-```
-
-### Adding Icon Libraries
-
-```php
-add_filter('wp_field_icon_library', function($icons, $library) {
-    if ($library === 'fontawesome') {
-        return ['fa-home', 'fa-user', 'fa-cog', ...];
-    }
-    return $icons;
-}, 10, 2);
-```
-
-### Custom Value Retrieval
-
-```php
-add_filter('wp_field_get_value', function($value, $storage_type, $key, $id, $field) {
-    if ($storage_type === 'custom') {
-        return get_custom_value($key, $id);
-    }
-    return $value;
-}, 10, 5);
-```
+- The modern layer is not fully standalone in the browser.
+- Removing WordPress admin runtime or required UI assets breaks interactive fields.
+- Some interactions are intended only for backend screens.
+- Demo pages are reference implementations, not a replacement for the normal plugin bootstrap in production.
 
 ## Changelog
 
-See **[CHANGELOG.md](CHANGELOG.md)** for detailed version history.
-
-## Project Stats
-
-- **PHP Lines:** 2705 (WP_Field.php)
-- **JS Lines:** 1222 (wp-field.js)
-- **CSS Lines:** 1839 (wp-field.css)
-- **Field Types:** 48
-- **Dependency Operators:** 12
-- **Storage Types:** 5
-- **External Dependencies:** 0
-
-## Compatibility
-
-- **WordPress:** 6.0+
-- **PHP:** 8.3+
-- **Dependencies:** jQuery, jQuery UI Sortable, WordPress built-in components
-- **Browsers:** Chrome, Firefox, Safari, Edge (latest 2 versions)
-
-## Performance
-
-- Minimal CSS size: ~20KB
-- Minimal JS size: ~15KB
-- Lazy loading for heavy components (CodeMirror, Google Maps)
-- Optimized selectors and events
+See [CHANGELOG.md](CHANGELOG.md) for version history.
 
 ## License
 

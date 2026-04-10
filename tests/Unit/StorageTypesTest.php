@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit;
 
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 class StorageTypesTest extends TestCase
@@ -14,7 +15,7 @@ class StorageTypesTest extends TestCase
         require_once dirname(__DIR__, 2).'/WP_Field.php';
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_supports_post_storage_type(): void
     {
         $field = new \WP_Field([
@@ -27,7 +28,7 @@ class StorageTypesTest extends TestCase
         expect($field->storage_id)->toBe(123);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_supports_options_storage_type(): void
     {
         $field = new \WP_Field([
@@ -39,7 +40,7 @@ class StorageTypesTest extends TestCase
         expect($field->storage_type)->toBe('options');
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_supports_term_storage_type(): void
     {
         $field = new \WP_Field([
@@ -52,7 +53,7 @@ class StorageTypesTest extends TestCase
         expect($field->storage_id)->toBe(456);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_supports_user_storage_type(): void
     {
         $field = new \WP_Field([
@@ -65,7 +66,7 @@ class StorageTypesTest extends TestCase
         expect($field->storage_id)->toBe(789);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_supports_comment_storage_type(): void
     {
         $field = new \WP_Field([
@@ -78,7 +79,7 @@ class StorageTypesTest extends TestCase
         expect($field->storage_id)->toBe(321);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_renders_field_with_post_storage(): void
     {
         $html = \WP_Field::make([
@@ -90,7 +91,7 @@ class StorageTypesTest extends TestCase
         $this->assertStringContainsString('post_field', $html);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_renders_field_with_options_storage(): void
     {
         $html = \WP_Field::make([
@@ -102,7 +103,7 @@ class StorageTypesTest extends TestCase
         $this->assertStringContainsString('option_field', $html);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_renders_field_with_term_storage(): void
     {
         $html = \WP_Field::make([
@@ -114,7 +115,7 @@ class StorageTypesTest extends TestCase
         $this->assertStringContainsString('term_field', $html);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_renders_field_with_user_storage(): void
     {
         $html = \WP_Field::make([
@@ -126,7 +127,7 @@ class StorageTypesTest extends TestCase
         $this->assertStringContainsString('user_field', $html);
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_renders_field_with_comment_storage(): void
     {
         $html = \WP_Field::make([

@@ -33,8 +33,15 @@ class UIManager
             return;
         }
 
+        $hook = function_exists('get_current_screen') && get_current_screen() ? get_current_screen()->id : '';
+        if ($hook === 'tools_page_wp-field-components') {
+            return;
+        }
+
         $pluginUrl = plugin_dir_url(dirname(__DIR__, 2));
         $pluginPath = dirname(__DIR__, 2);
+
+        self::enqueueWordPressEnhancementAssets($pluginUrl, $pluginPath);
 
         if (self::isReactMode()) {
             self::enqueueReactAssets($pluginUrl, $pluginPath);
@@ -47,80 +54,100 @@ class UIManager
 
     protected static function enqueueReactAssets(string $pluginUrl, string $pluginPath): void
     {
-        $repeaterJs = $pluginUrl.'assets/dist/repeater.js';
-        $flexibleJs = $pluginUrl.'assets/dist/flexible-content.js';
-
-        if (file_exists($pluginPath.'/assets/dist/repeater.js')) {
-            $version = filemtime($pluginPath.'/assets/dist/repeater.js');
-            wp_enqueue_script(
-                'wp-field-repeater-react',
-                $repeaterJs,
-                ['react', 'react-dom'],
-                $version === false ? false : (string) $version,
-                true,
-            );
-        }
-
-        if (file_exists($pluginPath.'/assets/dist/flexible-content.js')) {
-            $version = filemtime($pluginPath.'/assets/dist/flexible-content.js');
-            wp_enqueue_script(
-                'wp-field-flexible-react',
-                $flexibleJs,
-                ['react', 'react-dom'],
-                $version === false ? false : (string) $version,
-                true,
-            );
-        }
-
-        wp_enqueue_script('react', 'https://unpkg.com/react@18/umd/react.production.min.js', [], '18.2.0', true);
-        wp_enqueue_script('react-dom', 'https://unpkg.com/react-dom@18/umd/react-dom.production.min.js', ['react'], '18.2.0', true);
+        self::enqueueScript($pluginUrl, $pluginPath, 'wp-field-repeater-react', 'assets/dist/repeater.js', [], true);
+        self::enqueueScript($pluginUrl, $pluginPath, 'wp-field-flexible-react', 'assets/dist/flexible-content.js', [], true);
+        self::enqueueScript($pluginUrl, $pluginPath, 'wp-field-admin-shell-react', 'assets/dist/admin-shell.js', [], false);
+        self::enqueueScript($pluginUrl, $pluginPath, 'wp-field-wizard-react', 'assets/dist/wizard.js', [], false);
 
         self::enqueueCommonStyles($pluginUrl, $pluginPath);
     }
 
     protected static function enqueueVanillaAssets(string $pluginUrl, string $pluginPath): void
     {
-        $repeaterJs = $pluginUrl.'assets/js/repeater.js';
-        $flexibleJs = $pluginUrl.'assets/js/flexible-content.js';
-
-        if (file_exists($pluginPath.'/assets/js/repeater.js')) {
-            $version = filemtime($pluginPath.'/assets/js/repeater.js');
-            wp_enqueue_script(
-                'wp-field-repeater',
-                $repeaterJs,
-                ['jquery'],
-                $version === false ? false : (string) $version,
-                true,
-            );
-        }
-
-        if (file_exists($pluginPath.'/assets/js/flexible-content.js')) {
-            $version = filemtime($pluginPath.'/assets/js/flexible-content.js');
-            wp_enqueue_script(
-                'wp-field-flexible',
-                $flexibleJs,
-                ['jquery'],
-                $version === false ? false : (string) $version,
-                true,
-            );
-        }
+        self::enqueueScript($pluginUrl, $pluginPath, 'wp-field-main', 'vanilla/assets/js/wp-field.js', ['jquery'], false);
 
         self::enqueueCommonStyles($pluginUrl, $pluginPath);
     }
 
+    protected static function enqueueWordPressEnhancementAssets(string $pluginUrl, string $pluginPath): void
+    {
+        wp_enqueue_style('wp-color-picker');
+        wp_enqueue_script('wp-color-picker');
+        wp_enqueue_script('jquery-ui-slider');
+
+        if (function_exists('wp_enqueue_media')) {
+            wp_enqueue_media();
+        }
+
+        if (function_exists('wp_enqueue_editor')) {
+            wp_enqueue_editor();
+        }
+
+        if (function_exists('wp_enqueue_code_editor')) {
+            wp_enqueue_code_editor(['type' => 'text/html']);
+        }
+
+        self::enqueueScript(
+            $pluginUrl,
+            $pluginPath,
+            'wp-field-integrations',
+            'assets/js/wp-field-integrations.js',
+            ['jquery', 'wp-color-picker', 'jquery-ui-slider'],
+            false,
+        );
+    }
+
     protected static function enqueueCommonStyles(string $pluginUrl, string $pluginPath): void
     {
-        $cssFile = $pluginUrl.'assets/css/wp-field.css';
+        self::enqueueStyle($pluginUrl, $pluginPath, 'wp-field-styles', 'vanilla/assets/css/wp-field.css');
+        self::enqueueStyle($pluginUrl, $pluginPath, 'wp-field-admin-shell-styles', 'assets/css/admin-shell.css');
+        self::enqueueStyle($pluginUrl, $pluginPath, 'wp-field-wizard-styles', 'assets/css/wizard.css');
+    }
 
-        if (file_exists($pluginPath.'/assets/css/wp-field.css')) {
-            $version = filemtime($pluginPath.'/assets/css/wp-field.css');
-            wp_enqueue_style(
-                'wp-field-styles',
-                $cssFile,
-                [],
-                $version === false ? false : (string) $version,
-            );
+    /**
+     * @param  array<int, string>  $dependencies
+     */
+    protected static function enqueueScript(
+        string $pluginUrl,
+        string $pluginPath,
+        string $handle,
+        string $relativePath,
+        array $dependencies,
+        bool $module,
+    ): void {
+        $fullPath = $pluginPath.'/'.$relativePath;
+        if (! file_exists($fullPath)) {
+            return;
         }
+
+        $version = filemtime($fullPath);
+        wp_enqueue_script(
+            $handle,
+            $pluginUrl.$relativePath,
+            $dependencies,
+            $version === false ? false : (string) $version,
+            true,
+        );
+
+        if ($module) {
+            wp_script_add_data($handle, 'type', 'module');
+        }
+    }
+
+    protected static function enqueueStyle(string $pluginUrl, string $pluginPath, string $handle, string $relativePath): void
+    {
+        $fullPath = $pluginPath.'/'.$relativePath;
+        if (! file_exists($fullPath)) {
+            return;
+        }
+
+        $version = filemtime($fullPath);
+        wp_enqueue_style(
+            $handle,
+            $pluginUrl.$relativePath,
+            [],
+            $version === false ? false : (string) $version,
+        );
     }
 
     public static function init(): void

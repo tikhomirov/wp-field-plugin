@@ -16,12 +16,18 @@ wp-content/themes/twenty*/
 
 # ignore node dependency directories
 node_modules/
-vendor/
 
 # ignore log files and databases
 *.log
 *.sql
 *.sqlite
 .idea
-/.phpunit.cache/
-/.phpunit.result.cache
+vendor
+sessions
+.rector.cache
+/.playwright-mcp/page-2026-04-08T21-58-42-973Z.yml
+/.playwright-mcp/page-2026-04-08T21-58-43-404Z.yml
+/.playwright-mcp/
+/.claude/skills/*
+/dist/*
+/coverage/

@@ -12,7 +12,7 @@ class ConditionalLogic
      */
     public static function evaluate(array $conditions, array $values, string $relation = 'AND'): bool
     {
-        if (empty($conditions)) {
+        if ($conditions === []) {
             return true;
         }
 

@@ -23,19 +23,45 @@ trait LegacyAdapterBridge
             $wrapper->attribute($key, $value);
         }
 
-        foreach ($this->conditions as $conditionGroup) {
-            foreach ($conditionGroup as $condition) {
-                if (
-                    is_array($condition) &&
-                    isset($condition['field'], $condition['operator'], $condition['value']) &&
-                    is_string($condition['field']) &&
-                    is_string($condition['operator'])
-                ) {
-                    $wrapper->when($condition['field'], $condition['operator'], $condition['value']);
+        foreach ($this->conditions as $condition) {
+            if (is_array($condition) && isset($condition['field'], $condition['operator'])) {
+                $this->applyConditionToWrapper($wrapper, $condition);
+
+                continue;
+            }
+
+            if (is_array($condition)) {
+                foreach ($condition as $nestedCondition) {
+                    $this->applyConditionToWrapper($wrapper, $nestedCondition);
                 }
             }
         }
 
         return $wrapper->render();
+    }
+
+    private function applyConditionToWrapper(LegacyWrapperField $wrapper, mixed $condition): void
+    {
+        if (! is_array($condition)) {
+            return;
+        }
+
+        $field = $condition['field'] ?? null;
+        $operator = $condition['operator'] ?? null;
+
+        if (! is_string($field) || ! is_string($operator)) {
+            return;
+        }
+
+        $value = $condition['value'] ?? null;
+        $logic = $condition['logic'] ?? 'AND';
+
+        if ($logic === 'OR') {
+            $wrapper->orWhen($field, $operator, $value);
+
+            return;
+        }
+
+        $wrapper->when($field, $operator, $value);
     }
 }
