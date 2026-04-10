@@ -21,9 +21,9 @@ it('WP_FIELD_PLUGIN_FILE points to correct file', function (): void {
     expect(WP_FIELD_PLUGIN_FILE)->toContain('wp-field.php');
 });
 
-it('WP_FIELD_PLUGIN_DIR points to correct directory', function (): void {
-    expect(WP_FIELD_PLUGIN_DIR)->toContain('wp-field/')
-        ->and(WP_FIELD_PLUGIN_DIR)->toEndWith('/');
+it('WP_FIELD_PLUGIN_DIR points to existing directory', function (): void {
+    expect(WP_FIELD_PLUGIN_DIR)->toEndWith('/')
+        ->and(is_dir(WP_FIELD_PLUGIN_DIR))->toBeTrue();
 });
 
 it('WP_FIELD_PLUGIN_URL is a valid URL format', function (): void {
