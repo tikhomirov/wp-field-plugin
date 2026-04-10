@@ -1,7 +1,14 @@
 import React, { useState } from 'react';
 import { createRoot } from 'react-dom/client';
 
-const FlexibleContentField = ({ name, layouts, value = [], min = 0, max = 0, buttonLabel = 'Add Layout' }) => {
+const FlexibleContentField = ({
+  name,
+  layouts,
+  value = [],
+  min = 0,
+  max = 0,
+  buttonLabel = 'Add Layout',
+}) => {
   const [blocks, setBlocks] = useState(value);
   const [showLayoutPicker, setShowLayoutPicker] = useState(false);
 
@@ -46,7 +53,9 @@ const FlexibleContentField = ({ name, layouts, value = [], min = 0, max = 0, but
           required={field.required || false}
           className={field.class || ''}
         />
-        {field.description && <p className="description">{field.description}</p>}
+        {field.description && (
+          <p className="description">{field.description}</p>
+        )}
       </div>
     );
   };

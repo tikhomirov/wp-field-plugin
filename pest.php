@@ -51,9 +51,9 @@ function createField(array $config = []): array
     ], $config);
 }
 
-function createWPField(array $config = [], string $storage_type = 'options'): \WP_Field
+function createWPField(array $config = [], string $storage_type = 'options'): WP_Field
 {
-    return new \WP_Field(createField($config), $storage_type);
+    return new WP_Field(createField($config), $storage_type);
 }
 
 /*
@@ -93,10 +93,31 @@ if (! function_exists('esc_attr')) {
     }
 }
 
+if (! function_exists('esc_attr__')) {
+    function esc_attr__($text, $domain = 'default')
+    {
+        return esc_attr(__($text, $domain));
+    }
+}
+
 if (! function_exists('esc_html')) {
     function esc_html($text)
     {
         return htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
+    }
+}
+
+if (! function_exists('__')) {
+    function __($text, $domain = 'default')
+    {
+        return $text;
+    }
+}
+
+if (! function_exists('esc_html__')) {
+    function esc_html__($text, $domain = 'default')
+    {
+        return esc_html(__($text, $domain));
     }
 }
 

@@ -1,0 +1,147 @@
+/* === WP Field Wizard === */
+/* Generic step-by-step wizard UI — linear flow v1 */
+
+.wp-field-wizard {
+    max-width: 760px;
+    margin: 24px auto;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* ─── Progress indicator ──────────────────────────────────── */
+
+.wp-field-wizard__progress {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    margin-bottom: 28px;
+}
+
+.wp-field-wizard__step {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    position: relative;
+}
+
+.wp-field-wizard__step-bubble {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #e2e4e7;
+    color: #50575e;
+    font-size: 13px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: background 0.2s ease, color 0.2s ease;
+    position: relative;
+    z-index: 1;
+}
+
+.wp-field-wizard__step--active .wp-field-wizard__step-bubble {
+    background: #4f9cf9;
+    color: #fff;
+}
+
+.wp-field-wizard__step--done .wp-field-wizard__step-bubble {
+    background: #27ae60;
+    color: #fff;
+}
+
+.wp-field-wizard__step-label {
+    font-size: 12px;
+    color: #50575e;
+    margin-left: 8px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 120px;
+}
+
+.wp-field-wizard__step--active .wp-field-wizard__step-label { color: #1e1e1e; font-weight: 600; }
+.wp-field-wizard__step--done .wp-field-wizard__step-label { color: #27ae60; }
+
+/* Connector line between steps */
+.wp-field-wizard__step-connector {
+    flex: 1;
+    height: 2px;
+    background: #e2e4e7;
+    margin: 0 8px;
+}
+
+.wp-field-wizard__step--done + .wp-field-wizard__step .wp-field-wizard__step-connector,
+.wp-field-wizard__step-connector--done {
+    background: #27ae60;
+}
+
+/* ─── Step panels ─────────────────────────────────────────── */
+
+.wp-field-wizard-step {
+    background: #fff;
+    border: 1px solid #e2e4e7;
+    border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    overflow: hidden;
+    animation: wp-field-wizard-in 0.18s ease;
+}
+
+@keyframes wp-field-wizard-in {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.wp-field-wizard-step__header {
+    padding: 18px 24px 14px;
+    border-bottom: 1px solid #f0f0f1;
+    background: #fafafa;
+}
+
+.wp-field-wizard-step__title {
+    margin: 0 !important;
+    padding: 0 !important;
+    font-size: 16px !important;
+    font-weight: 700 !important;
+    color: #1e1e1e !important;
+    line-height: 1.4 !important;
+    border: none !important;
+}
+
+.wp-field-wizard-step__description {
+    margin: 6px 0 0 !important;
+    color: #50575e;
+    font-size: 13px;
+}
+
+.wp-field-wizard-step__body {
+    padding: 20px 24px;
+}
+
+/* ─── Navigation bar ──────────────────────────────────────── */
+
+.wp-field-wizard__nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 20px;
+    padding: 14px 24px;
+    background: #fff;
+    border: 1px solid #e2e4e7;
+    border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+
+.wp-field-wizard__nav-left { display: flex; gap: 8px; }
+.wp-field-wizard__nav-right { display: flex; gap: 8px; }
+
+/* ─── Responsive ──────────────────────────────────────────── */
+
+@media (max-width: 600px) {
+    .wp-field-wizard { margin: 12px; }
+
+    .wp-field-wizard__step-label { display: none; }
+
+    .wp-field-wizard__step-connector { margin: 0 4px; }
+}

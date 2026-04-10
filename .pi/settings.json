@@ -1,0 +1,31 @@
+{
+  "quietStartup": true,
+  "collapseChangelog": true,
+  "treeFilterMode": "no-tools",
+  "defaultThinkingLevel": "low",
+  "hideThinkingBlock": true,
+  "compaction": {
+    "enabled": true,
+    "reserveTokens": 12288,
+    "keepRecentTokens": 28000
+  },
+  "retry": {
+    "enabled": true,
+    "maxRetries": 3,
+    "baseDelayMs": 2000,
+    "maxDelayMs": 60000
+  },
+  "steeringMode": "one-at-a-time",
+  "followUpMode": "one-at-a-time",
+  "transport": "auto",
+  "terminal": {
+    "showImages": false,
+    "clearOnShrink": false
+  },
+  "images": {
+    "autoResize": true,
+    "blockImages": false
+  },
+  "sessionDir": "sessions",
+  "enableSkillCommands": true
+}

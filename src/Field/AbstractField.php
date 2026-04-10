@@ -48,6 +48,31 @@ abstract class AbstractField implements FieldInterface
         return $this->value ?? $this->getAttribute('default');
     }
 
+    protected function stringify(mixed $value, string $default = ''): string
+    {
+        return is_scalar($value) ? (string) $value : $default;
+    }
+
+    protected function attributeString(string $key, string $default = ''): string
+    {
+        return $this->stringify($this->getAttribute($key, $default), $default);
+    }
+
+    public function withName(string $name): static
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    public function cloneWithName(string $name): static
+    {
+        $clone = clone $this;
+        $clone->withName($name);
+
+        return $clone;
+    }
+
     /**
      * @return array<string, mixed>
      */
