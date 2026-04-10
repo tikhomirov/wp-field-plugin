@@ -2,27 +2,25 @@
 
 ```text
 .
+├── .agents
+│   └── skills
+│       └── qa-gate
+│           ├── SKILL.md — описание skill для финальной QA-проверки задачи
+│           └── scripts
+│               └── verify.sh — единый quality gate проекта: PHP syntax, Pint, PHPStan, Pest, npm lint
+├── .claude
+├── .github
+├── .pi
+├── .windsurf
+│   └── workflows
+│       ├── planning-supervisor.md — planning workflow с опорой на AGENTS.md и verify.sh
+│       └── review.md — review workflow с опорой на AGENTS.md и verify.sh
 ├── .gitignore
 ├── .pint.json
-├── AGENTS.md
-├── CHANGELOG.md
-├── composer.json
-├── composer.lock
-├── example.php — демонстрационный файл подключения библиотеки: показывает базовое создание поля, загрузку автолоадера и стартовую инициализацию
-├── logo.svg
-├── package.json
-├── package-lock.json
-├── pest.php — bootstrap-конфиг Pest для запуска тестов, подключения окружения WordPress и общих хелперов
-├── phpstan.neon
-├── phpunit.xml
-├── placeholder.svg
-├── README.md
-├── README.ru.md
-├── vite.admin-shell.config.js
-├── vite.components.config.js — Vite build для examples/components/assets/ (sidebar search, scroll)
-├── vite.config.js
-├── vite.wizard.config.js
-├── WP_Field.php — точка входа библиотеки: подключает автозагрузку, содержит legacy-совместимый класс WP_Field и мост к старому API
+├── .prettierignore — исключения Prettier для build/vendor/generated артефактов
+├── .prettierrc.json — базовая конфигурация Prettier для JS/JSX/SCSS
+├── AGENTS.md — проектные правила для всех агентов, команды и DoD
+├── API.md — сводка публичного API и контрактов библиотеки
 ├── assets
 │   ├── css
 │   │   ├── admin-shell.css
@@ -33,107 +31,183 @@
 │   │   ├── repeater.js
 │   │   └── wizard.js
 │   ├── js
-│   │   └── wp-field-integrations.js — jQuery glue для WP компонентов (wp-color-picker, sliders)
+│   │   └── wp-field-integrations.js — jQuery glue для WordPress UI integrations: media, color picker, editor и related hooks
 │   └── src
-│       ├── admin-shell.jsx — entry point React-оболочки админки: собирает shell-интерфейс, навигацию и общие layout-компоненты
-│       ├── flexible-content.jsx — entry point для UI flexible content: управляет списком блоков, их добавлением, удалением и порядком
-│       ├── repeater.jsx — entry point для UI repeater: рендерит повторяющиеся группы полей и синхронизирует их состояние
-│       ├── wizard.jsx — entry point React-мастера настройки: связывает шаги, прогресс и действия пользователя
-│       ├── wp-field-components.jsx — source entrypoint компонент-страницы; собирается в examples/components/assets/
+│       ├── admin-shell.jsx — entry point React-оболочки админки
+│       ├── flexible-content.jsx — entry point UI flexible content
+│       ├── repeater.jsx — entry point UI repeater
+│       ├── wizard.jsx — entry point React-мастера
+│       ├── wp-field-components.jsx — source entrypoint страницы components demo
 │       └── components
-│           ├── Alert.jsx — компактный компонент уведомления с выводом текста, типа сообщения и визуального статуса
-│           ├── HeaderBar.jsx — верхняя панель админ-интерфейса с заголовком, контекстом страницы и служебными действиями
-│           ├── SidebarNav.jsx — боковая навигация по разделам UI, поддерживает список пунктов и активное состояние
-│           ├── TabBar.jsx — горизонтальная панель вкладок для переключения между секциями или подэкранами
-│           └── WizardProgress.jsx — индикатор прогресса мастера, отображает текущий шаг и общее число этапов
+│           ├── Alert.jsx — компактный UI alert-компонент
+│           ├── HeaderBar.jsx — верхняя панель shell-интерфейса
+│           ├── SidebarNav.jsx — боковая навигация shell-интерфейса
+│           ├── TabBar.jsx — панель вкладок shell-интерфейса
+│           └── WizardProgress.jsx — индикатор шагов мастера
+├── CHANGELOG.md
+├── composer.json — PHP runtime/test/analysis/lint scripts
+├── composer.lock
+├── docs
+├── eslint.config.js — flat ESLint config для React/Vite/legacy JS частей проекта
 ├── examples
 │   ├── components
 │   │   ├── assets
-│   │   │   ├── wp-field-components.css — стили страницы WP_Field Components
-│   │   │   └── wp-field-components.js  — JS-бандл (sidebar search, scroll tracking)
-│   │   └── index.php — WP_Field Components page (slug: wp-field-components)
-│   ├── ui-demo
-│   │   └── index.php — Flux UI Admin Shell showcase (slug: wp-field-ui-demo)
-│   ├── modern-api-examples.php — набор примеров современного API: fluent-синтаксис, контейнеры и создание полей
-│   └── shared-catalog.php — единый каталог demo-полей (single source of truth) для components и ui-demo
-├── vanilla
-│   ├── WP_Field.php — legacy WP_Field class (Vanilla runtime)
-│   ├── bootstrap.php — enqueue vanilla assets (jQuery, wp-color-picker, wp-field.css/js)
-│   ├── example.php — WP_Field Vanilla documentation page (slug: wp-field-examples)
-│   └── assets
-│       ├── css
-│       │   ├── wp-field.css — Vanilla WP_Field styles
-│       │   └── wp-field-examples-vanilla.css — Vanilla docs page styles
-│       ├── js
-│       │   └── wp-field.js — Vanilla WP_Field JS
-│       └── scss
-│           └── wp-field-examples-vanilla.scss — SCSS source для Vanilla docs styles
+│   │   │   ├── wp-field-components.css — стили страницы components demo
+│   │   │   └── wp-field-components.js — JS bundle страницы components demo
+│   │   └── index.php — страница WP_Field Components (slug: wp-field-components)
+│   ├── modern-api-examples.php — примеры современного fluent API
+│   ├── shared-catalog.php — единый каталог demo-полей для examples/components и ui-demo
+│   └── ui-demo
+│       └── index.php — showcase Admin Shell / UI demo
 ├── lang
-│   ├── wp-field-ru_RU.l10n.php — PHP-кэш локализации WordPress с быстрым загрузочным массивом переводов
+│   ├── wp-field-ru_RU.l10n.php
 │   ├── wp-field-ru_RU.mo
 │   ├── wp-field-ru_RU.po
 │   └── wp-field.pot
+├── logo.svg
+├── node_modules
+├── package-lock.json
+├── package.json — frontend build/lint/format scripts и npm-зависимости проекта
+├── pest.php — bootstrap-конфиг Pest
+├── phpstan.neon
+├── phpunit.xml
+├── placeholder.svg
+├── README.md
+├── README.ru.md
+├── rector.php
+├── sessions
 ├── src
 │   ├── Conditional
-│   │   └── ConditionalLogic.php — вычисляет правила условного показа полей: операторы, группы условий и итоговую проверку
+│   │   └── ConditionalLogic.php — вычисление условной логики полей
 │   ├── Container
-│   │   ├── AbstractContainer.php — базовый класс контейнеров с общей логикой регистрации, конфигурации и рендера
-│   │   ├── ContainerInterface.php — контракт для всех контейнеров: единый набор методов и обязательных точек интеграции
-│   │   ├── MetaboxContainer.php — контейнер для WordPress metabox-ов с привязкой к post types и полям
-│   │   ├── SettingsContainer.php — контейнер страницы настроек, связывает поля, секции и сохранение опций
-│   │   ├── TaxonomyContainer.php — контейнер для форм редактирования терминов таксономий
-│   │   └── UserContainer.php — контейнер для профиля пользователя и user meta полей
+│   │   ├── AbstractContainer.php — базовый контейнер WordPress-интеграций
+│   │   ├── ContainerInterface.php — контракт контейнеров
+│   │   ├── MetaboxContainer.php — контейнер metabox-ов
+│   │   ├── SettingsContainer.php — контейнер settings pages
+│   │   ├── TaxonomyContainer.php — контейнер term meta форм
+│   │   └── UserContainer.php — контейнер user meta форм
 │   ├── Field
-│   │   ├── AbstractField.php — базовая реализация поля: хранение конфигурации, значений, атрибутов и общего рендера
-│   │   ├── Field.php — фабрика и точка создания полей, предоставляет fluent API и статические хелперы
-│   │   ├── FieldInterface.php — контракт поля с общим набором методов для настройки и вывода
+│   │   ├── AbstractField.php — базовая реализация поля
+│   │   ├── Field.php — фабрика fluent API и статические хелперы
+│   │   ├── FieldInterface.php — контракт поля
 │   │   └── Types
-│   │       ├── ChoiceField.php — поле выбора с вариантами, активным значением и поддержкой списков
-│   │       ├── FieldsetField.php — группирующее поле для объединения нескольких дочерних полей в один блок
-│   │       ├── FlexibleContentField.php — flexible content: набор блоков с разными типами и настраиваемой структурой
-│   │       ├── LegacyAdapterBridge.php — мост между новым API и legacy-реализацией, помогает плавно поддерживать старые вызовы
-│   │       ├── LegacyWrapperField.php — обёртка legacy-поля, адаптирует старые структуры к новому интерфейсу
-│   │       ├── MediaField.php — поле выбора медиафайла или изображения с привязкой к WordPress media modal
-│   │       ├── RadioField.php — radio-поле для выбора одного значения из набора
-│   │       ├── RepeaterField.php — repeater-поле для повторяющихся строк или групп с динамическим количеством элементов
-│   │       └── TextField.php — текстовое поле для одиночного ввода, базовый строительный блок форм
+│   │       ├── AccordionField.php — accordion layout field
+│   │       ├── BackgroundField.php — background settings field
+│   │       ├── BackupField.php — backup import/export field
+│   │       ├── BorderField.php — border settings field
+│   │       ├── ButtonSetField.php — button set field
+│   │       ├── CheckboxField.php — checkbox field
+│   │       ├── CheckboxGroupField.php — checkbox group field
+│   │       ├── ChoiceField.php — общий выбор из набора вариантов
+│   │       ├── CodeEditorField.php — code editor field
+│   │       ├── ColorField.php — color field
+│   │       ├── ColorGroupField.php — grouped color settings field
+│   │       ├── Concerns
+│   │       ├── ContentField.php — content/static markup field
+│   │       ├── DimensionsField.php — dimensions settings field
+│   │       ├── EditorField.php — classic editor field
+│   │       ├── FieldsetField.php — fieldset field
+│   │       ├── FileField.php — file picker field
+│   │       ├── FlexibleContentField.php — flexible content field
+│   │       ├── GalleryField.php — gallery field
+│   │       ├── GroupField.php — grouped child fields
+│   │       ├── HeadingField.php — heading field
+│   │       ├── IconField.php — icon picker field
+│   │       ├── ImageField.php — image picker field
+│   │       ├── ImagePickerField.php — image picker field variant
+│   │       ├── ImageSelectField.php — image select field
+│   │       ├── InputField.php — базовый input-derived field
+│   │       ├── LegacyAdapterBridge.php — мост нового API к legacy runtime
+│   │       ├── LegacyWrapperField.php — адаптер legacy custom fields
+│   │       ├── LinkColorField.php — link color settings field
+│   │       ├── LinkField.php — link field
+│   │       ├── MapField.php — map field with coordinates/provider config
+│   │       ├── MediaField.php — media picker field
+│   │       ├── NoticeField.php — notice field
+│   │       ├── PaletteField.php — palette choice field
+│   │       ├── RadioField.php — radio field
+│   │       ├── RepeaterField.php — repeater field
+│   │       ├── SelectField.php — select field
+│   │       ├── SliderField.php — slider field
+│   │       ├── SortableField.php — sortable list field
+│   │       ├── SorterField.php — dual-column sorter field
+│   │       ├── SpacingField.php — spacing settings field
+│   │       ├── SpinnerField.php — spinner field
+│   │       ├── SubheadingField.php — subheading field
+│   │       ├── SwitcherField.php — switcher/toggle field
+│   │       ├── TabbedField.php — tabbed layout field
+│   │       ├── TextareaField.php — textarea field
+│   │       ├── TextField.php — text field
+│   │       └── TypographyField.php — typography settings field
 │   ├── Legacy
-│   │   └── LegacyAdapter.php — адаптер старого API, обеспечивает совместимость и маршрутизацию в современную реализацию
+│   │   └── LegacyAdapter.php — маршрутизация и совместимость legacy API
 │   ├── Storage
-│   │   ├── CustomTableStorage.php — хранилище значений в пользовательской таблице БД
-│   │   ├── OptionStorage.php — хранилище в wp_options для глобальных настроек
-│   │   ├── PostMetaStorage.php — хранилище в post meta для значений, привязанных к записи
-│   │   ├── StorageInterface.php — контракт для всех стратегий хранения значений поля
-│   │   ├── TermMetaStorage.php — хранилище в term meta для категорий, меток и других терминов
-│   │   └── UserMetaStorage.php — хранилище в user meta для пользовательских профилей
+│   │   ├── CustomTableStorage.php — custom table storage strategy
+│   │   ├── OptionStorage.php — wp_options storage strategy
+│   │   ├── PostMetaStorage.php — post meta storage strategy
+│   │   ├── StorageInterface.php — контракт storage strategies
+│   │   ├── TermMetaStorage.php — term meta storage strategy
+│   │   └── UserMetaStorage.php — user meta storage strategy
 │   ├── Traits
-│   │   ├── HasAttributes.php — трейt для работы с HTML-атрибутами и пользовательскими data-* значениями
-│   │   ├── HasConditionals.php — трейt для подключения и управления условной логикой
-│   │   └── HasValidation.php — трейt для правил валидации, ошибок и ограничений ввода
+│   │   ├── HasAttributes.php — работа с HTML/data-* атрибутами
+│   │   ├── HasConditionals.php — подключение условной логики
+│   │   └── HasValidation.php — базовая валидация и ошибки
 │   └── UI
-│       ├── AdminShell.php — основной сборщик админ-оболочки: подключает навигацию, контент и визуальный каркас
-│       ├── AdminShellConfig.php — объект конфигурации для настройки админ-оболочки и её поведения
-│       ├── Alert.php — модель или компонент уведомления с типом, текстом и параметрами отображения
-│       ├── NavItem.php — объект пункта навигации для меню и боковых списков
-│       ├── UIManager.php — менеджер UI-слоя: координирует рендер, интеграции и состояние интерфейса
-│       ├── Wizard.php — реализация мастера настройки с шагами, состоянием и переходами
-│       └── WizardConfig.php — конфиг мастера: шаги, заголовки, опции и поведение
-└── tests
-    ├── bootstrap.php — bootstrap тестовой среды: подключает WordPress-окружение и общие фикстуры
-    ├── Concerns
-    │   └── InteractsWithWordPress.php — набор вспомогательных методов для тестов, работающих с WordPress API
-    ├── Feature
-    │   ├── ChoiceFieldsTest.php — feature-тесты для полей выбора, их рендера и сохранения состояния
-    │   ├── CompositeFieldsTest.php — feature-тесты составных полей и взаимодействия вложенных элементов
-    │   ├── DependencyTest.php — проверка условных зависимостей между полями и реакций на изменение значений
-    │   └── FieldRenderingTest.php — проверка HTML-рендера полей и базовых сценариев отображения
-    ├── README.md
-    ├── run-tests.sh
-    ├── test-wp-field-v2.4.php — legacy smoke-тесты старой версии библиотеки с проверкой обратной совместимости
-    ├── test-wp-field.php — старый smoke-тест для базовой функциональности WP_Field
-    └── Unit
-        ├── FieldInitializationTest.php — unit-тест инициализации фабрики и базовых алиасов полей
-        ├── SimpleFieldsTest.php — набор unit-тестов для простых полей и их базовых свойств
-        ├── SimpleFieldsTestFixed.php — исправленная версия тестов простых полей для стабильного прогона
-        └── StorageTypesTest.php — unit-тесты стратегий хранения и выбора правильного storage по типу
+│       ├── AdminShell.php — сборщик admin shell
+│       ├── AdminShellConfig.php — конфиг admin shell
+│       ├── Alert.php — модель/DTO уведомлений UI-слоя
+│       ├── NavItem.php — элемент навигации UI-слоя
+│       ├── UIManager.php — менеджер UI-ассетов и режимов
+│       ├── Wizard.php — реализация мастера настройки
+│       └── WizardConfig.php — конфиг шагов и поведения мастера
+├── tests
+│   ├── bootstrap.php — bootstrap тестовой среды
+│   ├── Concerns
+│   │   └── InteractsWithWordPress.php — helpers для WordPress test doubles
+│   ├── Feature
+│   │   ├── BootstrapFilesTest.php — проверки plugin/bootstrap/legacy hook wiring
+│   │   ├── ChoiceFieldsTest.php — feature-тесты choice fields
+│   │   ├── CompositeFieldsTest.php — feature-тесты composite fields
+│   │   ├── DependencyTest.php — тесты conditional dependencies
+│   │   ├── FieldRenderingTest.php — тесты HTML-рендера полей
+│   │   ├── LegacyCustomFallbackTest.php — тесты fallback для legacy custom fields
+│   │   └── LegacyWrapperConditionsTest.php — тесты адаптации legacy conditions
+│   ├── README.md
+│   ├── run-tests.sh
+│   ├── test-wp-field-v2.4.php — legacy smoke tests старой версии
+│   ├── test-wp-field.php — legacy smoke tests базовой функциональности
+│   └── Unit
+│       ├── Field
+│       │   ├── BridgeCutoverAuditTest.php — аудит cutover с legacy bridge на native classes
+│       │   ├── FieldTest.php — unit-тесты fluent factory и field contracts
+│       │   ├── SettingsObjectFieldsNativeRenderTest.php — рендер settings object fields
+│       │   ├── SimpleBridgeTypesNativeRenderTest.php — native render simple bridge types
+│       │   └── WordPressIntegrationFieldsNativeRenderTest.php — native render WP integration fields
+│       ├── FieldInitializationTest.php — инициализация factory и alias map
+│       ├── SimpleFieldsTest.php — unit-тесты simple fields
+│       ├── Storage
+│       │   └── PostMetaStorageTest.php — unit-тесты post meta storage
+│       ├── StorageTypesTest.php — выбор storage type по контексту
+│       └── UI
+│           └── UIComponentsTest.php — unit-тесты AdminShell/Wizard/UIManager
+├── tree.md — актуальное дерево структуры кодовой базы
+├── vanilla
+│   ├── assets
+│   │   ├── css
+│   │   │   ├── wp-field.css — стили legacy runtime
+│   │   │   └── wp-field-examples-vanilla.css — стили vanilla docs/demo страницы
+│   │   ├── js
+│   │   │   └── wp-field.js — legacy JS runtime для vanilla UI и enhancement-хуков
+│   │   └── scss
+│   │       └── wp-field-examples-vanilla.scss — SCSS source vanilla docs styles
+│   ├── bootstrap.php — enqueue legacy assets и fallback integrations
+│   ├── example.php — legacy examples page
+│   └── WP_Field.php — legacy baseline класса WP_Field
+├── vendor
+├── vite.admin-shell.config.js — сборка admin-shell bundle
+├── vite.components.config.js — сборка examples/components/assets bundle
+├── vite.config.js — сборка repeater/flexible-content bundles
+├── vite.wizard.config.js — сборка wizard bundle
+├── wp-field.php — canonical plugin bootstrap
+└── WP_Field.php — legacy-compatible entrypoint и bridge к modern API
 ```

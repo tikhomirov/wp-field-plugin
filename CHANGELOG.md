@@ -2,6 +2,22 @@
 
 Все важные изменения в проекте WP_Field документируются в этом файле.
 
+## [4.0.0] - 2026-04-10
+
+### Изменено
+- **Финализирован релиз v4** — выровнены релизные метаданные пакета, README и changelog под версию `4.0.0`
+- **Modern API объявлен основным слоем для нового кода** — fluent field builder и server-rendered интеграция с WordPress теперь описаны как основной public-facing путь
+- **Legacy runtime формализован как compatibility layer** — legacy-код остаётся доступным через `WP_Field.php` и `vanilla/`, включая standalone vanilla export
+- **README.md и README.ru.md полностью актуализированы** — удалены устаревшие маркеры `v3.0`, `48 field types` и slug `wp-field-v3-demo`
+- **Demo pages синхронизированы с текущей структурой проекта** — зафиксированы актуальные страницы `wp-field-examples`, `wp-field-components` и `wp-field-ui-demo`
+- **Список возможностей v4 обновлён по реальному коду** — отражены `52` поддерживаемых типа полей, conditional logic, containers, storage strategies, standalone vanilla build и map provider contract
+- **Package metadata обновлены** — синхронизированы `package.json`, `package-lock.json` и `composer.json`
+
+### Добавлено
+- **Map provider contract в публичном API** — `MapField` поддерживает `provider()`, `apiKey()`, `center()` и `zoom()`
+- **Standalone vanilla build задокументирован как релизный артефакт** — сборка создаёт отдельный installable plugin archive `dist/wp-field-vanilla.zip`
+- **Разделение demo/documentation surfaces** — отдельно описаны legacy examples page, modern components/docs page и UI showcase page
+
 ## [3.0.1] - 2026-04-06
 
 ### Изменено (Реструктуризация файловой структуры)

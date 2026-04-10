@@ -2,9 +2,9 @@
 
 /**
  * Plugin Name: WP_Field — HTML Fields Library for WordPress
- * Plugin URI:  https://github.com/rwsite/wp-field-plugin
+ * Plugin URI:  https://github.com/tikhomirov/wp-field-plugin
  * Description: HTML fields library for WordPress, designed as a foundation for custom frameworks, settings systems, and admin UI builders. Includes Fluent API, 52 unique field types (+4 aliases), and React/Vanilla UI.
- * Version:     3.0.0
+ * Version:     4.0.0
  * Requires at least: 6.0
  * Tested up to: 7.0
  * Requires PHP: 8.3

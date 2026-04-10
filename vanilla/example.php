@@ -39,7 +39,7 @@ class WP_Field_Examples
         wp_enqueue_code_editor(['type' => 'text/css']);
 
         $wp_field_url = plugin_dir_url(__FILE__);
-        $wp_field_ver = defined('WP_DEBUG') && WP_DEBUG ? time() : '3.0.0';
+        $wp_field_ver = defined('WP_DEBUG') && WP_DEBUG ? time() : '4.0.0';
 
         wp_enqueue_script(
             'wp-field-main',

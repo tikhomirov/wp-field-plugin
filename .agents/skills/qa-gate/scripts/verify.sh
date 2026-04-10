@@ -10,22 +10,16 @@ find . -name "*.php" -not -path "./vendor/*" -exec php -l {} \; > /dev/null 2>&1
     exit 1
 }
 
-echo "== Composer Autoload =="
-composer dump-autoload -o --quiet
-
 echo "== PHP Lint (Pint) =="
-composer lint:check --quiet 2>/dev/null || {
-    echo "Lint check failed or not configured. Run: composer lint:check"
-}
+composer lint:check --quiet
 
 echo "== Static Analysis (PHPStan) =="
-composer analyse --quiet 2>/dev/null || {
-    echo "PHPStan warnings found or not configured"
-}
+composer analyse --quiet
 
 echo "== Tests =="
-composer test --quiet 2>/dev/null || {
-    echo "Tests failed or not configured"
-}
+composer test --quiet
+
+echo "== Frontend Lint =="
+npm run lint --silent
 
 echo "OK"

@@ -68,5 +68,7 @@ All artifacts must begin with:
 
 ## Notes
 
+- Follow the project policy in `AGENTS.md` when planning implementation and validation.
+- If the task touches JS/JSX/SCSS, the validation section should include `npm run lint` and the repo-level `./.agents/skills/qa-gate/scripts/verify.sh`.
 - MVP defines hook points (Security/Data/Testing/Deploy critics) but does not execute them.
 - Default behavior (vibe): show only final `plan.md` to the user.

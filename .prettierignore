@@ -1,0 +1,7 @@
+assets/dist/
+examples/components/assets/
+vendor/
+node_modules/
+coverage/
+vanilla/assets/css/
+package-lock.json

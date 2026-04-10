@@ -6,8 +6,8 @@
 
 <p align="center">
   <strong>Библиотека HTML-полей для WordPress</strong><br>
-  Основа для создания собственных фреймворков, систем настроек и admin UI.<br>
-  Fluent API, 52 уникальных типа полей (+4 алиаса), React/Vanilla UI и современная архитектура v3.
+  Финальный релиз v4 для создания собственных фреймворков, систем настроек и admin UI.<br>
+  Fluent API, 52 типа полей, legacy-совместимость и React/Vanilla интеграции там, где они нужны.
 </p>
 
 <p align="center">
@@ -17,46 +17,78 @@
 </p>
 
 <p align="center">
-  <a href="#возможности">Возможности</a> •
-  <a href="#установка">Установка</a> •
-  <a href="#быстрый-старт">Быстрый старт</a> •
-  <a href="#типы-полей">Типы полей</a> •
-  <a href="#примеры">Примеры</a> •
-  <a href="#зависимости">Зависимости</a> •
-  <a href="README.md">🇬🇧 English</a>
+  <a href="#features">Возможности</a> •
+  <a href="#installation">Установка</a> •
+  <a href="#quick-start">Быстрый старт</a> •
+  <a href="#architecture">Архитектура</a> •
+  <a href="#field-types">Типы полей</a> •
+  <a href="#demo-pages">Демо-страницы</a> •
+  <a href="#development">Разработка</a> •
+  <a href="README.md">EN version</a>
 </p>
 
 ---
 
-## Возможности
+## Modern version
 
-### v3.0 — Современный API в стиле Laravel
-- ✨ **Fluent Interface** — Цепочка методов как в Laravel: `Field::text('name')->label('Имя')->required()`
-- 🔁 **Repeater поля** — Бесконечная вложенность с ограничениями min/max
-- 🎨 **Flexible Content** — Конструктор блоков в стиле ACF с множественными типами
-- ⚛️ **React UI** — Современные React компоненты с fallback на Vanilla JS
-- 🏗️ **SOLID архитектура** — Интерфейсы, трейты, внедрение зависимостей
-- 📦 **Стратегии хранения** — PostMeta, TermMeta, UserMeta, Options, CustomTable
-- 🛡️ **Типобезопасность** — PHPStan Level 9, строгие типы, полный PHPDoc
+WP_Field v4 — production-ready релиз современного field API. Используйте его для новых интеграций и для миграции с разрозненных legacy-массивов. Modern-слой даёт typed fluent builder и более чистую server-rendered модель интеграции с WordPress-формами.
+
+Это не WordPress-free browser runtime. Интерактивные поля по-прежнему опираются на штатные WordPress admin assets там, где это является корректной production-интеграцией.
+
+## Features
+
+### Что нового в v4
+- Modern API стал основным слоем интеграции для нового кода.
+- Legacy runtime изолирован в `vanilla/` и сохранён для совместимости.
+- Standalone vanilla export собирает отдельный installable plugin archive.
+- Demo pages разделены по назначению: legacy examples, modern field docs и UI showcase.
+- Map fields получили provider-конфигурацию в публичном field API.
+- Quality tooling выровнен для PHP, JS и релизной документации.
 
 ### Основные возможности
-- 🚀 **52 уникальных типа полей** — Text, select, repeater, flexible content и другие
-- ♻️ **4 алиаса совместимости** — `date_time`, `datetime-local`, `image_picker`, `imagepicker`
-- ✅ **Официальный registry работает в native runtime** — `LegacyWrapperField` остаётся только fallback для unknown/custom типов
-- 🔗 **Условная логика** — 14 операторов с отношениями AND/OR
-- 🧪 **Полное покрытие тестами** — Pest/PHPUnit тесты со 100% успехом
-- 🎨 **Компоненты WP** — Нативная интеграция с WordPress UI
-- 🌍 **i18n Ready** — Поддержка мультиязычности
+- Fluent builder полей через `WpField\Field\Field`
+- 52 поддерживаемых типа полей для простых, составных, layout- и WordPress-integrated controls
+- Conditional logic с AND/OR отношениями
+- Repeater и flexible content для вложенных структур данных
+- Контейнеры для metaboxes, settings pages, taxonomies и users
+- Storage strategies для post meta, term meta, user meta, options и custom tables
+- React/Vanilla UI layer для admin shell, wizard, repeater и flexible content сценариев
+- Legacy compatibility layer для старых интеграций и unsupported custom field types
 
-## Требования
+## Architecture
 
-- PHP 8.3+
-- WordPress 6.0+
-- Composer (для установки)
+WP_Field состоит из двух слоёв:
 
-## Установка
+- **Modern API** — `WpField\Field\Field` и классы в `src/Field/Types/`
+- **Legacy compatibility layer** — `WP_Field.php` и `vanilla/`
 
-### Через Composer (рекомендуется)
+Для нового кода используйте modern API. Legacy-слой оставляйте для существующих интеграций, unsupported custom field types или standalone vanilla package.
+
+### Как работает жизненный цикл поля
+1. Создайте поле через `Field::make()` или typed shortcut.
+2. Настройте label, description, default, options, validation и field-specific параметры.
+3. Отрендерьте поле внутри WordPress admin form.
+4. Сохраняйте через container или собственный save flow.
+5. Передавайте сохранённое значение обратно в ту же конфигурацию поля, чтобы показать сохранённое состояние.
+
+## WordPress dependencies that remain
+
+Modern-слой по-прежнему использует штатные WordPress-зависимости для этих возможностей:
+
+- `wp.media` / Media Modal — `media`, `image`, `file`, `gallery`, `background`
+- `wp-color-picker` — `color`, `palette` и color-based composite controls
+- `wp.editor` — classic editor fields
+- `wp.codeEditor` — code editor fields
+- `jquery-ui-sortable` — `sortable`, `sorter`, `repeater`, `flexible_content`
+- `jquery-ui-datepicker` — date/time UI там, где ожидается WordPress-native picker
+- `dashicons` или другая icon library — `icon`
+- provider-specific assets, если они нужны выбранному map provider
+
+Не отключайте эти assets на экранах с интерактивными полями, если не заменяете их эквивалентной схемой подключения.
+
+## Installation
+
+### Через Composer
 
 ```bash
 composer require rwsite/wp-field
@@ -64,410 +96,263 @@ composer require rwsite/wp-field
 
 ### Ручная установка
 
-1. Клонируйте или загрузите в `wp-content/plugins/wp-field-plugin`
-2. Запустите `composer install --no-dev`
-3. Активируйте плагин в админ-панели WordPress
+1. Скопируйте пакет в `wp-content/plugins/wp-field-plugin`
+2. Выполните `composer install --no-dev`
+3. Активируйте плагин в WordPress admin
 
-### Сборка React компонентов (опционально)
+### Сборка frontend assets
 
 ```bash
 npm install
 npm run build
 ```
 
-## Быстрый старт
+## Standalone vanilla build
 
-### Современный API (v3.0)
+Вы можете экспортировать legacy runtime как отдельный WordPress-плагин, который не зависит от исходного каталога `woo2iiko`.
+
+```bash
+npm run build:standalone
+```
+
+Скрипт сборки:
+- копирует минимальный runtime из `vanilla/`
+- включает legacy assets и переводы
+- генерирует отдельный plugin bootstrap
+- записывает плагин в `dist/wp-field-vanilla/`
+- создаёт `dist/wp-field-vanilla.zip`
+
+В standalone package входит только runtime, необходимый для vanilla-версии:
+- `wp-field-vanilla.php`
+- `README.txt`
+- `vanilla/bootstrap.php`
+- `vanilla/WP_Field.php`
+- `vanilla/assets/css/wp-field.css`
+- `vanilla/assets/js/wp-field.js`
+- `lang/wp-field.pot`
+- `lang/wp-field-ru_RU.po`
+- `lang/wp-field-ru_RU.mo`
+- `lang/wp-field-ru_RU.l10n.php`
+
+Он не включает modern React layer, demo pages, tests, source SCSS и repository-only development files.
+
+## Quick Start
+
+### Modern API (v4.0)
 
 ```php
-use WpField\Field\Field;
 use WpField\Container\MetaboxContainer;
+use WpField\Field\Field;
 
-// Fluent интерфейс
 $field = Field::text('email')
-    ->label('Email адрес')
+    ->label('Email Address')
     ->placeholder('user@example.com')
-    ->required()
-    ->email()
-    ->class('regular-text');
+    ->required();
 
-// Рендер поля
 echo $field->render();
 
-// Создание метабокса с полями
 $metabox = new MetaboxContainer('product_details', [
-    'title' => 'Детали продукта',
+    'title' => 'Product Details',
     'post_types' => ['product'],
 ]);
 
 $metabox->addField(
-    Field::text('sku')->label('Артикул')->required()
+    Field::text('sku')->label('SKU')->required()
 );
 
 $metabox->addField(
-    Field::text('price')->label('Цена')->required()
+    Field::text('price')->label('Price')->required()
 );
 
 $metabox->register();
 ```
 
-### Repeater поле
+### Repeater field
 
 ```php
-$repeater = Field::repeater('team_members')
-    ->label('Члены команды')
+Field::repeater('team_members')
+    ->label('Team Members')
     ->fields([
-        Field::text('name')->label('Имя')->required(),
-        Field::text('position')->label('Должность'),
-        Field::text('email')->label('Email')->email(),
+        Field::text('name')->label('Name')->required(),
+        Field::text('position')->label('Position'),
+        Field::make('email', 'email')->label('Email'),
     ])
     ->min(1)
     ->max(10)
-    ->buttonLabel('Добавить участника')
+    ->buttonLabel('Add Member')
     ->layout('table');
 ```
 
-### Flexible Content поле
+### Flexible content field
 
 ```php
-$flexible = Field::flexibleContent('page_sections')
-    ->label('Секции страницы')
-    ->addLayout('text_block', 'Текстовый блок', [
-        Field::text('heading')->label('Заголовок'),
-        Field::text('content')->label('Содержимое'),
+Field::flexibleContent('page_sections')
+    ->label('Page Sections')
+    ->addLayout('text_block', 'Text Block', [
+        Field::text('heading')->label('Heading'),
+        Field::make('textarea', 'content')->label('Content'),
     ])
-    ->addLayout('image', 'Изображение', [
-        Field::text('image_url')->label('URL изображения')->url(),
-        Field::text('caption')->label('Подпись'),
+    ->addLayout('image_block', 'Image Block', [
+        Field::make('image', 'image')->label('Image'),
+        Field::text('caption')->label('Caption'),
     ])
     ->min(1)
-    ->buttonLabel('Добавить секцию');
+    ->buttonLabel('Add Section');
 ```
 
-## Типы полей (52 уникальных + 4 алиаса)
-
-### Базовые (9)
-- `text` — Текстовый ввод
-- `password` — Поле пароля
-- `email` — Email ввод
-- `url` — URL ввод
-- `tel` — Телефонный ввод
-- `number` — Числовой ввод
-- `range` — Ползунок диапазона
-- `hidden` — Скрытое поле
-- `textarea` — Многострочный текст
-
-### Выборные (5)
-- `select` — Выпадающий список
-- `multiselect` — Множественный выбор
-- `radio` — Радиокнопки
-- `checkbox` — Одиночный чекбокс
-- `checkbox_group` — Группа чекбоксов
-
-### Продвинутые (9)
-- `editor` — wp_editor
-- `media` — Медиа библиотека (ID или URL)
-- `image` — Изображение с превью
-- `file` — Загрузка файла
-- `gallery` — Галерея изображений
-- `color` — Выбор цвета
-- `date` — Выбор даты
-- `time` — Выбор времени
-- `datetime` — Дата и время
-
-### Композитные (2)
-- `group` — Вложенные поля
-- `repeater` — Повторяющиеся элементы
-
-### Простые поля (9)
-- `switcher` — Переключатель вкл/выкл
-- `spinner` — Счетчик чисел
-- `button_set` — Выбор кнопками
-
-### Фронтенд-разработка
-- `npm run dev` запускает Vite и одновременно следит за `vanilla/assets/scss/wp-field-examples-vanilla.scss`, пересобирая `vanilla/assets/css/wp-field-examples-vanilla.css`.
-- Правки для старой версии вносите в `vanilla/assets/scss/`, а сгенерированный CSS не редактируйте вручную.
-- `slider` — Ползунок значения
-- `heading` — Заголовок
-- `subheading` — Подзаголовок
-- `notice` — Уведомление (info/success/warning/error)
-- `content` — Произвольный HTML контент
-- `fieldset` — Группировка полей
-
-### Поля средней сложности (10)
-- `accordion` — Сворачиваемые секции
-- `tabbed` — Вкладки
-- `typography` — Настройки типографии
-- `spacing` — Контролы отступов
-- `dimensions` — Контролы размеров
-- `border` — Настройки границы
-- `background` — Опции фона
-- `link_color` — Цвета ссылок
-- `color_group` — Группа цветов
-- `image_select` — Выбор изображений
-
-### Поля высокой сложности (8)
-- `code_editor` — Редактор кода с подсветкой синтаксиса
-- `icon` — Выбор иконки из библиотеки
-- `map` — Поле координат карты (native baseline + optional provider enhancement)
-- `sortable` — Сортировка drag & drop
-- `sorter` — Сортировка enabled/disabled
-- `palette` — Палитра цветов
-- `link` — Поле ссылки (URL + текст + target)
-- `backup` — Экспорт/импорт настроек
-
-## Примеры
-
-### Зависимости
-
-```php
-// Показать поле только если другое поле имеет определенное значение
-Field::text('courier_address')
-    ->label('Адрес доставки')
-    ->when('delivery_type', '==', 'courier');
-
-// Множественные условия (AND)
-Field::text('special_field')
-    ->label('Специальное поле')
-    ->when('field1', '==', 'value1')
-    ->when('field2', '!=', 'value2');
-
-// Множественные условия (OR)
-Field::text('notification')
-    ->label('Уведомление')
-    ->when('type', '==', 'sms')
-    ->orWhen('type', '==', 'email');
-```
-
-### Repeater
-
-```php
-Field::repeater('work_times')
-    ->label('Время работы')
-    ->min(1)
-    ->max(7)
-    ->buttonLabel('Добавить день')
-    ->fields([
-        Field::make('select', 'day')
-            ->label('День')
-            ->options(['mon' => 'Пн', 'tue' => 'Вт']),
-        Field::make('time', 'from')
-            ->label('С'),
-        Field::make('time', 'to')
-            ->label('По'),
-    ]);
-```
-
-### Group
-
-```php
-Field::make('group', 'address')
-    ->label('Адрес')
-    ->fields([
-        Field::text('city')->label('Город'),
-        Field::text('street')->label('Улица'),
-        Field::text('number')->label('Номер'),
-    ]);
-```
-
-### Code Editor
-
-```php
-Field::make('code_editor', 'custom_css')
-    ->label('Custom CSS')
-    ->mode('css') // css, javascript, php, html
-    ->attribute('settings', ['height' => '400px']);
-```
-
-### Icon Picker
-
-```php
-Field::make('icon', 'menu_icon')
-    ->label('Иконка меню')
-    ->library('dashicons');
-```
-
-### Map
+### Map field provider contract
 
 ```php
 Field::make('map', 'location')
-    ->label('Местоположение')
+    ->label('Location')
+    ->provider('google')
+    ->apiKey('your-api-key')
     ->zoom(12)
-    ->attribute('center', ['lat' => 55.7558, 'lng' => 37.6173]);
+    ->center(['lat' => 55.7558, 'lng' => 37.6173]);
 ```
 
-### Sortable
+## Containers and storage
 
-```php
-Field::make('sortable', 'menu_order')
-    ->label('Порядок меню')
-    ->options([
-        'home'     => 'Главная',
-        'about'    => 'О нас',
-        'services' => 'Услуги',
-        'contact'  => 'Контакты',
-    ]);
+Контейнеры встраивают поля в WordPress-экраны и отвечают за сохранение:
+
+- `MetaboxContainer` — post meta и metaboxes
+- `SettingsContainer` — settings pages и options
+- `TaxonomyContainer` — taxonomy forms и term meta
+- `UserContainer` — user profile forms и user meta
+
+Storage strategies:
+
+- `PostMetaStorage`
+- `TermMetaStorage`
+- `UserMetaStorage`
+- `OptionStorage`
+- `CustomTableStorage`
+
+## Field Types
+
+### Basic (9)
+- `text`
+- `password`
+- `email`
+- `url`
+- `tel`
+- `number`
+- `range`
+- `hidden`
+- `textarea`
+
+### Choice (5)
+- `select`
+- `multiselect`
+- `radio`
+- `checkbox`
+- `checkbox_group`
+
+### WordPress-integrated (9)
+- `editor`
+- `media`
+- `image`
+- `file`
+- `gallery`
+- `color`
+- `date`
+- `time`
+- `datetime-local`
+
+### Composite (2)
+- `group`
+- `repeater`
+
+### Simple UI (9)
+- `switcher`
+- `spinner`
+- `button_set`
+- `slider`
+- `heading`
+- `subheading`
+- `notice`
+- `content`
+- `fieldset`
+
+### Medium complexity (10)
+- `accordion`
+- `tabbed`
+- `typography`
+- `spacing`
+- `dimensions`
+- `border`
+- `background`
+- `link_color`
+- `color_group`
+- `image_select`
+
+### High complexity (8)
+- `code_editor`
+- `icon`
+- `map`
+- `sortable`
+- `sorter`
+- `palette`
+- `link`
+- `backup`
+
+### Compatibility aliases
+- `date_time` → `datetime-local`
+- `datetime` → `datetime-local`
+- `imagepicker` → `image_picker`
+
+## Demo Pages
+
+В WordPress admin debug mode плагин регистрирует demo pages в меню **Tools**:
+
+- **WP_Field Examples** — reference page для legacy/classic API
+- **WP_Field Components** — modern field documentation и live examples
+- **Admin Shell UI Demo** — UI showcase для shell и wizard слоя
+
+Маршруты:
+
+- `/wp-admin/tools.php?page=wp-field-examples`
+- `/wp-admin/tools.php?page=wp-field-components`
+- `/wp-admin/tools.php?page=wp-field-ui-demo`
+
+## Development
+
+### Frontend
+
+```bash
+npm run dev
+npm run lint
+npm run build
 ```
 
-### Palette
+`npm run dev` запускает Vite и следит за `vanilla/assets/scss/wp-field-examples-vanilla.scss`, пересобирая `vanilla/assets/css/wp-field-examples-vanilla.css`.
 
-```php
-Field::make('palette', 'color_scheme')
-    ->label('Цветовая схема')
-    ->options([
-        'blue' => '#0073aa',
-        'green' => '#28a745',
-        'red' => '#dc3545',
-    ]);
+Редактируйте SCSS-исходники в `vanilla/assets/scss/`. Не правьте generated CSS вручную.
+
+### PHP и общие проверки
+
+```bash
+composer test
+composer analyse
+composer lint:check
+./.agents/skills/qa-gate/scripts/verify.sh
 ```
 
-### Link
+## Limitations
 
-```php
-Field::make('link', 'cta_button')
-    ->label('CTA кнопка');
-
-// Получение значения:
-// $link = get_post_meta($post_id, 'cta_button', true);
-// ['url' => '...', 'text' => '...', 'target' => '_blank']
-```
-
-### Accordion
-
-```php
-Field::make('accordion', 'settings_accordion')
-    ->label('Настройки')
-    ->sections([
-        [
-            'title'  => 'Основные',
-            'open'   => true,
-            'fields' => [
-                Field::text('title')->label('Заголовок'),
-            ],
-        ],
-        [
-            'title'  => 'Дополнительные',
-            'fields' => [
-                Field::make('textarea', 'desc')->label('Описание'),
-            ],
-        ],
-    ]);
-```
-
-### Typography
-
-```php
-Field::make('typography', 'heading_typography')
-    ->label('Типография заголовков');
-
-// Сохраняется как:
-// [
-//     'font_family' => 'Arial',
-//     'font_size' => '24',
-//     'font_weight' => '700',
-//     'line_height' => '1.5',
-//     'text_align' => 'center',
-//     'color' => '#333333'
-// ]
-```
-
-## Операторы зависимостей
-
-- `==` — Равно
-- `!=` — Не равно
-- `>`, `>=`, `<`, `<=` — Сравнение
-- `in` — В массиве
-- `not_in` — Не в массиве
-- `contains` — Содержит
-- `not_contains` — Не содержит
-- `empty` — Пусто
-- `not_empty` — Не пусто
-
-## Интерактивная демонстрация
-
-**Посмотрите все 48 типов полей в действии:**
-
-👉 **Инструменты → WP_Field Examples** (демо классического API)  
-👉 `/wp-admin/tools.php?page=wp-field-examples`
-
-👉 **Инструменты → WP_Field Demo** (modern-only / legacy disabled baseline)  
-👉 `/wp-admin/tools.php?page=wp-field-v3-demo`
-
-Демо-страницы включают:
-- ✅ Все 48 типов полей с живыми примерами
-- ✅ Код для каждого поля
-- ✅ Демонстрации Fluent API (v3.0)
-- ✅ Примеры Repeater и Flexible Content
-- ✅ Условную логику с 14 операторами
-- ✅ Переключение React/Vanilla UI
-- ✅ Демонстрацию системы зависимостей
-- ✅ Возможность сохранить и протестировать
-
-## Расширяемость
-
-### Добавление своих типов полей
-
-```php
-add_filter('wp_field_types', function($types) {
-    $types['custom_type'] = ['render_custom', ['default' => 'value']];
-    return $types;
-});
-```
-
-### Добавление библиотек иконок
-
-```php
-add_filter('wp_field_icon_library', function($icons, $library) {
-    if ($library === 'fontawesome') {
-        return ['fa-home', 'fa-user', 'fa-cog', ...];
-    }
-    return $icons;
-}, 10, 2);
-```
-
-### Кастомное получение значений
-
-```php
-add_filter('wp_field_get_value', function($value, $storage_type, $key, $id, $field) {
-    if ($storage_type === 'custom') {
-        return get_custom_value($key, $id);
-    }
-    return $value;
-}, 10, 5);
-```
+- Modern-слой не является полностью автономным browser runtime.
+- Удаление WordPress admin runtime или нужных UI assets ломает интерактивные поля.
+- Часть взаимодействий рассчитана только на backend screens.
+- Demo pages — это reference implementations, а не замена штатному plugin bootstrap в production.
 
 ## Changelog
 
-Смотрите **[CHANGELOG.md](CHANGELOG.md)** для подробной истории версий.
+История версий находится в [CHANGELOG.md](CHANGELOG.md).
 
-## Статистика проекта
-
-- **Строк PHP:** 2705 (legacy/WP_Field.php)
-- **Строк JS:** 1222 (wp-field.js)
-- **Строк CSS:** 1839 (wp-field.css)
-- **Типов полей:** 52
-- **Операторов зависимостей:** 14
-- **Типов хранилищ:** 5
-- **Внешних зависимостей:** 0
-
-## Совместимость
-
-- **WordPress:** 6.0+
-- **PHP:** 8.3+
-- **Зависимости:** jQuery, jQuery UI Sortable, встроенные компоненты WordPress
-- **Браузеры:** Chrome, Firefox, Safari, Edge (последние 2 версии)
-
-## Производительность
-
-- Минимальный размер CSS: ~20KB
-- Минимальный размер JS: ~15KB
-- Lazy loading для тяжелых компонентов (CodeMirror, Google Maps)
-- Оптимизированные селекторы и события
-
-## Лицензия
+## License
 
 GPL v2 или выше
 
-## Автор
+## Author
 
 Aleksei Tikhomirov (https://rwsite.ru)

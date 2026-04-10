@@ -7,8 +7,9 @@ Steps:
 1) Read docs/tasks/<task>.md and extract acceptance criteria.
 2) Read the implementation plan (if present) and list the promised outcomes.
 3) Run `./.agents/skills/qa-gate/scripts/verify.sh`.
-4) If it fails: fix issues, rerun until it passes or blockers are clear.
-5) Review the git diff for:
+4) Treat `verify.sh` as a blocking gate: success means exit code `0`; any failing PHP or frontend lint/test step means the task is not ready.
+5) If it fails: fix issues, rerun until it passes or blockers are clear.
+6) Review the git diff for:
    - correct scope (no unrelated edits)
    - safe error handling
    - tests and edge cases

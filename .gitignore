@@ -29,3 +29,4 @@ sessions
 /.playwright-mcp/page-2026-04-08T21-58-43-404Z.yml
 /.playwright-mcp/
 /.claude/skills/*
+/dist/*

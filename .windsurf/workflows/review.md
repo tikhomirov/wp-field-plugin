@@ -4,7 +4,7 @@ description: Review code changes for bugs, security issues, and improvements
 ---
 You are a senior software engineer performing a thorough code review to identify potential bugs.
 
-Your task is to find all potential bugs and code improvements in the code changes. Focus on:
+Your task is to find all potential bugs and code improvements in the code changes. Follow the project policy in `AGENTS.md`; treat `./.agents/skills/qa-gate/scripts/verify.sh` as the blocking quality gate, and expect `npm run lint` to pass for JS/JSX/SCSS changes. Focus on:
 1. Logic errors and incorrect behavior
 2. Edge cases that aren't handled
 3. Null/undefined reference issues

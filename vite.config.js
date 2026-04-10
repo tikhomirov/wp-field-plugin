@@ -9,8 +9,11 @@ export default defineConfig({
     emptyOutDir: true,
     rollupOptions: {
       input: {
-        'repeater': resolve(__dirname, 'assets/src/repeater.jsx'),
-        'flexible-content': resolve(__dirname, 'assets/src/flexible-content.jsx'),
+        repeater: resolve(__dirname, 'assets/src/repeater.jsx'),
+        'flexible-content': resolve(
+          __dirname,
+          'assets/src/flexible-content.jsx'
+        ),
       },
       output: {
         entryFileNames: '[name].js',

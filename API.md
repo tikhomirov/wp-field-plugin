@@ -1,21 +1,21 @@
 # API библиотеки WP_Field
 
-Короткая сводка **стабильного публичного API** библиотеки `wp-field`.
-Если нужно интегрировать библиотеку в плагин или тему, начинать стоит отсюда.
+Этот документ описывает **стабильный публичный API** библиотеки `wp-field`.
+Если вы интегрируете библиотеку в плагин или тему, начинайте отсюда.
 
-## Что считать публичным API
+## Что считается публичным API
 
-Публичными считаются:
+Стабильными считаются только те контракты, которые зафиксированы в коде и используются как точка интеграции:
 
 - фабрика `WpField\Field\Field`;
 - интерфейсы `FieldInterface`, `ContainerInterface`, `StorageInterface`;
 - контейнеры `MetaboxContainer`, `SettingsContainer`, `TaxonomyContainer`, `UserContainer`;
-- UI API `NavItem`, `AdminShell`, `Wizard`, `UIManager`;
-- legacy entrypoint `WP_Field.php` и класс `vanilla/WP_Field.php` только как compat-слой.
+- storage-классы `PostMetaStorage`, `OptionStorage`, `TermMetaStorage`, `UserMetaStorage`, `CustomTableStorage`;
+- conditional API `ConditionalLogic`;
+- UI API `NavItem`, `AdminShell`, `AdminShellConfig`, `Wizard`, `WizardConfig`, `UIManager`;
+- legacy entrypoint `WP_Field.php` и `vanilla/WP_Field.php` как слой совместимости.
 
-Правило:
-- если контракт зафиксирован интерфейсом, фабрикой или явно описан ниже, его можно использовать;
-- остальные публичные методы лучше считать реализационными деталями.
+Если контракт не описан здесь или не зафиксирован интерфейсом, считайте его внутренней реализацией.
 
 ---
 
@@ -40,59 +40,86 @@ $container->addField($field);
 $container->register();
 ```
 
-Базовый поток:
+Базовый поток такой:
 
-1. создать поле через `Field`;
-2. добавить его в контейнер;
-3. вызвать `register()`;
-4. для metabox/taxonomy/user-контейнеров сохранение идёт через `sanitize()` и `validate()`;
-5. для `SettingsContainer` сохранение идёт через `options.php` и `sanitize_callback`;
-6. значение уходит в соответствующее хранилище.
+1. создайте поле через `Field`;
+2. добавьте его в контейнер;
+3. вызовите `register()`;
+4. контейнер встроит поле в WordPress lifecycle и сохранит значение через нужное storage;
+5. поле отвечает за описание, санитизацию и валидацию значения.
 
 ---
 
 ## 1. Фабрика `WpField\Field\Field`
 
-Это основной вход для нового кода.
+`Field` — основной вход для нового кода.
 
-### Основные методы
+### Доступные фабрики
 
 - `Field::text(string $name)`
+- `Field::group(string $name)`
+- `Field::repeater(string $name)`
+- `Field::flexibleContent(string $name)`
+- `Field::heading(string $name)`
+- `Field::subheading(string $name)`
+- `Field::notice(string $name)`
+- `Field::content(string $name)`
 - `Field::radio(string $name)`
 - `Field::media(string $name)`
 - `Field::fieldset(string $name)`
-- `Field::repeater(string $name)`
-- `Field::flexibleContent(string $name)`
-- `Field::make(string $type, string $name)`
 - `Field::legacy(string $type, string $name)`
+- `Field::make(string $type, string $name)`
 
-### Правило маршрутизации
+### `Field::make()`
 
-- `Field::make()` нужно использовать для официальных типов и алиасов.
-- `Field::legacy()` нужен только для неизвестных или кастомных legacy-типов.
-- `LegacyWrapperField` не считается основным runtime для supported matrix; это compat fallback.
+`Field::make()` создаёт поддерживаемые типы и алиасы.
+Сейчас он нормализует следующие значения:
+
+- `date_time` и `datetime` → `datetime-local`
+- `imagepicker` → `image_picker`
+
+Затем фабрика маршрутизирует типы к реальным классам, включая:
+
+- `InputField` для `password`, `email`, `url`, `tel`, `number`, `range`, `hidden`, `date`, `time`, `datetime-local`;
+- `TextareaField` для `textarea`;
+- `SelectField` и `multiple()` для `select` и `multiselect`;
+- `CheckboxField`, `CheckboxGroupField`, `SwitcherField`, `SpinnerField`, `ButtonSetField`, `SliderField`;
+- `ImageSelectField`, `ImagePickerField`, `ColorField`, `EditorField`, `ImageField`, `FileField`, `GalleryField`;
+- `AccordionField`, `TabbedField`, `TypographyField`, `SpacingField`, `DimensionsField`, `BorderField`, `BackgroundField`, `LinkColorField`, `ColorGroupField`, `CodeEditorField`, `IconField`, `MapField`, `SortableField`, `SorterField`, `PaletteField`, `LinkField`, `BackupField`.
+
+Для неизвестных или кастомных legacy-типов используйте `Field::legacy()`.
+
+### Правило использования
+
+- используйте `Field::make()` для поддерживаемых типов и алиасов;
+- используйте `Field::legacy()` только для типов, которые не покрывает modern API;
+- не опирайтесь на внутренние классы как на публичный контракт, если их не возвращает фабрика.
 
 ---
 
 ## 2. Контракт поля `FieldInterface`
 
-Минимальный стабильный контракт поля:
+Это минимальный стабильный контракт поля.
+
+### Методы
 
 - `getName(): string`
 - `getType(): string`
-- `getAttribute(string $key, mixed $default = null): mixed`
-- `value(mixed $value): static`
-- `getValue(): mixed`
 - `toArray(): array`
 - `render(): string`
 - `sanitize(mixed $value): mixed`
 - `validate(mixed $value): bool`
+- `getAttribute(string $key, mixed $default = null): mixed`
+- `value(mixed $value): static`
+- `getValue(): mixed`
 
-### Fluent-методы, на которые можно опираться
+### Fluent-методы
+
+На них можно опираться при интеграции:
 
 - `label(string $label): static`
-- `description(string $description): static`
 - `placeholder(string $placeholder): static`
+- `description(string $description): static`
 - `default(mixed $default): static`
 - `class(string $class): static`
 - `id(string $id): static`
@@ -109,57 +136,42 @@ $container->register();
 - `when(string $field, string $operator, mixed $value): static`
 - `orWhen(string $field, string $operator, mixed $value): static`
 
-Замечание:
-- служебные getter-методы traits не стоит использовать как внешний контракт, если они не нужны для интеграции.
+Не используйте методы traits как внешний контракт, если они не нужны для интеграции.
 
 ---
 
-## 3. Типы полей, на которые безопасно опираться
+## 3. Типы полей и значения
 
-### Простые
+Для интеграции важен не полный список всех классов, а shape значения.
+
+### Простые поля
 
 - `TextField`
 - `RadioField`
 - `MediaField`
 - `FieldsetField`
 
-### Составные
+### Составные поля
 
-- `RepeaterField`
-- `FlexibleContentField`
-- `MapField`
+- `RepeaterField` — массив элементов;
+- `FlexibleContentField` — массив блоков, где layout хранится в `acf_fc_layout`;
+- `MapField` — массив вида `['lat' => string, 'lng' => string]`.
 
-### Compat
+### Типы WordPress-интеграции
 
-- `LegacyWrapperField` для unknown/custom fallback.
+Поля вроде `image`, `file`, `gallery`, `editor`, `color`, `link`, `icon` и похожих могут подключать assets UI-слоя, но серверный контракт значения задаёт само поле.
 
-### Практическое правило
+### Legacy fallback
 
-Для интеграции важно не перечисление всех 50+ типов, а следующее:
+`LegacyWrapperField` нужен как compat-обёртка для типов, которые ещё не переведены на modern API.
 
-- официальные типы создаются через `Field::make()`;
-- сложные поля имеют собственный value-shape и вложенную санитизацию;
-- custom/unknown типы идут через legacy fallback.
+Если нужен полный список поддерживаемых типов, смотрите код `Field::make()` и матрицу поддерживаемых типов в документации проекта.
 
 ---
 
-## 4. Особые value-shape контракты
+## 4. Контейнеры `ContainerInterface`
 
-Эти формы данных стоит учитывать при интеграции:
-
-- `RepeaterField` -> массив строк/элементов.
-- `FlexibleContentField` -> массив блоков, где layout хранится в ключе `acf_fc_layout`.
-- `MapField` -> `['lat' => string, 'lng' => string]`.
-- `Media`/`image`/`file`/`gallery` и похожие WP-интеграционные типы могут требовать asset enhancement, но серверный контракт значения задаётся самим полем.
-- settings-object типы (`typography`, `spacing`, `dimensions`, `border`, `background`, `link_color`) используют массивы с фиксированными под-ключами и санитизируются внутри поля.
-
-Если нужен полный список supported типов, смотреть `docs/wp-field/supported-matrix.md`.
-
----
-
-## 5. Контейнеры `ContainerInterface`
-
-Контракт контейнера:
+### Контракт
 
 - `addField(FieldInterface $field): static`
 - `getFields(): array`
@@ -169,35 +181,35 @@ $container->register();
 
 ### Реализации
 
-- `MetaboxContainer` -> `post meta`
-- `SettingsContainer` -> `wp_options`
-- `TaxonomyContainer` -> `term meta`
-- `UserContainer` -> `user meta`
+- `MetaboxContainer` — post meta;
+- `SettingsContainer` — options;
+- `TaxonomyContainer` — term meta;
+- `UserContainer` — user meta.
 
-### Смысл контейнера
+### Что делает контейнер
 
 Контейнер:
 
-- встраивает поля в WordPress-хуки;
+- подключает поля к WordPress hooks;
 - читает входные данные;
-- в metabox/taxonomy/user flow вызывает `sanitize()` и `validate()`;
-- в settings flow использует `register_setting(... sanitize_callback ...)`;
-- сохраняет результат в нужное storage.
+- вызывает `sanitize()` и `validate()` в метабоксах, taxonomy и user flow;
+- использует `register_setting(..., sanitize_callback ...)` в settings flow;
+- сохраняет значение через соответствующий storage.
 
-Не нужно сохранять данные поля вручную из `$_POST`, если используется контейнер.
+Если вы используете контейнер, не сохраняйте поле вручную из `$_POST`.
 
 ---
 
-## 6. Хранилища `StorageInterface`
+## 5. Storage `StorageInterface`
 
-Минимальный контракт:
+### Контракт
 
 - `get(string $key, int|string $id): mixed`
 - `set(string $key, mixed $value, int|string $id): bool`
 - `delete(string $key, int|string $id): bool`
 - `exists(string $key, int|string $id): bool`
 
-Реализации:
+### Реализации
 
 - `PostMetaStorage`
 - `OptionStorage`
@@ -205,79 +217,98 @@ $container->register();
 - `UserMetaStorage`
 - `CustomTableStorage`
 
-Правило:
-- storage хранит данные;
-- ответственность за sanitize/validate лежит на поле и контейнере.
+### Правило
+
+Storage хранит данные. Поле и контейнер отвечают за санитизацию и валидацию.
 
 ---
 
-## 7. Conditional Logic
+## 6. UI API
 
-Класс `WpField\Conditional\ConditionalLogic` используется для проверки условий.
-
-Основные методы:
-
-- `evaluate(array $conditions, array $values, string $relation = 'AND'): bool`
-- `shouldDisplay(array $conditions, array $values, string $relation = 'AND'): bool`
-- `shouldSave(array $conditions, array $values, string $relation = 'AND'): bool`
-
-Поддерживаются базовые операторы сравнения, диапазонов, строк, множеств и проверки пустоты.
-
----
-
-## 8. UI API
-
-Этот слой нужен для сложных админ-экранов, но не обязателен для обычных полей.
+UI-слой нужен для сложных админ-экранов. Для обычных metabox и settings экранов он не обязателен.
 
 ### `NavItem`
 
-Строит дерево навигации для shell-интерфейса.
+`NavItem` строит дерево навигации для `AdminShell`.
+Поддерживаются:
+
+- `NavItem::leaf(string $id, string $label, ?array $panels = null)`
+- `NavItem::group(string $id, string $label, array $children)`
+- `NavItem::flatSections(array $sections)`
+- `NavItem::collectLeaves(array $items)`
+- `NavItem::firstLeafId(array $items)`
+- `NavItem::findLeaf(array $items, string $id)`
+- `NavItem::toJsonArray(array $items)`
+
+`group` служит контейнером для дочерних узлов. `leaf` может содержать вкладки через `panels`.
 
 ### `AdminShell`
 
-Рендерит layout вида sidebar + tabs + panels.
+`AdminShell::render()` рисует admin layout с sidebar, tabs, панелями и одной формой вокруг всего экрана.
+
+Поддерживаемые точки входа:
+
+- `render(array $nav, string $active_segment, string $active_panel, string $page_title, string $action_url, string $nonce_field, callable $panel_renderer, AdminShellConfig $config = new AdminShellConfig): void`
+- `resolveFromRequest(array $nav, AdminShellConfig $config = new AdminShellConfig): array{segment: string, panel: string}`
 
 ### `Wizard`
 
-Рендерит пошаговый flow.
+`Wizard::render()` рисует линейный пошаговый flow.
+
+Поддерживаемые точки входа:
+
+- `render(array $steps, string $active_step, string $action_url, string $nonce_field, callable $step_renderer, WizardConfig $config = new WizardConfig): void`
+- `resolveFromRequest(array $steps, WizardConfig $config = new WizardConfig): string`
 
 ### `UIManager`
 
-Отвечает за подключение ассетов и режим UI:
+`UIManager` управляет режимом UI и подключением ассетов.
+
+Поддерживаемые методы:
+
+- `setMode(string $mode): void`
+- `getMode(): string`
+- `isReactMode(): bool`
+- `enqueueAssets(): void`
+- `init(): void`
+
+Допустимые режимы:
 
 - `vanilla`
 - `react`
 
-Если нужен обычный metabox/settings экран, UI API можно не использовать.
+`enqueueAssets()` подключает только те файлы, которые реально существуют на диске.
 
 ---
 
-## 9. Legacy API
+## 7. Legacy API
 
-Legacy-слой нужен только для совместимости.
+Legacy-слой нужен для совместимости с существующим кодом.
 
-Точки входа:
+### Точки входа
 
-- `wp-field.php` -> canonical entrypoint;
-- `WP_Field.php` -> compat-loader;
-- `vanilla/WP_Field.php` -> vanilla/legacy class `WP_Field`.
+- `wp-field.php` — canonical plugin bootstrap;
+- `WP_Field.php` — compat-loader;
+- `vanilla/WP_Field.php` — legacy runtime.
 
-Использовать legacy имеет смысл только если:
+### Когда использовать legacy
 
-- уже есть старые массивы конфигурации;
-- нужно быстро поддержать существующий код без миграции;
-- используется кастомный legacy-тип вне modern matrix.
+Используйте legacy только если:
 
-Для нового кода предпочтительны `Field` и контейнеры.
+- у вас уже есть старые массивы конфигурации;
+- нужно поддержать существующий код без миграции;
+- вы работаете с кастомным legacy-типом, который modern API не покрывает.
+
+Для нового кода выбирайте `Field` и контейнеры.
 
 ---
 
-## 10. Минимальный контракт интеграции
+## 8. Минимальный контракт интеграции
 
-Для внешнего кода достаточно понимать три уровня:
+Для внешнего кода достаточно трёх уровней:
 
-1. `Field` создаёт и описывает поле.
+1. `Field` описывает поле.
 2. `Container` встраивает его в WordPress lifecycle и сохраняет значение.
-3. `Storage` определяет, где это значение лежит.
+3. `Storage` определяет, где лежит значение.
 
-Это и есть основная стабильная точка интеграции с библиотекой.
+Это и есть стабильная публичная поверхность библиотеки.

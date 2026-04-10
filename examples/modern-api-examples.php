@@ -3,9 +3,9 @@
 declare(strict_types=1);
 
 /**
- * WP_Field v3.0 — Modern Laravel-Style API Examples
+ * WP_Field v4.0 — Modern API Examples
  *
- * This file demonstrates the new fluent interface and advanced field types
+ * This file demonstrates the fluent interface and advanced field types
  * including Repeater and Flexible Content fields with infinite nesting.
  */
 

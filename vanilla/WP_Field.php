@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 /**
  * Legacy API for WP_Field.
- *
- * @deprecated 3.0.0 Use modern \WpField\Field\Field instead.
  */
 #[AllowDynamicProperties]
 class WP_Field
@@ -61,7 +59,7 @@ class WP_Field
 
     public string $url;
 
-    public string $ver = '3.0.0';
+    public string $ver = '4.0.0';
 
     public function __construct($field, string $storage_type = 'post', $storage_id = null)
     {
