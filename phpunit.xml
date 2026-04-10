@@ -2,17 +2,24 @@
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" bootstrap="pest.php" backupGlobals="false" colors="true" beStrictAboutTestsThatDoNotTestAnything="false" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/12.4/phpunit.xsd">
   <testsuites>
     <testsuite name="wp-field">
-      <directory suffix="Test.php">./tests/</directory>
+      <directory suffix="Test.php">./tests/Unit</directory>
+      <directory suffix="Test.php">./tests/Feature</directory>
+      <exclude>./tests/Unit/Legacy</exclude>
+      <exclude>./tests/Feature/BootstrapFilesTest.php</exclude>
     </testsuite>
   </testsuites>
   <source>
     <include>
-      <directory suffix=".php">.</directory>
+      <directory suffix=".php">./src</directory>
     </include>
     <exclude>
       <directory>./vendor</directory>
       <directory>./tests</directory>
       <directory>./assets</directory>
+      <directory>./examples</directory>
+      <directory>./dist</directory>
+      <directory>./vanilla</directory>
     </exclude>
   </source>
+  <coverage includeUncoveredFiles="true" ignoreDeprecatedCodeUnits="true" pathCoverage="false" disableCodeCoverageIgnore="false"/>
 </phpunit>

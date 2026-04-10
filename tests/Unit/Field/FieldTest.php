@@ -87,6 +87,32 @@ it('Field validates min/max correctly', function (): void {
         ->and($field->validate(101))->toBeFalse();
 });
 
+it('Field validates pattern and url rules', function (): void {
+    $pattern = Field::text('slug')->pattern('/^[a-z0-9-]+$/');
+    $url = Field::text('website')->url();
+
+    expect($pattern->validate('valid-slug'))->toBeTrue()
+        ->and($pattern->validate('Invalid Slug'))->toBeFalse()
+        ->and($url->validate('https://example.com'))->toBeTrue()
+        ->and($url->validate('not-a-url'))->toBeFalse();
+});
+
+it('Field sanitizes nested arrays and non-scalar values', function (): void {
+    $field = Field::text('data');
+
+    $sanitized = $field->sanitize([
+        '<b>one</b>',
+        ['<i>two</i>', (object) ['x' => 1]],
+        null,
+    ]);
+
+    expect($sanitized)->toBe([
+        'one',
+        ['two', ''],
+        '',
+    ]);
+});
+
 it('Field renders HTML correctly', function (): void {
     $field = Field::text('username')
         ->label('Username')

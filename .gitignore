@@ -30,3 +30,4 @@ sessions
 /.playwright-mcp/
 /.claude/skills/*
 /dist/*
+/coverage/

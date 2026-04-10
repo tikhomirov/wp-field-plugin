@@ -106,6 +106,7 @@ it('renders map field with coordinate baseline and validates ranges', function (
         ->toContain('name="store_map[lat]"')
         ->toContain('name="store_map[lng]"')
         ->toContain('wp-field-map-geolocate')
+        ->toContain('data-map-provider="google"')
         ->toContain('data-zoom="13"')
         ->and($map->sanitize(['lat' => '91', 'lng' => '37.62']))->toMatchArray([
             'lat' => '',
@@ -113,4 +114,22 @@ it('renders map field with coordinate baseline and validates ranges', function (
         ])
         ->and($map->validate(['lat' => '200', 'lng' => '20']))->toBeFalse()
         ->and($map->validate(['lat' => '55.7', 'lng' => '37.6']))->toBeTrue();
+});
+
+it('keeps map provider and api key attributes in sync', function (): void {
+    $map = Field::make('map', 'office_map')
+        ->provider('mapbox')
+        ->apiKey('secret')
+        ->zoom(7)
+        ->center(['lat' => 10, 'lng' => 20]);
+
+    $html = $map->render();
+
+    expect($html)
+        ->toContain('data-map-provider="mapbox"')
+        ->toContain('data-api-key="secret"')
+        ->toContain('data-center-lat="10"')
+        ->toContain('data-center-lng="20"')
+        ->and($map->toArray()['provider'])->toBe('mapbox')
+        ->and($map->toArray()['api_key'])->toBe('secret');
 });

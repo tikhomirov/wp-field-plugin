@@ -45,109 +45,6 @@ if (! function_exists('is_email')) {
     }
 }
 
-if (! function_exists('get_post_meta')) {
-    function get_post_meta(int $post_id, string $key = '', bool $single = false): mixed
-    {
-        static $meta = [];
-        if (! isset($meta[$post_id][$key])) {
-            return $single ? '' : [];
-        }
-
-        return $single ? $meta[$post_id][$key] : [$meta[$post_id][$key]];
-    }
-}
-
-if (! function_exists('update_post_meta')) {
-    function update_post_meta(int $post_id, string $meta_key, mixed $meta_value): bool
-    {
-        static $meta = [];
-        $meta[$post_id][$meta_key] = $meta_value;
-
-        return true;
-    }
-}
-
-if (! function_exists('delete_post_meta')) {
-    function delete_post_meta(int $post_id, string $meta_key): bool
-    {
-        static $meta = [];
-        unset($meta[$post_id][$meta_key]);
-
-        return true;
-    }
-}
-
-if (! function_exists('metadata_exists')) {
-    function metadata_exists(string $meta_type, int $object_id, string $meta_key): bool
-    {
-        return false;
-    }
-}
-
-if (! function_exists('get_term_meta')) {
-    function get_term_meta(int $term_id, string $key = '', bool $single = false): mixed
-    {
-        static $meta = [];
-        if (! isset($meta[$term_id][$key])) {
-            return $single ? '' : [];
-        }
-
-        return $single ? $meta[$term_id][$key] : [$meta[$term_id][$key]];
-    }
-}
-
-if (! function_exists('update_term_meta')) {
-    function update_term_meta(int $term_id, string $meta_key, mixed $meta_value): bool
-    {
-        static $meta = [];
-        $meta[$term_id][$meta_key] = $meta_value;
-
-        return true;
-    }
-}
-
-if (! function_exists('delete_term_meta')) {
-    function delete_term_meta(int $term_id, string $meta_key): bool
-    {
-        static $meta = [];
-        unset($meta[$term_id][$meta_key]);
-
-        return true;
-    }
-}
-
-if (! function_exists('get_user_meta')) {
-    function get_user_meta(int $user_id, string $key = '', bool $single = false): mixed
-    {
-        static $meta = [];
-        if (! isset($meta[$user_id][$key])) {
-            return $single ? '' : [];
-        }
-
-        return $single ? $meta[$user_id][$key] : [$meta[$user_id][$key]];
-    }
-}
-
-if (! function_exists('update_user_meta')) {
-    function update_user_meta(int $user_id, string $meta_key, mixed $meta_value): bool
-    {
-        static $meta = [];
-        $meta[$user_id][$meta_key] = $meta_value;
-
-        return true;
-    }
-}
-
-if (! function_exists('delete_user_meta')) {
-    function delete_user_meta(int $user_id, string $meta_key): bool
-    {
-        static $meta = [];
-        unset($meta[$user_id][$meta_key]);
-
-        return true;
-    }
-}
-
 if (! function_exists('get_option')) {
     function get_option(string $option, mixed $default = false): mixed
     {
@@ -258,27 +155,11 @@ if (! function_exists('plugin_dir_path')) {
     }
 }
 
-if (! function_exists('wp_enqueue_script')) {
-    function wp_enqueue_script(string $handle, string $src = '', array $deps = [], string|bool|null $ver = false, bool $in_footer = false): void
-    {
-        $GLOBALS['wp_test_scripts'] ??= [];
-        $GLOBALS['wp_test_scripts'][$handle] = compact('src', 'deps', 'ver', 'in_footer');
-    }
-}
-
 if (! function_exists('wp_script_add_data')) {
     function wp_script_add_data(string $handle, string $key, mixed $value): void
     {
         $GLOBALS['wp_test_script_data'] ??= [];
         $GLOBALS['wp_test_script_data'][$handle][$key] = $value;
-    }
-}
-
-if (! function_exists('wp_enqueue_style')) {
-    function wp_enqueue_style(string $handle, string $src = '', array $deps = [], string|bool|null $ver = false): void
-    {
-        $GLOBALS['wp_test_styles'] ??= [];
-        $GLOBALS['wp_test_styles'][$handle] = compact('src', 'deps', 'ver');
     }
 }
 
@@ -323,10 +204,109 @@ if (! function_exists('wp_enqueue_code_editor')) {
     }
 }
 
+if (! function_exists('wp_enqueue_style')) {
+    function wp_enqueue_style(string $handle, string $src = '', array $deps = [], string|bool|null $ver = false): void
+    {
+        $GLOBALS['wp_test_styles'] ??= [];
+        $GLOBALS['wp_test_styles'][$handle] = compact('src', 'deps', 'ver');
+    }
+}
+
+if (! function_exists('wp_enqueue_script')) {
+    function wp_enqueue_script(string $handle, string $src = '', array $deps = [], string|bool|null $ver = false, bool $in_footer = false): void
+    {
+        $GLOBALS['wp_test_scripts'] ??= [];
+        $GLOBALS['wp_test_scripts'][$handle] = compact('src', 'deps', 'ver', 'in_footer');
+    }
+}
+
 if (! function_exists('is_admin')) {
     function is_admin(): bool
     {
         return (bool) ($GLOBALS['wp_test_is_admin'] ?? false);
+    }
+}
+
+if (! function_exists('get_current_screen')) {
+    function get_current_screen(): ?object
+    {
+        return $GLOBALS['wp_test_current_screen'] ?? null;
+    }
+}
+
+if (! function_exists('add_meta_box')) {
+    function add_meta_box(string $id, string $title, callable $callback, string $screen, string $context = 'advanced', string $priority = 'default', ?array $callback_args = null): void
+    {
+        $GLOBALS['wp_test_meta_boxes'] ??= [];
+        $GLOBALS['wp_test_meta_boxes'][] = compact('id', 'title', 'callback', 'screen', 'context', 'priority', 'callback_args');
+    }
+}
+
+if (! function_exists('wp_nonce_field')) {
+    function wp_nonce_field(string $action = '_wpnonce', string $name = '_wpnonce', bool $referer = true, bool $echo = true): string
+    {
+        $nonce = 'test_nonce';
+        if ($echo) {
+            echo '<input type="hidden" name="'.$name.'" value="'.$nonce.'" />';
+        }
+
+        return $nonce;
+    }
+}
+
+if (! function_exists('wp_verify_nonce')) {
+    function wp_verify_nonce(string $nonce, string $action = '_wpnonce'): bool
+    {
+        return $GLOBALS['wp_test_verify_nonce'] ?? true;
+    }
+}
+
+if (! function_exists('current_user_can')) {
+    function current_user_can(string $capability, ...$args): bool
+    {
+        return $GLOBALS['wp_test_current_user_can'] ?? true;
+    }
+}
+
+if (! function_exists('add_menu_page')) {
+    function add_menu_page(string $page_title, string $menu_title, string $capability, string $menu_slug, ?callable $callback = null, string $icon = '', ?int $position = null): string
+    {
+        $GLOBALS['wp_test_menu_pages'] ??= [];
+        $GLOBALS['wp_test_menu_pages'][] = compact('page_title', 'menu_title', 'capability', 'menu_slug', 'icon', 'position');
+
+        return $menu_slug;
+    }
+}
+
+if (! function_exists('add_submenu_page')) {
+    function add_submenu_page(string $parent_slug, string $page_title, string $menu_title, string $capability, string $menu_slug, ?callable $callback = null): string
+    {
+        $GLOBALS['wp_test_submenu_pages'] ??= [];
+        $GLOBALS['wp_test_submenu_pages'][] = compact('parent_slug', 'page_title', 'menu_title', 'capability', 'menu_slug');
+
+        return $menu_slug;
+    }
+}
+
+if (! function_exists('register_setting')) {
+    function register_setting(string $option_group, string $option_name, array $args = []): void
+    {
+        $GLOBALS['wp_test_registered_settings'] ??= [];
+        $GLOBALS['wp_test_registered_settings'][] = compact('option_group', 'option_name', 'args');
+    }
+}
+
+if (! function_exists('settings_fields')) {
+    function settings_fields(string $option_group): void
+    {
+        echo '<input type="hidden" name="option_page" value="'.$option_group.'" />';
+    }
+}
+
+if (! function_exists('submit_button')) {
+    function submit_button(?string $text = null, string $type = 'primary', string $name = 'submit', bool $wrap = true, array $other_attributes = []): void
+    {
+        echo '<button type="'.$type.'" name="'.$name.'">'.($text ?? 'Save Changes').'</button>';
     }
 }
 
