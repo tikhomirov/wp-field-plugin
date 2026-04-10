@@ -211,6 +211,10 @@ class WP_Field
             return;
         }
 
+        if (function_exists('get_current_screen') && get_current_screen() && get_current_screen()->id === 'tools_page_wp-field-components') {
+            return;
+        }
+
         self::$assets_enqueued = true;
 
         if (function_exists('did_action') && did_action('admin_enqueue_scripts') > 0) {

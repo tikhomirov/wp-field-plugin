@@ -228,16 +228,48 @@
 .wfc-card__preview .wp-field-group-fields,
 .wfc-card__preview .wp-field-flexible-block-content,
 .wfc-card__preview .wp-field-checkbox-group,
-.wfc-card__preview .wp-field-image-select {
-    display: grid;
+.wfc-card__preview .wp-field-image-select,
+.wfc-card__preview .wp-field-image-wrapper,
+.wfc-card__preview .wp-field-file-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
     gap: 10px;
+}
+
+.wfc-card__preview .wp-field-image-wrapper,
+.wfc-card__preview .wp-field-file-wrapper {
+    align-items: flex-start;
+}
+
+.wfc-card__preview .wp-field-image-url,
+.wfc-card__preview .wp-field-file-url {
+    flex: 1 1 220px;
+    min-width: 0;
+}
+
+.wfc-card__preview .wp-field-image-preview-wrapper {
+    flex-basis: 100%;
+}
+
+.wfc-card__preview .wp-field-file-name {
+    flex-basis: 100%;
 }
 
 .wfc-card__preview .wp-field-editor-wrapper,
 .wfc-card__preview .wp-editor-wrap,
-.wfc-card__preview .wp-core-ui {
+.wfc-card__preview .wp-core-ui,
+.wfc-card__preview .wp-editor-container,
+.wfc-card__preview .mce-tinymce,
+.wfc-card__preview .quicktags-toolbar {
     max-width: 100%;
 }
+
+.wfc-card__preview .wp-editor-wrap {
+    margin-bottom: 0;
+}
+
+/* TinyMCE/Classic editor manages its own visible state and layout. */
 
 .wfc-card__preview .wp-field-button-set {
     display: inline-flex !important;
@@ -255,8 +287,15 @@
 }
 
 .wfc-card__preview .wp-field-slider-wrapper {
+    display: grid;
     align-items: center;
     grid-template-columns: minmax(200px, 1fr) auto;
+    gap: 12px;
+}
+
+.wfc-card__preview .wp-field-slider {
+    width: 100%;
+    min-width: 0;
 }
 
 .wfc-card__preview .wp-field-slider-value {
@@ -271,7 +310,8 @@
 
 .wfc-card__preview .wp-field-icon-picker {
     position: relative;
-    align-items: flex-start;
+    align-items: center;
+    flex-wrap: nowrap;
     gap: 8px;
 }
 
@@ -281,8 +321,9 @@
     justify-content: center;
     line-height: 1;
     vertical-align: middle;
-    position: relative;
-    top: -1px;
+    position: absolute;
+    left: 0;
+    top: calc(100% + 8px);
 }
 
 .wfc-card__preview .wp-field-icon-button span[class*="dashicons"] {
@@ -293,9 +334,14 @@
 }
 
 .wfc-card__preview .wp-field-icon-value {
-    min-width: 320px;
-    width: 100%;
+    flex: 1 1 auto;
+    min-width: 0;
+    width: auto;
     max-width: 100%;
+}
+
+.wfc-card__preview .wp-field-icon-button {
+    flex: 0 0 auto;
 }
 
 .wfc-card__preview .wp-field-icon-modal {
@@ -314,6 +360,33 @@
     height: auto;
 }
 
+.wfc-card__preview .wp-field-gallery-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.wfc-card__preview .wp-field-gallery-preview {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.wfc-card__preview .wp-field-gallery-placeholder {
+    margin-bottom: 6px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.wfc-card__preview .wp-field-gallery-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
 .wfc-card__preview .wp-field-flexible-block,
 .wfc-card__preview .wp-field-repeater-row,
 .wfc-card__preview .wp-field-group,
@@ -322,6 +395,39 @@
     border: 1px solid #e2e8f0;
     border-radius: 8px;
     background: #f8fafc;
+}
+
+.wfc-card__preview .wp-field-repeater,
+.wfc-card__preview .wp-field-repeater-rows {
+    min-width: 0;
+}
+
+.wfc-card__preview .wp-field-repeater-row {
+    overflow-x: auto;
+}
+
+.wfc-card__preview .wp-field-repeater-row table {
+    width: 100%;
+    table-layout: fixed;
+}
+
+.wfc-card__preview .wp-field-repeater-row td {
+    min-width: 0;
+    vertical-align: top;
+}
+
+.wfc-card__preview .wp-field-repeater-row td input,
+.wfc-card__preview .wp-field-repeater-row td select,
+.wfc-card__preview .wp-field-repeater-row td textarea {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+}
+
+.wfc-card__preview .wp-field-repeater-actions {
+    width: 1%;
+    white-space: nowrap;
 }
 
 /* ── Props badges ── */

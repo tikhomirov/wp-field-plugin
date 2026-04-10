@@ -8,7 +8,11 @@ if (! class_exists('WP_Field')) {
 
 // Legacy fallback assets bootstrap.
 if (function_exists('add_action')) {
-    add_action('admin_enqueue_scripts', static function (): void {
+    add_action('admin_enqueue_scripts', static function (string $hook): void {
+        if ($hook === 'tools_page_wp-field-components') {
+            return;
+        }
+
         $base_url = defined('WP_FIELD_PLUGIN_URL') ? WP_FIELD_PLUGIN_URL : plugin_dir_url(__FILE__);
         $base_dir = defined('WP_FIELD_PLUGIN_DIR') ? WP_FIELD_PLUGIN_DIR : plugin_dir_path(__FILE__);
 

@@ -1,6 +1,11 @@
 (function ($) {
     'use strict';
 
+    if (window.WPFieldIntegrationsInitialized) {
+        return;
+    }
+    window.WPFieldIntegrationsInitialized = true;
+
     const state = {
         mediaFrames: {},
     };
@@ -49,13 +54,15 @@
             }
 
             const mode = String($field.data('mode') || 'text/html');
-            wp.codeEditor.initialize($field, {
+            wp.codeEditor.initialize($field[0], {
+                type: mode,
                 codemirror: {
-                    mode,
+                    mode: mode,
                     lineNumbers: true,
                 },
             });
 
+            $field.hide();
             $field.data('wpFieldCodeEditorInit', true);
         });
     }
@@ -76,17 +83,18 @@
                 return;
             }
 
-            wp.editor.initialize(id, {
+            if (document.getElementById('wp-' + id + '-wrap')) {
+                $field.data('wpFieldEditorInit', true);
+                return;
+            }
+
+            const settings = {
                 tinymce: true,
                 quicktags: true,
                 mediaButtons: $field.data('media-buttons') === 1 || $field.data('media-buttons') === '1',
-            });
+            };
 
-            const editorWrap = document.getElementById('wp-' + id + '-wrap');
-            if (editorWrap) {
-                editorWrap.classList.add('tmce-active');
-            }
-
+            wp.editor.initialize(id, settings);
             $field.data('wpFieldEditorInit', true);
         });
     }
@@ -105,6 +113,11 @@
     }
 
     function bindMediaButtons() {
+        if ($(document).data('wpFieldMediaButtonsBound') === true) {
+            return;
+        }
+        $(document).data('wpFieldMediaButtonsBound', true);
+
         $(document).on('click', '.wp-field-image-button', function (event) {
             event.preventDefault();
             const $button = $(this);
@@ -235,6 +248,11 @@
     }
 
     function bindIconPickerFallback() {
+        if ($(document).data('wpFieldIconPickerBound') === true) {
+            return;
+        }
+        $(document).data('wpFieldIconPickerBound', true);
+
         $(document).on('click', '.wp-field-icon-button', function (event) {
             event.preventDefault();
             const $button = $(this);
@@ -301,17 +319,140 @@
                 return;
             }
 
+            const $mapEl = $wrapper.find('.wp-field-map').first();
             const $latHidden = $wrapper.find('.wp-field-map-lat');
             const $lngHidden = $wrapper.find('.wp-field-map-lng');
             const $latInput = $wrapper.find('.wp-field-map-lat-input');
             const $lngInput = $wrapper.find('.wp-field-map-lng-input');
+            const provider = String($wrapper.data('map-provider') || 'google').toLowerCase();
+            const zoom = parseInt($mapEl.data('zoom'), 10) || 12;
 
-            const syncToHidden = function () {
-                $latHidden.val(String($latInput.val() || '').trim());
-                $lngHidden.val(String($lngInput.val() || '').trim());
+            const getLatLng = function () {
+                const lat = parseFloat(String($latInput.val() || $latHidden.val() || $mapEl.data('center-lat') || '55.7558'));
+                const lng = parseFloat(String($lngInput.val() || $lngHidden.val() || $mapEl.data('center-lng') || '37.6173'));
+
+                return {
+                    lat: Number.isFinite(lat) ? lat : 55.7558,
+                    lng: Number.isFinite(lng) ? lng : 37.6173,
+                };
             };
 
-            syncToHidden();
+            const syncValues = function (lat, lng) {
+                const latValue = String(lat);
+                const lngValue = String(lng);
+                $latInput.val(latValue);
+                $lngInput.val(lngValue);
+                $latHidden.val(latValue);
+                $lngHidden.val(lngValue);
+            };
+
+            const initial = getLatLng();
+            syncValues(initial.lat, initial.lng);
+
+            if ($mapEl.length && (provider === 'leaflet' || provider === 'osm') && typeof window.L !== 'undefined' && !$mapEl.data('leafletInit')) {
+                const map = window.L.map($mapEl[0]).setView([initial.lat, initial.lng], zoom);
+                window.L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    maxZoom: 19,
+                    attribution: '&copy; OpenStreetMap contributors',
+                }).addTo(map);
+
+                const marker = window.L.marker([initial.lat, initial.lng], { draggable: true }).addTo(map);
+
+                marker.on('dragend', function (event) {
+                    const position = event.target.getLatLng();
+                    syncValues(position.lat, position.lng);
+                });
+
+                map.on('click', function (event) {
+                    marker.setLatLng(event.latlng);
+                    syncValues(event.latlng.lat, event.latlng.lng);
+                });
+
+                const syncMarkerFromInputs = function () {
+                    const next = getLatLng();
+                    marker.setLatLng([next.lat, next.lng]);
+                    map.panTo([next.lat, next.lng]);
+                };
+
+                $latInput.on('change', syncMarkerFromInputs);
+                $lngInput.on('change', syncMarkerFromInputs);
+
+                $wrapper.find('.wp-field-map-geolocate').on('click', function (event) {
+                    event.preventDefault();
+
+                    if (!navigator.geolocation) {
+                        return;
+                    }
+
+                    navigator.geolocation.getCurrentPosition(function (position) {
+                        syncValues(position.coords.latitude, position.coords.longitude);
+                        syncMarkerFromInputs();
+                    });
+                });
+
+                setTimeout(function () {
+                    map.invalidateSize();
+                }, 0);
+
+                $mapEl.data('leafletInit', true);
+                $wrapper.data('wpFieldMapInit', true);
+                return;
+            }
+
+            if ($mapEl.length && provider === 'google' && typeof window.google !== 'undefined' && window.google.maps && !$mapEl.data('googleInit')) {
+                const map = new window.google.maps.Map($mapEl[0], {
+                    center: { lat: initial.lat, lng: initial.lng },
+                    zoom: zoom,
+                });
+
+                const marker = new window.google.maps.Marker({
+                    position: { lat: initial.lat, lng: initial.lng },
+                    map: map,
+                    draggable: true,
+                });
+
+                window.google.maps.event.addListener(marker, 'dragend', function () {
+                    const position = marker.getPosition();
+                    syncValues(position.lat(), position.lng());
+                });
+
+                window.google.maps.event.addListener(map, 'click', function (event) {
+                    marker.setPosition(event.latLng);
+                    syncValues(event.latLng.lat(), event.latLng.lng());
+                });
+
+                const syncGoogleFromInputs = function () {
+                    const next = getLatLng();
+                    const position = { lat: next.lat, lng: next.lng };
+                    marker.setPosition(position);
+                    map.panTo(position);
+                };
+
+                $latInput.on('change', syncGoogleFromInputs);
+                $lngInput.on('change', syncGoogleFromInputs);
+
+                $wrapper.find('.wp-field-map-geolocate').on('click', function (event) {
+                    event.preventDefault();
+
+                    if (!navigator.geolocation) {
+                        return;
+                    }
+
+                    navigator.geolocation.getCurrentPosition(function (position) {
+                        syncValues(position.coords.latitude, position.coords.longitude);
+                        syncGoogleFromInputs();
+                    });
+                });
+
+                $mapEl.data('googleInit', true);
+                $wrapper.data('wpFieldMapInit', true);
+                return;
+            }
+
+            const syncToHidden = function () {
+                const next = getLatLng();
+                syncValues(next.lat, next.lng);
+            };
 
             $latInput.on('input change', syncToHidden);
             $lngInput.on('input change', syncToHidden);
@@ -324,11 +465,7 @@
                 }
 
                 navigator.geolocation.getCurrentPosition(function (position) {
-                    const lat = String(position.coords.latitude);
-                    const lng = String(position.coords.longitude);
-                    $latInput.val(lat);
-                    $lngInput.val(lng);
-                    syncToHidden();
+                    syncValues(position.coords.latitude, position.coords.longitude);
                 });
             });
 

@@ -33,6 +33,11 @@ class UIManager
             return;
         }
 
+        $hook = function_exists('get_current_screen') && get_current_screen() ? get_current_screen()->id : '';
+        if ($hook === 'tools_page_wp-field-components') {
+            return;
+        }
+
         $pluginUrl = plugin_dir_url(dirname(__DIR__, 2));
         $pluginPath = dirname(__DIR__, 2);
 

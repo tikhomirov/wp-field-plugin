@@ -25,7 +25,7 @@ class WP_Field_Components
     public function __construct()
     {
         add_action('admin_menu', [$this, 'add_menu_page']);
-        add_action('admin_enqueue_scripts', [$this, 'enqueue_assets']);
+        add_action('admin_enqueue_scripts', [$this, 'enqueue_assets'], 999);
     }
 
     public function add_menu_page(): void
@@ -45,6 +45,9 @@ class WP_Field_Components
         if ($hook !== 'tools_page_wp-field-components') {
             return;
         }
+
+        wp_dequeue_script('wp-field-main');
+        wp_dequeue_style('wp-field-main');
 
         $cssPath = __DIR__.'/assets/wp-field-components.css';
         if (file_exists($cssPath)) {
@@ -66,6 +69,38 @@ class WP_Field_Components
                 true,
             );
         }
+
+        $integrationsPath = dirname(__DIR__, 2).'/assets/js/wp-field-integrations.js';
+        if (file_exists($integrationsPath)) {
+            wp_enqueue_script(
+                'wp-field-integrations',
+                WP_FIELD_PLUGIN_URL.'assets/js/wp-field-integrations.js',
+                ['jquery', 'media-editor'],
+                (string) filemtime($integrationsPath),
+                true,
+            );
+        }
+
+        wp_enqueue_style(
+            'leaflet',
+            'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css',
+            [],
+            '1.9.4',
+        );
+        wp_enqueue_script(
+            'leaflet',
+            'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js',
+            [],
+            '1.9.4',
+            true,
+        );
+
+        if (function_exists('wp_enqueue_code_editor')) {
+            wp_enqueue_code_editor(['type' => 'text/html']);
+        }
+
+        wp_enqueue_editor();
+        wp_enqueue_media();
     }
 
     public function render_page(): void
@@ -147,19 +182,19 @@ class WP_Field_Components
         }
 
         return <<<HTML
-        <article class="wfc-card" data-type="{$type}">
+        <article class="wfc-card" data-type="$type">
             <header class="wfc-card__header">
                 <div>
-                    <h3>{$title}</h3>
-                    <p>{$desc}</p>
+                    <h3>$title</h3>
+                    <p>$desc</p>
                 </div>
-                <code class="wfc-card__type">{$type}</code>
+                <code class="wfc-card__type">$type</code>
             </header>
-            <div class="wfc-card__preview">{$renderedField}</div>
-            {$propsHtml}
+            <div class="wfc-card__preview">$renderedField</div>
+            $propsHtml
             <details class="wfc-card__code">
                 <summary>Code example</summary>
-                <pre><code>{$code}</code></pre>
+                <pre><code>$code</code></pre>
             </details>
         </article>
         HTML;

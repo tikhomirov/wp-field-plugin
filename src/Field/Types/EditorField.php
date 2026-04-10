@@ -47,16 +47,28 @@ class EditorField extends AbstractField
             $html .= sprintf('<label for="%s">%s</label>', $id, esc_html($label));
         }
 
-        $html .= sprintf(
-            '<textarea id="%s" name="%s" rows="%d" class="wp-editor-area" data-media-buttons="%s" data-teeny="%s" data-wpautop="%s">%s</textarea>',
-            $id,
-            $name,
-            $rows,
-            $this->getAttribute('media_buttons', false) ? '1' : '0',
-            $this->getAttribute('teeny', false) ? '1' : '0',
-            $this->getAttribute('wpautop', false) ? '1' : '0',
-            esc_html($value),
-        );
+        if (function_exists('wp_editor')) {
+            ob_start();
+            wp_editor($value, $id, [
+                'wpautop' => (bool) $this->getAttribute('wpautop', false),
+                'media_buttons' => (bool) $this->getAttribute('media_buttons', false),
+                'textarea_name' => $name,
+                'textarea_rows' => $rows,
+                'teeny' => (bool) $this->getAttribute('teeny', false),
+            ]);
+            $html .= (string) ob_get_clean();
+        } else {
+            $html .= sprintf(
+                '<textarea id="%s" name="%s" rows="%d" class="wp-editor-area" data-media-buttons="%s" data-teeny="%s" data-wpautop="%s">%s</textarea>',
+                $id,
+                $name,
+                $rows,
+                $this->getAttribute('media_buttons', false) ? '1' : '0',
+                $this->getAttribute('teeny', false) ? '1' : '0',
+                $this->getAttribute('wpautop', false) ? '1' : '0',
+                esc_html($value),
+            );
+        }
 
         $description = $this->attributeString('description');
         if ($description !== '') {

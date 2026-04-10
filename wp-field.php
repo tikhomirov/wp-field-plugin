@@ -58,7 +58,11 @@ $legacy_enabled = function_exists('apply_filters')
     ? (bool) apply_filters('wp_field_enable_legacy', true)
     : true;
 
-if ($legacy_enabled) {
+$is_components_page = function_exists('is_admin') && is_admin()
+    && isset($_GET['page'])
+    && $_GET['page'] === 'wp-field-components';
+
+if ($legacy_enabled && ! $is_components_page) {
     // Legacy class + isolated vanilla bootstrap.
     require_once WP_FIELD_PLUGIN_DIR.'vanilla/bootstrap.php';
 }

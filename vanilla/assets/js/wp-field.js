@@ -1186,6 +1186,11 @@
 
             $('.wp-field-code-editor').each(function () {
                 const $textarea = $(this);
+
+                if ($textarea.data('wpFieldCodeEditorInitialized')) {
+                    return;
+                }
+
                 const mode = $textarea.data('mode') || 'css';
 
                 wp.codeEditor.initialize($textarea[0], {
@@ -1196,6 +1201,9 @@
                         theme: 'default'
                     }
                 });
+
+                $textarea.hide();
+                $textarea.data('wpFieldCodeEditorInitialized', true);
             });
         },
 
