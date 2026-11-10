@@ -67,6 +67,26 @@ it('handles multiple dependencies with and', function (): void {
         ->toContain('AND');
 });
 
+it('supports named conditions key without treating it as a condition row', function (): void {
+    $html = WP_Field::make([
+        'id' => 'field_with_named_conditions',
+        'type' => 'text',
+        'label' => 'Field',
+        'dependency' => [
+            'relation' => 'AND',
+            'conditions' => [
+                ['other_field', '==', 'value'],
+                ['third_field', '!=', 'x'],
+            ],
+        ],
+    ], false);
+
+    expect($html)
+        ->toContain('data-dependency')
+        ->toContain('conditions')
+        ->toContain('is-hidden');
+});
+
 it('handles multiple dependencies with or', function (): void {
     $html = WP_Field::make([
         'id' => 'field_with_deps',

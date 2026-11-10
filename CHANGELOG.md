@@ -2,6 +2,12 @@
 
 Все важные изменения в проекте WP_Field документируются в этом файле.
 
+## [4.0.1] - 2026-11-10
+
+### Исправлено
+- **Vanilla dependency parser** — корректно читается формат `{ relation, conditions: [ [...], ... ] }` в PHP (`normalize_dependency_conditions`) и JS (`getDependencyConditions`). Раньше ключ `conditions` воспринимался как одно «условие» и live-toggle/`is-hidden` ломались.
+- Обратная совместимость сохранена для плоского списка условий и legacy `{ relation, 0: [...], 1: [...] }`.
+
 ## [4.0.0] - 2026-04-10
 
 ### Изменено
