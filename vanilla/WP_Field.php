@@ -1105,7 +1105,7 @@ class WP_Field
      * - объект с conditions: `{ relation: 'AND'|'OR', conditions: [ [...], ... ] }`
      * - legacy numeric keys: `{ relation: 'AND', 0: [...], 1: [...] }`
      *
-     * @param array<int|string, mixed> $dependency
+     * @param  array<int|string, mixed>  $dependency
      */
     private function evaluate_dependency(array $dependency): bool
     {
@@ -1139,7 +1139,7 @@ class WP_Field
      *
      * Общий API библиотеки: не знает о потребителях (WooCommerce, конкретные плагины).
      *
-     * @param  array<int|string, mixed> $dependency
+     * @param  array<int|string, mixed>  $dependency
      * @return list<array<int, mixed>>
      */
     private function normalize_dependency_conditions(array $dependency): array
