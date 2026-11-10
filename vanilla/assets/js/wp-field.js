@@ -68,16 +68,13 @@
 
         if (!dependency) return;
 
-        // Проверяем, зависит ли это поле от изменённого поля
-        let isDependentOnChanged = false;
+        // dependency: массив условий ИЛИ { relation, conditions: [...] }
+        // (также legacy { relation, 0: [...], 1: [...] }).
+        const conditions = self.getDependencyConditions(dependency);
 
-        if (Array.isArray(dependency)) {
-          dependency.forEach(function (condition) {
-            if (Array.isArray(condition) && condition[0] === fieldId) {
-              isDependentOnChanged = true;
-            }
-          });
-        }
+        const isDependentOnChanged = conditions.some(function (condition) {
+          return Array.isArray(condition) && condition[0] === fieldId;
+        });
 
         if (isDependentOnChanged) {
           if (self.evaluateDependency(dependency)) {
@@ -90,6 +87,35 @@
     },
 
     /**
+     * Нормализовать список условий из dependency (массив / conditions / numeric keys).
+     */
+    getDependencyConditions: function (dependency) {
+      if (!dependency || typeof dependency !== 'object') {
+        return [];
+      }
+
+      if (Array.isArray(dependency)) {
+        return dependency.filter(Array.isArray);
+      }
+
+      if (Array.isArray(dependency.conditions)) {
+        return dependency.conditions.filter(Array.isArray);
+      }
+
+      const conditions = [];
+      for (const key in dependency) {
+        if (key === 'relation' || key === 'conditions') {
+          continue;
+        }
+        if (Array.isArray(dependency[key])) {
+          conditions.push(dependency[key]);
+        }
+      }
+
+      return conditions;
+    },
+
+    /**
      * Оценить условие зависимости на фронте
      */
     evaluateDependency: function (dependency) {
@@ -98,14 +124,7 @@
       }
 
       const relation = dependency.relation || 'AND';
-      const conditions = [];
-
-      // Собираем условия (пропускаем 'relation')
-      for (const key in dependency) {
-        if (key !== 'relation' && Array.isArray(dependency[key])) {
-          conditions.push(dependency[key]);
-        }
-      }
+      const conditions = this.getDependencyConditions(dependency);
 
       if (conditions.length === 0) {
         return true;
