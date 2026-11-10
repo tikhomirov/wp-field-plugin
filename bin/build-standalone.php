@@ -7,7 +7,7 @@ $distDir = $root.'/dist';
 $pluginSlug = 'wp-field-vanilla';
 $pluginDir = $distDir.'/'.$pluginSlug;
 $zipPath = $distDir.'/'.$pluginSlug.'.zip';
-$version = detectVersion($root.'/wp-field.php') ?? '4.0.0';
+$version = detectVersion($root.'/wp-field.php') ?? '4.0.1';
 
 $filesToCopy = [
     'vanilla/bootstrap.php',
@@ -205,7 +205,7 @@ The generated plugin loads the wp-field text domain from the lang/ directory and
 
 == Changelog ==
 = {$version} =
-* Initial standalone vanilla export.
+* Sync standalone vanilla runtime with WP_Field {$version}.
 TXT;
 
     if (file_put_contents($targetFile, $readme.PHP_EOL) === false) {

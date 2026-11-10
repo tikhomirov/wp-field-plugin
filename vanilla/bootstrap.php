@@ -19,8 +19,8 @@ if (function_exists('add_action')) {
         $css_rel = 'vanilla/assets/css/wp-field.css';
         $js_rel = 'vanilla/assets/js/wp-field.js';
 
-        $css_ver = file_exists($base_dir.$css_rel) ? (string) filemtime($base_dir.$css_rel) : '4.0.0';
-        $js_ver = file_exists($base_dir.$js_rel) ? (string) filemtime($base_dir.$js_rel) : '4.0.0';
+        $css_ver = file_exists($base_dir.$css_rel) ? (string) filemtime($base_dir.$css_rel) : '4.0.1';
+        $js_ver = file_exists($base_dir.$js_rel) ? (string) filemtime($base_dir.$js_rel) : '4.0.1';
 
         wp_enqueue_script('jquery');
         wp_enqueue_script('jquery-ui-datepicker');

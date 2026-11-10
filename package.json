@@ -1,6 +1,6 @@
 {
   "name": "wp-field-plugin",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "description": "WP_Field v4 HTML fields library for WordPress with fluent API, 52 field types, legacy compatibility, and React/Vanilla integrations",
   "type": "module",
   "scripts": {

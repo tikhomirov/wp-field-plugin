@@ -59,7 +59,7 @@ class WP_Field
 
     public string $url;
 
-    public string $ver = '4.0.0';
+    public string $ver = '4.0.1';
 
     public function __construct($field, string $storage_type = 'post', $storage_id = null)
     {
