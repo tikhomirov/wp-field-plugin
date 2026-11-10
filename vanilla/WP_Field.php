@@ -1098,33 +1098,69 @@ class WP_Field
     }
 
     /**
-     * Оценка условия зависимости
+     * Оценка условия зависимости (видимость поля).
+     *
+     * Поддерживаемые форматы (обратная совместимость):
+     * - плоский список: `[ ['field', '==', 'value'], ... ]`
+     * - объект с conditions: `{ relation: 'AND'|'OR', conditions: [ [...], ... ] }`
+     * - legacy numeric keys: `{ relation: 'AND', 0: [...], 1: [...] }`
+     *
+     * @param array<int|string, mixed> $dependency
      */
     private function evaluate_dependency(array $dependency): bool
     {
         $relation = $dependency['relation'] ?? 'AND';
-        $conditions = array_filter($dependency, fn ($k) => $k !== 'relation', ARRAY_FILTER_USE_KEY);
+        $conditions = $this->normalize_dependency_conditions($dependency);
 
-        if (empty($conditions)) {
+        if ($conditions === []) {
             return true;
         }
 
         $results = [];
         foreach ($conditions as $condition) {
-            if (! is_array($condition) || count($condition) < 3) {
+            if (count($condition) < 3) {
                 continue;
             }
 
             [$field_id, $operator, $value] = $condition;
-            $field_value = $this->get_value_for_dependency($field_id);
-            $results[] = $this->evaluate_condition($field_value, $operator, $value);
+            $field_value = $this->get_value_for_dependency((string) $field_id);
+            $results[] = $this->evaluate_condition($field_value, (string) $operator, $value);
         }
 
-        if (empty($results)) {
+        if ($results === []) {
             return true;
         }
 
         return $relation === 'AND' ? ! in_array(false, $results, true) : in_array(true, $results, true);
+    }
+
+    /**
+     * Нормализовать список условий dependency в list<[field, operator, value]>.
+     *
+     * Общий API библиотеки: не знает о потребителях (WooCommerce, конкретные плагины).
+     *
+     * @param  array<int|string, mixed> $dependency
+     * @return list<array<int, mixed>>
+     */
+    private function normalize_dependency_conditions(array $dependency): array
+    {
+        if (array_is_list($dependency)) {
+            return array_values(array_filter($dependency, 'is_array'));
+        }
+
+        if (isset($dependency['conditions']) && is_array($dependency['conditions'])) {
+            return array_values(array_filter($dependency['conditions'], 'is_array'));
+        }
+
+        $conditions = [];
+        foreach ($dependency as $key => $condition) {
+            if ($key === 'relation' || $key === 'conditions' || ! is_array($condition)) {
+                continue;
+            }
+            $conditions[] = $condition;
+        }
+
+        return $conditions;
     }
 
     /**
