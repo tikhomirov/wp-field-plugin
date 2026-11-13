@@ -32,13 +32,16 @@ if (! defined('WP_FIELD_PLUGIN_URL')) {
     define('WP_FIELD_PLUGIN_URL', plugin_dir_url(__FILE__));
 }
 
-if (file_exists(WP_FIELD_PLUGIN_DIR.'vendor/autoload.php')) {
-    require_once WP_FIELD_PLUGIN_DIR.'vendor/autoload.php';
+// Собственные файлы подключаем только через __DIR__: константы WP_FIELD_PLUGIN_*
+// могут быть уже определены встроенной vanilla-сборкой другого плагина (woo2iiko),
+// и тогда пути уводят в чужую директорию без example.php и examples/ (fatal при активации).
+if (file_exists(__DIR__.'/vendor/autoload.php')) {
+    require_once __DIR__.'/vendor/autoload.php';
 } else {
     // Fallback autoloader for environments without Composer
     spl_autoload_register(function ($class): void {
         $prefix = 'WpField\\';
-        $base_dir = WP_FIELD_PLUGIN_DIR.'src/';
+        $base_dir = __DIR__.'/src/';
 
         $len = strlen($prefix);
         if (strncmp($prefix, $class, $len) !== 0) {
@@ -64,16 +67,16 @@ $is_components_page = function_exists('is_admin') && is_admin()
 
 if ($legacy_enabled && ! $is_components_page) {
     // Legacy class + isolated vanilla bootstrap.
-    require_once WP_FIELD_PLUGIN_DIR.'vanilla/bootstrap.php';
+    require_once __DIR__.'/vanilla/bootstrap.php';
 }
 
 // Loading demo pages strictly within WordPress admin debug context.
 if (function_exists('is_admin') && is_admin() && defined('WP_DEBUG') && WP_DEBUG) {
     if ($legacy_enabled) {
-        require_once WP_FIELD_PLUGIN_DIR.'vanilla/example.php';
+        require_once __DIR__.'/vanilla/example.php';
     }
 
     // Modern demos: wp-field-components (React docs) + wp-field-ui-demo (Flux UI showcase).
-    require_once WP_FIELD_PLUGIN_DIR.'examples/components/index.php';
-    require_once WP_FIELD_PLUGIN_DIR.'examples/ui-demo/index.php';
+    require_once __DIR__.'/examples/components/index.php';
+    require_once __DIR__.'/examples/ui-demo/index.php';
 }
