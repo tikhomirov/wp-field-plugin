@@ -5,7 +5,7 @@
 
 /* Wrapper поля */
 .wp-field {
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     transition: opacity 0.3s ease;
 }
 
