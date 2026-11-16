@@ -22,7 +22,7 @@ class LegacyWrapperField extends AbstractField
     /**
      * Merge additional vanilla config options
      *
-     * @param array<string, mixed> $config
+     * @param  array<string, mixed>  $config
      */
     public function config(array $config): static
     {
@@ -49,7 +49,7 @@ class LegacyWrapperField extends AbstractField
     private function buildLegacyConfig(): array
     {
         $config = [
-            'id'   => $this->name,
+            'id' => $this->name,
             'name' => $this->name,
             'type' => $this->type,
         ];
@@ -87,7 +87,7 @@ class LegacyWrapperField extends AbstractField
     }
 
     /**
-     * @param array<string, mixed> $config
+     * @param  array<string, mixed>  $config
      */
     private function renderWithLegacyApi(array $config): string
     {
@@ -124,7 +124,7 @@ class LegacyWrapperField extends AbstractField
     }
 
     /**
-     * @param array<string, mixed> $config
+     * @param  array<string, mixed>  $config
      */
     private function renderGenericFallback(array $config): string
     {
@@ -154,7 +154,7 @@ class LegacyWrapperField extends AbstractField
         if (is_array($options) && $options !== []) {
             $multiple = ! empty($config['multiple']);
             $currentValues = is_array($value) ? $value : [$value];
-            $selectName = $multiple ? $name . '[]' : $name;
+            $selectName = $multiple ? $name.'[]' : $name;
 
             $html .= sprintf('<select id="%s" name="%s" class="%s"%s%s%s%s>', esc_attr($id), esc_attr($selectName), esc_attr($class), $multiple ? ' multiple' : '', $required, $readonly, $disabled);
             foreach ($options as $optionValue => $optionLabel) {
@@ -166,7 +166,7 @@ class LegacyWrapperField extends AbstractField
             $html .= '</select>';
         } else {
             $inputValue = is_scalar($value) ? (string) $value : '';
-            $inputClass = trim('regular-text ' . $class);
+            $inputClass = trim('regular-text '.$class);
 
             $html .= sprintf(
                 '<input type="text" id="%s" name="%s" value="%s" class="%s" placeholder="%s"%s%s%s>',

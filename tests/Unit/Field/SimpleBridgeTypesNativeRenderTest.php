@@ -9,7 +9,7 @@ it('renders radio as native html without vanilla wrapper', function (): void {
         ->label('Delivery')
         ->attribute('options', [
             'courier' => 'Courier',
-            'pickup'  => 'Pickup',
+            'pickup' => 'Pickup',
         ])
         ->value('pickup');
 
@@ -29,8 +29,8 @@ it('renders fieldset with nested modern fields without vanilla wrapper', functio
         ->fields([
             Field::text('layout_title')->label('Title')->value('Hero'),
             [
-                'id'    => 'layout_enabled',
-                'type'  => 'checkbox',
+                'id' => 'layout_enabled',
+                'type' => 'checkbox',
                 'label' => 'Enabled',
                 'value' => '1',
             ],
@@ -50,7 +50,7 @@ it('renders image picker select with data image sources', function (): void {
     $field = Field::make('image_picker', 'skin')
         ->attribute('options', [
             'light' => ['src' => 'https://example.com/light.png', 'label' => 'Light'],
-            'dark'  => ['src' => 'https://example.com/dark.png', 'label' => 'Dark'],
+            'dark' => ['src' => 'https://example.com/dark.png', 'label' => 'Dark'],
         ])
         ->value('dark');
 
@@ -84,15 +84,15 @@ it('renders palette from palettes attribute and keeps selected value', function 
 
 it('renders and sanitizes link value shape', function (): void {
     $field = Field::make('link', 'cta_link')->value([
-        'url'    => 'https://example.com/page',
-        'text'   => 'Open',
+        'url' => 'https://example.com/page',
+        'text' => 'Open',
         'target' => '_blank',
     ]);
 
     $html = $field->render();
     $sanitized = $field->sanitize([
-        'url'    => 'https://example.com/page<script>',
-        'text'   => '<b>Open</b>',
+        'url' => 'https://example.com/page<script>',
+        'text' => '<b>Open</b>',
         'target' => '_top',
     ]);
 
@@ -103,8 +103,8 @@ it('renders and sanitizes link value shape', function (): void {
         ->and($html)->toContain('name="cta_link[target]"')
         ->and($html)->not->toContain('data-field-type="link"')
         ->and($sanitized)->toBe([
-            'url'    => 'https://example.com/page<script>',
-            'text'   => 'Open',
+            'url' => 'https://example.com/page<script>',
+            'text' => 'Open',
             'target' => '_self',
         ]);
 });

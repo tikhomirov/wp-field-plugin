@@ -8,7 +8,7 @@ use WpField\Legacy\LegacyAdapter;
 it('creates field with minimal config', function (): void {
     $config = [
         'type' => 'text',
-        'id'   => 'test_field',
+        'id' => 'test_field',
     ];
 
     $field = LegacyAdapter::make($config);
@@ -42,7 +42,7 @@ it('creates field with name when id is not set', function (): void {
 it('throws exception when name is empty', function (): void {
     $config = [
         'type' => 'text',
-        'id'   => '',
+        'id' => '',
     ];
 
     expect(fn () => LegacyAdapter::make($config))->toThrow(InvalidArgumentException::class);
@@ -51,7 +51,7 @@ it('throws exception when name is empty', function (): void {
 it('throws exception when name is 0', function (): void {
     $config = [
         'type' => 'text',
-        'id'   => '0',
+        'id' => '0',
     ];
 
     expect(fn () => LegacyAdapter::make($config))->toThrow(InvalidArgumentException::class);
@@ -59,8 +59,8 @@ it('throws exception when name is 0', function (): void {
 
 it('applies label from config', function (): void {
     $config = [
-        'type'  => 'text',
-        'id'    => 'test_field',
+        'type' => 'text',
+        'id' => 'test_field',
         'label' => 'Test Label',
     ];
 
@@ -71,8 +71,8 @@ it('applies label from config', function (): void {
 
 it('applies title as label when label is not set', function (): void {
     $config = [
-        'type'  => 'text',
-        'id'    => 'test_field',
+        'type' => 'text',
+        'id' => 'test_field',
         'title' => 'Test Title',
     ];
 
@@ -83,8 +83,8 @@ it('applies title as label when label is not set', function (): void {
 
 it('label takes precedence over title', function (): void {
     $config = [
-        'type'  => 'text',
-        'id'    => 'test_field',
+        'type' => 'text',
+        'id' => 'test_field',
         'label' => 'Test Label',
         'title' => 'Test Title',
     ];
@@ -96,8 +96,8 @@ it('label takes precedence over title', function (): void {
 
 it('applies placeholder', function (): void {
     $config = [
-        'type'        => 'text',
-        'id'          => 'test_field',
+        'type' => 'text',
+        'id' => 'test_field',
         'placeholder' => 'Enter text',
     ];
 
@@ -108,8 +108,8 @@ it('applies placeholder', function (): void {
 
 it('applies description', function (): void {
     $config = [
-        'type'        => 'text',
-        'id'          => 'test_field',
+        'type' => 'text',
+        'id' => 'test_field',
         'description' => 'Test description',
     ];
 
@@ -121,7 +121,7 @@ it('applies description', function (): void {
 it('applies desc as description alias', function (): void {
     $config = [
         'type' => 'text',
-        'id'   => 'test_field',
+        'id' => 'test_field',
         'desc' => 'Test description',
     ];
 
@@ -132,10 +132,10 @@ it('applies desc as description alias', function (): void {
 
 it('description takes precedence over desc', function (): void {
     $config = [
-        'type'        => 'text',
-        'id'          => 'test_field',
+        'type' => 'text',
+        'id' => 'test_field',
         'description' => 'Description',
-        'desc'        => 'Desc',
+        'desc' => 'Desc',
     ];
 
     $field = LegacyAdapter::make($config);
@@ -145,8 +145,8 @@ it('description takes precedence over desc', function (): void {
 
 it('applies default value', function (): void {
     $config = [
-        'type'    => 'text',
-        'id'      => 'test_field',
+        'type' => 'text',
+        'id' => 'test_field',
         'default' => 'default_value',
     ];
 
@@ -157,8 +157,8 @@ it('applies default value', function (): void {
 
 it('applies value from config', function (): void {
     $config = [
-        'type'  => 'text',
-        'id'    => 'test_field',
+        'type' => 'text',
+        'id' => 'test_field',
         'value' => 'current_value',
     ];
 
@@ -170,8 +170,8 @@ it('applies value from config', function (): void {
 it('applies val as value alias', function (): void {
     $config = [
         'type' => 'text',
-        'id'   => 'test_field',
-        'val'  => 'current_value',
+        'id' => 'test_field',
+        'val' => 'current_value',
     ];
 
     $field = LegacyAdapter::make($config);
@@ -181,10 +181,10 @@ it('applies val as value alias', function (): void {
 
 it('value takes precedence over val', function (): void {
     $config = [
-        'type'  => 'text',
-        'id'    => 'test_field',
+        'type' => 'text',
+        'id' => 'test_field',
         'value' => 'value',
-        'val'   => 'val',
+        'val' => 'val',
     ];
 
     $field = LegacyAdapter::make($config);
@@ -194,8 +194,8 @@ it('value takes precedence over val', function (): void {
 
 it('applies class', function (): void {
     $config = [
-        'type'  => 'text',
-        'id'    => 'test_field',
+        'type' => 'text',
+        'id' => 'test_field',
         'class' => 'custom-class',
     ];
 
@@ -206,8 +206,8 @@ it('applies class', function (): void {
 
 it('applies required flag', function (): void {
     $config = [
-        'type'     => 'text',
-        'id'       => 'test_field',
+        'type' => 'text',
+        'id' => 'test_field',
         'required' => true,
     ];
 
@@ -218,8 +218,8 @@ it('applies required flag', function (): void {
 
 it('applies readonly flag', function (): void {
     $config = [
-        'type'     => 'text',
-        'id'       => 'test_field',
+        'type' => 'text',
+        'id' => 'test_field',
         'readonly' => true,
     ];
 
@@ -230,8 +230,8 @@ it('applies readonly flag', function (): void {
 
 it('applies disabled flag', function (): void {
     $config = [
-        'type'     => 'text',
-        'id'       => 'test_field',
+        'type' => 'text',
+        'id' => 'test_field',
         'disabled' => true,
     ];
 
@@ -242,8 +242,8 @@ it('applies disabled flag', function (): void {
 
 it('applies attributes from config', function (): void {
     $config = [
-        'type'       => 'text',
-        'id'         => 'test_field',
+        'type' => 'text',
+        'id' => 'test_field',
         'attributes' => [
             'data-test' => 'value',
             'maxlength' => 100,
@@ -259,7 +259,7 @@ it('applies attributes from config', function (): void {
 it('applies attr as attributes alias', function (): void {
     $config = [
         'type' => 'text',
-        'id'   => 'test_field',
+        'id' => 'test_field',
         'attr' => [
             'data-test' => 'value',
         ],
@@ -273,7 +273,7 @@ it('applies attr as attributes alias', function (): void {
 it('applies atts as attributes alias', function (): void {
     $config = [
         'type' => 'text',
-        'id'   => 'test_field',
+        'id' => 'test_field',
         'atts' => [
             'data-test' => 'value',
         ],
@@ -286,8 +286,8 @@ it('applies atts as attributes alias', function (): void {
 
 it('applies validation as string', function (): void {
     $config = [
-        'type'       => 'text',
-        'id'         => 'test_field',
+        'type' => 'text',
+        'id' => 'test_field',
         'validation' => 'required|email|min:5',
     ];
 
@@ -298,8 +298,8 @@ it('applies validation as string', function (): void {
 
 it('applies validation as array', function (): void {
     $config = [
-        'type'       => 'text',
-        'id'         => 'test_field',
+        'type' => 'text',
+        'id' => 'test_field',
         'validation' => [
             'required',
             'email',
@@ -314,13 +314,13 @@ it('applies validation as array', function (): void {
 
 it('applies conditional_logic', function (): void {
     $config = [
-        'type'              => 'text',
-        'id'                => 'test_field',
+        'type' => 'text',
+        'id' => 'test_field',
         'conditional_logic' => [
             [
-                'field'    => 'other_field',
+                'field' => 'other_field',
                 'operator' => '==',
-                'value'    => 'test',
+                'value' => 'test',
             ],
         ],
     ];
@@ -332,13 +332,13 @@ it('applies conditional_logic', function (): void {
 
 it('applies conditions as alias', function (): void {
     $config = [
-        'type'       => 'text',
-        'id'         => 'test_field',
+        'type' => 'text',
+        'id' => 'test_field',
         'conditions' => [
             [
-                'field'    => 'other_field',
+                'field' => 'other_field',
                 'operator' => '==',
-                'value'    => 'test',
+                'value' => 'test',
             ],
         ],
     ];
@@ -378,7 +378,7 @@ it('skips non-array configs in makeMultiple', function (): void {
 it('renders field', function (): void {
     $config = [
         'type' => 'text',
-        'id'   => 'test_field',
+        'id' => 'test_field',
     ];
 
     $html = LegacyAdapter::render($config);
@@ -399,8 +399,8 @@ it('renders multiple fields', function (): void {
 
 it('applies email validation rule', function (): void {
     $config = [
-        'type'       => 'text',
-        'id'         => 'test_field',
+        'type' => 'text',
+        'id' => 'test_field',
         'validation' => 'email',
     ];
 
@@ -411,8 +411,8 @@ it('applies email validation rule', function (): void {
 
 it('applies url validation rule', function (): void {
     $config = [
-        'type'       => 'text',
-        'id'         => 'test_field',
+        'type' => 'text',
+        'id' => 'test_field',
         'validation' => 'url',
     ];
 
@@ -423,8 +423,8 @@ it('applies url validation rule', function (): void {
 
 it('applies min validation rule', function (): void {
     $config = [
-        'type'       => 'text',
-        'id'         => 'test_field',
+        'type' => 'text',
+        'id' => 'test_field',
         'validation' => 'min:10',
     ];
 
@@ -435,8 +435,8 @@ it('applies min validation rule', function (): void {
 
 it('applies max validation rule', function (): void {
     $config = [
-        'type'       => 'text',
-        'id'         => 'test_field',
+        'type' => 'text',
+        'id' => 'test_field',
         'validation' => 'max:100',
     ];
 
@@ -447,8 +447,8 @@ it('applies max validation rule', function (): void {
 
 it('applies pattern validation rule', function (): void {
     $config = [
-        'type'       => 'text',
-        'id'         => 'test_field',
+        'type' => 'text',
+        'id' => 'test_field',
         'validation' => 'pattern:[a-z]+',
     ];
 
@@ -459,8 +459,8 @@ it('applies pattern validation rule', function (): void {
 
 it('applies validation as associative array', function (): void {
     $config = [
-        'type'       => 'text',
-        'id'         => 'test_field',
+        'type' => 'text',
+        'id' => 'test_field',
         'validation' => [
             'min' => 5,
             'max' => 100,
@@ -475,8 +475,8 @@ it('applies validation as associative array', function (): void {
 
 it('ignores unknown validation rules', function (): void {
     $config = [
-        'type'       => 'text',
-        'id'         => 'test_field',
+        'type' => 'text',
+        'id' => 'test_field',
         'validation' => 'unknown_rule',
     ];
 
@@ -487,8 +487,8 @@ it('ignores unknown validation rules', function (): void {
 
 it('handles non-numeric min validation gracefully', function (): void {
     $config = [
-        'type'       => 'text',
-        'id'         => 'test_field',
+        'type' => 'text',
+        'id' => 'test_field',
         'validation' => 'min:abc',
     ];
 
@@ -499,8 +499,8 @@ it('handles non-numeric min validation gracefully', function (): void {
 
 it('handles non-numeric max validation gracefully', function (): void {
     $config = [
-        'type'       => 'text',
-        'id'         => 'test_field',
+        'type' => 'text',
+        'id' => 'test_field',
         'validation' => 'max:xyz',
     ];
 
@@ -511,8 +511,8 @@ it('handles non-numeric max validation gracefully', function (): void {
 
 it('handles non-string pattern validation gracefully', function (): void {
     $config = [
-        'type'       => 'text',
-        'id'         => 'test_field',
+        'type' => 'text',
+        'id' => 'test_field',
         'validation' => [
             'pattern' => 123,
         ],
@@ -525,13 +525,13 @@ it('handles non-string pattern validation gracefully', function (): void {
 
 it('skips conditional logic with empty field', function (): void {
     $config = [
-        'type'              => 'text',
-        'id'                => 'test_field',
+        'type' => 'text',
+        'id' => 'test_field',
         'conditional_logic' => [
             [
-                'field'    => '',
+                'field' => '',
                 'operator' => '==',
-                'value'    => 'test',
+                'value' => 'test',
             ],
         ],
     ];
@@ -543,13 +543,13 @@ it('skips conditional logic with empty field', function (): void {
 
 it('skips conditional logic with field 0', function (): void {
     $config = [
-        'type'              => 'text',
-        'id'                => 'test_field',
+        'type' => 'text',
+        'id' => 'test_field',
         'conditional_logic' => [
             [
-                'field'    => '0',
+                'field' => '0',
                 'operator' => '==',
-                'value'    => 'test',
+                'value' => 'test',
             ],
         ],
     ];
@@ -561,13 +561,13 @@ it('skips conditional logic with field 0', function (): void {
 
 it('skips conditional logic with non-string field', function (): void {
     $config = [
-        'type'              => 'text',
-        'id'                => 'test_field',
+        'type' => 'text',
+        'id' => 'test_field',
         'conditional_logic' => [
             [
-                'field'    => 123,
+                'field' => 123,
                 'operator' => '==',
-                'value'    => 'test',
+                'value' => 'test',
             ],
         ],
     ];
@@ -579,8 +579,8 @@ it('skips conditional logic with non-string field', function (): void {
 
 it('ignores non-array validation config', function (): void {
     $config = [
-        'type'       => 'text',
-        'id'         => 'test_field',
+        'type' => 'text',
+        'id' => 'test_field',
         'validation' => 123,
     ];
 
@@ -591,8 +591,8 @@ it('ignores non-array validation config', function (): void {
 
 it('ignores non-array conditions config', function (): void {
     $config = [
-        'type'       => 'text',
-        'id'         => 'test_field',
+        'type' => 'text',
+        'id' => 'test_field',
         'conditions' => 'invalid',
     ];
 

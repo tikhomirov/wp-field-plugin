@@ -45,8 +45,8 @@ expect()->extend('toBeOne', function () {
 function createField(array $config = []): array
 {
     return array_merge([
-        'id'    => 'test_field',
-        'type'  => 'text',
+        'id' => 'test_field',
+        'type' => 'text',
         'label' => 'Test Field',
     ], $config);
 }
@@ -65,9 +65,9 @@ function createWPField(array $config = [], string $storage_type = 'options'): WP
 // Global metadata storage for all meta functions
 global $wp_test_meta_storage;
 $wp_test_meta_storage = [
-    'post'    => [],
-    'term'    => [],
-    'user'    => [],
+    'post' => [],
+    'term' => [],
+    'user' => [],
     'comment' => [],
     'options' => [],
 ];
@@ -354,7 +354,7 @@ if (! function_exists('wp_nonce_field')) {
     {
         $nonce = 'test_nonce';
         if ($echo) {
-            echo '<input type="hidden" name="' . $name . '" value="' . $nonce . '" />';
+            echo '<input type="hidden" name="'.$name.'" value="'.$nonce.'" />';
         }
 
         return $nonce;
@@ -411,14 +411,14 @@ if (! function_exists('register_setting')) {
 if (! function_exists('settings_fields')) {
     function settings_fields($option_group)
     {
-        echo '<input type="hidden" name="option_page" value="' . $option_group . '" />';
+        echo '<input type="hidden" name="option_page" value="'.$option_group.'" />';
     }
 }
 
 if (! function_exists('submit_button')) {
     function submit_button($text = null, $type = 'primary', $name = 'submit', $wrap = true, $other_attributes = [])
     {
-        echo '<button type="' . $type . '" name="' . $name . '">' . ($text ?? 'Save Changes') . '</button>';
+        echo '<button type="'.$type.'" name="'.$name.'">'.($text ?? 'Save Changes').'</button>';
     }
 }
 

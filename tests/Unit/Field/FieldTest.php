@@ -39,9 +39,9 @@ it('Field::text creates a TextField with correct properties', function (): void 
 
     expect($field->toArray())
         ->toMatchArray([
-            'type'     => 'text',
+            'type' => 'text',
             'required' => true,
-            'label'    => 'Имя',
+            'label' => 'Имя',
         ]);
 });
 
@@ -153,16 +153,16 @@ it('Field supports conditional logic', function (): void {
     expect($conditions)
         ->toHaveCount(2)
         ->and($conditions[0])->toMatchArray([
-            'field'    => 'country',
+            'field' => 'country',
             'operator' => '==',
-            'value'    => 'USA',
-            'logic'    => 'AND',
+            'value' => 'USA',
+            'logic' => 'AND',
         ])
         ->and($conditions[1])->toMatchArray([
-            'field'    => 'country',
+            'field' => 'country',
             'operator' => '==',
-            'value'    => 'Canada',
-            'logic'    => 'OR',
+            'value' => 'Canada',
+            'logic' => 'OR',
         ]);
 });
 
@@ -226,7 +226,7 @@ it('Field::make maps B1 structural types to native classes', function (): void {
             Field::text('street'),
         ])
         ->value([
-            'city'   => 'Москва',
+            'city' => 'Москва',
             'street' => 'Тверская',
         ]);
 
@@ -250,7 +250,7 @@ it('Field::make maps B1 structural types to native classes', function (): void {
         ->and($group->render())->toContain('name="address[city]"')
         ->and($group->render())->toContain('name="address[street]"')
         ->and($group->toArray())->toMatchArray([
-            'type'  => 'group',
+            'type' => 'group',
             'label' => 'Address',
         ])
         ->and($group->toArray()['fields'])->toHaveCount(2)
@@ -295,7 +295,7 @@ it('Field::make maps A2 simple interactive types to native classes', function ()
 
     $imageSelect = Field::make('image_select', 'layout')
         ->options([
-            'wide'  => ['src' => 'https://example.com/wide.png', 'label' => 'Wide'],
+            'wide' => ['src' => 'https://example.com/wide.png', 'label' => 'Wide'],
             'boxed' => ['src' => 'https://example.com/boxed.png', 'label' => 'Boxed'],
         ])
         ->value('wide');
@@ -344,7 +344,7 @@ it('FlexibleContentField рендерит вложенные имена layout-�
         ->value([
             [
                 'acf_fc_layout' => 'hero',
-                'headline'      => 'Добро пожаловать',
+                'headline' => 'Добро пожаловать',
             ],
         ]);
 
@@ -445,7 +445,7 @@ it('Field::make final alias map routes aliases to explicit classes', function ()
 it('Accordion and tabbed fields keep nested child config contract', function (): void {
     $accordion = Field::make('accordion', 'faq')->attribute('sections', [
         [
-            'title'  => 'Section A',
+            'title' => 'Section A',
             'fields' => [
                 ['id' => 'acc_title', 'type' => 'text', 'label' => 'Accordion Title'],
             ],
@@ -454,7 +454,7 @@ it('Accordion and tabbed fields keep nested child config contract', function ():
 
     $tabbed = Field::make('tabbed', 'tabs')->attribute('tabs', [
         [
-            'title'  => 'General',
+            'title' => 'General',
             'fields' => [
                 ['id' => 'tab_title', 'type' => 'text', 'label' => 'Tab Title'],
             ],
@@ -473,8 +473,8 @@ it('layout container fields render nested content in native mode', function (): 
         ->label('FAQ')
         ->sections([
             [
-                'title'  => 'Section A',
-                'open'   => true,
+                'title' => 'Section A',
+                'open' => true,
                 'fields' => [
                     ['id' => 'acc_title', 'type' => 'text', 'label' => 'Accordion Title'],
                 ],
@@ -484,7 +484,7 @@ it('layout container fields render nested content in native mode', function (): 
     $tabbed = Field::make('tabbed', 'tabs')
         ->tabs([
             [
-                'title'  => 'General',
+                'title' => 'General',
                 'active' => true,
                 'fields' => [
                     ['id' => 'tab_title', 'type' => 'text', 'label' => 'Tab Title'],

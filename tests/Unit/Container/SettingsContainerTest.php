@@ -14,7 +14,7 @@ class TestSettingsField extends AbstractField
 
     public function render(): string
     {
-        return '<input type="text" name="' . $this->name . '">';
+        return '<input type="text" name="'.$this->name.'">';
     }
 
     public function sanitize(mixed $value): mixed
@@ -41,9 +41,9 @@ beforeEach(function (): void {
         'page_title' => 'Test Settings',
         'menu_title' => 'Test Menu',
         'capability' => 'manage_options',
-        'menu_slug'  => 'test-slug',
-        'icon'       => 'dashicons-admin-tools',
-        'position'   => 100,
+        'menu_slug' => 'test-slug',
+        'icon' => 'dashicons-admin-tools',
+        'position' => 100,
     ]);
 });
 

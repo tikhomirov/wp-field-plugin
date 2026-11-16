@@ -3,13 +3,13 @@
 declare(strict_types=1);
 
 beforeEach(function (): void {
-    require_once dirname(__DIR__, 2) . '/WP_Field.php';
+    require_once dirname(__DIR__, 2).'/WP_Field.php';
 });
 
 it('renders text field', function (): void {
     $html = WP_Field::make([
-        'id'    => 'test_text',
-        'type'  => 'text',
+        'id' => 'test_text',
+        'type' => 'text',
         'label' => 'Test Text',
     ], false);
 
@@ -22,9 +22,9 @@ it('renders text field', function (): void {
 
 it('renders select field', function (): void {
     $html = WP_Field::make([
-        'id'      => 'test_select',
-        'type'    => 'select',
-        'label'   => 'Test Select',
+        'id' => 'test_select',
+        'type' => 'select',
+        'label' => 'Test Select',
         'options' => ['a' => 'Option A', 'b' => 'Option B'],
     ], false);
 
@@ -37,9 +37,9 @@ it('renders select field', function (): void {
 
 it('renders radio field', function (): void {
     $html = WP_Field::make([
-        'id'      => 'test_radio',
-        'type'    => 'radio',
-        'label'   => 'Test Radio',
+        'id' => 'test_radio',
+        'type' => 'radio',
+        'label' => 'Test Radio',
         'options' => ['yes' => 'Yes', 'no' => 'No'],
     ], false);
 
@@ -51,8 +51,8 @@ it('renders radio field', function (): void {
 
 it('renders checkbox field', function (): void {
     $html = WP_Field::make([
-        'id'    => 'test_checkbox',
-        'type'  => 'checkbox',
+        'id' => 'test_checkbox',
+        'type' => 'checkbox',
         'label' => 'Test Checkbox',
     ], false);
 
@@ -63,8 +63,8 @@ it('renders checkbox field', function (): void {
 
 it('renders textarea field', function (): void {
     $html = WP_Field::make([
-        'id'    => 'test_textarea',
-        'type'  => 'textarea',
+        'id' => 'test_textarea',
+        'type' => 'textarea',
         'label' => 'Test Textarea',
     ], false);
 
@@ -75,11 +75,11 @@ it('renders textarea field', function (): void {
 
 it('renders number field', function (): void {
     $html = WP_Field::make([
-        'id'    => 'test_number',
-        'type'  => 'number',
+        'id' => 'test_number',
+        'type' => 'number',
         'label' => 'Test Number',
-        'min'   => 0,
-        'max'   => 100,
+        'min' => 0,
+        'max' => 100,
     ], false);
 
     expect($html)
@@ -90,8 +90,8 @@ it('renders number field', function (): void {
 
 it('renders email field', function (): void {
     $html = WP_Field::make([
-        'id'    => 'test_email',
-        'type'  => 'email',
+        'id' => 'test_email',
+        'type' => 'email',
         'label' => 'Test Email',
     ], false);
 
@@ -102,8 +102,8 @@ it('renders email field', function (): void {
 
 it('renders color field', function (): void {
     $html = WP_Field::make([
-        'id'    => 'test_color',
-        'type'  => 'color',
+        'id' => 'test_color',
+        'type' => 'color',
         'label' => 'Test Color',
     ], false);
 
@@ -114,8 +114,8 @@ it('renders color field', function (): void {
 
 it('renders date field', function (): void {
     $html = WP_Field::make([
-        'id'    => 'test_date',
-        'type'  => 'date',
+        'id' => 'test_date',
+        'type' => 'date',
         'label' => 'Test Date',
     ], false);
 
@@ -126,8 +126,8 @@ it('renders date field', function (): void {
 
 it('renders time field', function (): void {
     $html = WP_Field::make([
-        'id'    => 'test_time',
-        'type'  => 'time',
+        'id' => 'test_time',
+        'type' => 'time',
         'label' => 'Test Time',
     ], false);
 
@@ -138,9 +138,9 @@ it('renders time field', function (): void {
 
 it('renders field with placeholder', function (): void {
     $html = WP_Field::make([
-        'id'          => 'test_field',
-        'type'        => 'text',
-        'label'       => 'Test',
+        'id' => 'test_field',
+        'type' => 'text',
+        'label' => 'Test',
         'placeholder' => 'Enter value',
     ], false);
 
@@ -149,10 +149,10 @@ it('renders field with placeholder', function (): void {
 
 it('renders field with description', function (): void {
     $html = WP_Field::make([
-        'id'    => 'test_field',
-        'type'  => 'text',
+        'id' => 'test_field',
+        'type' => 'text',
         'label' => 'Test',
-        'desc'  => 'This is a description',
+        'desc' => 'This is a description',
     ], false);
 
     expect($html)
@@ -162,8 +162,8 @@ it('renders field with description', function (): void {
 
 it('renders field with custom class', function (): void {
     $html = WP_Field::make([
-        'id'    => 'test_field',
-        'type'  => 'text',
+        'id' => 'test_field',
+        'type' => 'text',
         'label' => 'Test',
         'class' => 'my-custom-class',
     ], false);
@@ -173,9 +173,9 @@ it('renders field with custom class', function (): void {
 
 it('renders field with custom attributes', function (): void {
     $html = WP_Field::make([
-        'id'                => 'test_field',
-        'type'              => 'text',
-        'label'             => 'Test',
+        'id' => 'test_field',
+        'type' => 'text',
+        'label' => 'Test',
         'custom_attributes' => ['data-test' => 'value', 'aria-label' => 'Test Label'],
     ], false);
 
@@ -186,9 +186,9 @@ it('renders field with custom attributes', function (): void {
 
 it('renders readonly field', function (): void {
     $html = WP_Field::make([
-        'id'       => 'test_field',
-        'type'     => 'text',
-        'label'    => 'Test',
+        'id' => 'test_field',
+        'type' => 'text',
+        'label' => 'Test',
         'readonly' => true,
     ], false);
 
@@ -197,9 +197,9 @@ it('renders readonly field', function (): void {
 
 it('renders disabled field', function (): void {
     $html = WP_Field::make([
-        'id'       => 'test_field',
-        'type'     => 'text',
-        'label'    => 'Test',
+        'id' => 'test_field',
+        'type' => 'text',
+        'label' => 'Test',
         'disabled' => true,
     ], false);
 

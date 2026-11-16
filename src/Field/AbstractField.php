@@ -79,11 +79,11 @@ abstract class AbstractField implements FieldInterface
     public function toArray(): array
     {
         return array_merge([
-            'id'       => $this->name,
-            'name'     => $this->name,
-            'type'     => $this->type,
+            'id' => $this->name,
+            'name' => $this->name,
+            'type' => $this->type,
             'required' => $this->isRequired(),
-            'value'    => $this->getValue(),
+            'value' => $this->getValue(),
         ], $this->attributes, [
             'validation' => $this->validationRules,
             'conditions' => $this->conditions,
@@ -109,12 +109,12 @@ abstract class AbstractField implements FieldInterface
     {
         return match ($rule) {
             'required' => ! empty($value),
-            'min'      => is_numeric($value) && is_numeric($ruleValue) && $value >= $ruleValue,
-            'max'      => is_numeric($value) && is_numeric($ruleValue) && $value <= $ruleValue,
-            'email'    => is_string($value) && is_email($value),
-            'url'      => is_string($value) && filter_var($value, FILTER_VALIDATE_URL) !== false,
-            'pattern'  => is_string($ruleValue) && is_string($value) && preg_match($ruleValue, $value) === 1,
-            default    => true,
+            'min' => is_numeric($value) && is_numeric($ruleValue) && $value >= $ruleValue,
+            'max' => is_numeric($value) && is_numeric($ruleValue) && $value <= $ruleValue,
+            'email' => is_string($value) && is_email($value),
+            'url' => is_string($value) && filter_var($value, FILTER_VALIDATE_URL) !== false,
+            'pattern' => is_string($ruleValue) && is_string($value) && preg_match($ruleValue, $value) === 1,
+            default => true,
         };
     }
 

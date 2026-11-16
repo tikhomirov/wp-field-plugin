@@ -20,7 +20,7 @@ class SelectField extends ChoiceField
     {
         $name = esc_attr($this->name);
         $isMultiple = (bool) $this->getAttribute('multiple', false);
-        $selectName = $isMultiple ? $name . '[]' : $name;
+        $selectName = $isMultiple ? $name.'[]' : $name;
 
         $rawId = $this->getAttribute('id', $this->name);
         $id = is_string($rawId) ? esc_attr($rawId) : esc_attr($this->name);
@@ -63,7 +63,7 @@ class SelectField extends ChoiceField
 
         $label = $this->attributeString('label');
         if ($label !== '') {
-            $html = sprintf('<label for="%s">%s</label>', $id, esc_html($label)) . $html;
+            $html = sprintf('<label for="%s">%s</label>', $id, esc_html($label)).$html;
         }
 
         $description = $this->attributeString('description');

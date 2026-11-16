@@ -3,14 +3,14 @@
 declare(strict_types=1);
 
 beforeEach(function (): void {
-    require_once dirname(__DIR__, 2) . '/WP_Field.php';
+    require_once dirname(__DIR__, 2).'/WP_Field.php';
 });
 
 // ===== SWITCHER =====
 it('renders switcher with default parameters', function (): void {
     $html = WP_Field::make([
-        'id'    => 'test_switcher',
-        'type'  => 'switcher',
+        'id' => 'test_switcher',
+        'type' => 'switcher',
         'label' => 'Enable Feature',
     ], false);
 
@@ -24,10 +24,10 @@ it('renders switcher with default parameters', function (): void {
 
 it('renders switcher with custom text', function (): void {
     $html = WP_Field::make([
-        'id'       => 'test_switcher',
-        'type'     => 'switcher',
-        'label'    => 'Enable',
-        'text_on'  => 'Yes',
+        'id' => 'test_switcher',
+        'type' => 'switcher',
+        'label' => 'Enable',
+        'text_on' => 'Yes',
         'text_off' => 'No',
     ], false);
 
@@ -38,8 +38,8 @@ it('renders switcher with custom text', function (): void {
 
 it('renders switcher with checked state', function (): void {
     $html = WP_Field::make([
-        'id'    => 'test_switcher',
-        'type'  => 'switcher',
+        'id' => 'test_switcher',
+        'type' => 'switcher',
         'label' => 'Enable',
         'value' => '1',
     ], false);
@@ -49,10 +49,10 @@ it('renders switcher with checked state', function (): void {
 
 it('renders switcher with description', function (): void {
     $html = WP_Field::make([
-        'id'    => 'test_switcher',
-        'type'  => 'switcher',
+        'id' => 'test_switcher',
+        'type' => 'switcher',
         'label' => 'Enable',
-        'desc'  => 'Turn on/off this feature',
+        'desc' => 'Turn on/off this feature',
     ], false);
 
     expect($html)
@@ -63,8 +63,8 @@ it('renders switcher with description', function (): void {
 // ===== SPINNER =====
 it('renders spinner with default parameters', function (): void {
     $html = WP_Field::make([
-        'id'    => 'test_spinner',
-        'type'  => 'spinner',
+        'id' => 'test_spinner',
+        'type' => 'spinner',
         'label' => 'Quantity',
     ], false);
 
@@ -77,12 +77,12 @@ it('renders spinner with default parameters', function (): void {
 
 it('renders spinner with min max step', function (): void {
     $html = WP_Field::make([
-        'id'    => 'test_spinner',
-        'type'  => 'spinner',
+        'id' => 'test_spinner',
+        'type' => 'spinner',
         'label' => 'Quantity',
-        'min'   => 1,
-        'max'   => 100,
-        'step'  => 5,
+        'min' => 1,
+        'max' => 100,
+        'step' => 5,
     ], false);
 
     expect($html)
@@ -93,10 +93,10 @@ it('renders spinner with min max step', function (): void {
 
 it('renders spinner with unit', function (): void {
     $html = WP_Field::make([
-        'id'    => 'test_spinner',
-        'type'  => 'spinner',
+        'id' => 'test_spinner',
+        'type' => 'spinner',
         'label' => 'Quantity',
-        'unit'  => 'kg',
+        'unit' => 'kg',
     ], false);
 
     expect($html)
@@ -107,13 +107,13 @@ it('renders spinner with unit', function (): void {
 // ===== BUTTON SET =====
 it('renders button set with radio', function (): void {
     $html = WP_Field::make([
-        'id'      => 'test_button_set',
-        'type'    => 'button_set',
-        'label'   => 'Alignment',
+        'id' => 'test_button_set',
+        'type' => 'button_set',
+        'label' => 'Alignment',
         'options' => [
-            'left'   => 'Left',
+            'left' => 'Left',
             'center' => 'Center',
-            'right'  => 'Right',
+            'right' => 'Right',
         ],
     ], false);
 
@@ -128,14 +128,14 @@ it('renders button set with radio', function (): void {
 
 it('renders button set with checkbox multiple', function (): void {
     $html = WP_Field::make([
-        'id'       => 'test_button_set',
-        'type'     => 'button_set',
-        'label'    => 'Alignment',
+        'id' => 'test_button_set',
+        'type' => 'button_set',
+        'label' => 'Alignment',
         'multiple' => true,
-        'options'  => [
-            'left'   => 'Left',
+        'options' => [
+            'left' => 'Left',
             'center' => 'Center',
-            'right'  => 'Right',
+            'right' => 'Right',
         ],
     ], false);
 
@@ -148,8 +148,8 @@ it('renders button set with checkbox multiple', function (): void {
 // ===== SLIDER =====
 it('renders slider with default parameters', function (): void {
     $html = WP_Field::make([
-        'id'    => 'test_slider',
-        'type'  => 'slider',
+        'id' => 'test_slider',
+        'type' => 'slider',
         'label' => 'Opacity',
     ], false);
 
@@ -161,11 +161,11 @@ it('renders slider with default parameters', function (): void {
 
 it('renders slider with show value', function (): void {
     $html = WP_Field::make([
-        'id'         => 'test_slider',
-        'type'       => 'slider',
-        'label'      => 'Opacity',
+        'id' => 'test_slider',
+        'type' => 'slider',
+        'label' => 'Opacity',
         'show_value' => true,
-        'value'      => 50,
+        'value' => 50,
     ], false);
 
     expect($html)
@@ -176,8 +176,8 @@ it('renders slider with show value', function (): void {
 // ===== HEADING & SUBHEADING =====
 it('renders heading with default tag', function (): void {
     $html = WP_Field::make([
-        'id'    => 'test_heading',
-        'type'  => 'heading',
+        'id' => 'test_heading',
+        'type' => 'heading',
         'label' => 'Main Section',
     ], false);
 
@@ -189,10 +189,10 @@ it('renders heading with default tag', function (): void {
 
 it('renders subheading with custom tag', function (): void {
     $html = WP_Field::make([
-        'id'    => 'test_subheading',
-        'type'  => 'subheading',
+        'id' => 'test_subheading',
+        'type' => 'subheading',
         'label' => 'Subsection',
-        'tag'   => 'h5',
+        'tag' => 'h5',
     ], false);
 
     expect($html)
@@ -204,10 +204,10 @@ it('renders subheading with custom tag', function (): void {
 // ===== NOTICE =====
 it('renders notice with type', function (): void {
     $html = WP_Field::make([
-        'id'          => 'test_notice',
-        'type'        => 'notice',
+        'id' => 'test_notice',
+        'type' => 'notice',
         'notice_type' => 'warning',
-        'label'       => 'This is a warning',
+        'label' => 'This is a warning',
     ], false);
 
     expect($html)
@@ -219,8 +219,8 @@ it('renders notice with type', function (): void {
 // ===== CONTENT =====
 it('renders custom content', function (): void {
     $html = WP_Field::make([
-        'id'    => 'test_content',
-        'type'  => 'content',
+        'id' => 'test_content',
+        'type' => 'content',
         'label' => '<div class="custom-content">Hello World</div>',
     ], false);
 
@@ -232,13 +232,13 @@ it('renders custom content', function (): void {
 // ===== FIELDSET =====
 it('renders fieldset with nested fields', function (): void {
     $html = WP_Field::make([
-        'id'     => 'test_fieldset',
-        'type'   => 'fieldset',
+        'id' => 'test_fieldset',
+        'type' => 'fieldset',
         'legend' => 'Group Info',
         'fields' => [
             [
-                'id'    => 'nested_text',
-                'type'  => 'text',
+                'id' => 'nested_text',
+                'type' => 'text',
                 'label' => 'Nested Text',
             ],
         ],

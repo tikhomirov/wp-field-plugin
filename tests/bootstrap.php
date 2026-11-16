@@ -144,14 +144,14 @@ if (! function_exists('add_action')) {
 if (! function_exists('plugin_dir_url')) {
     function plugin_dir_url(string $file): string
     {
-        return 'http://example.com/wp-field/' . trim(str_replace('\\', '/', dirname($file)), '/') . '/';
+        return 'http://example.com/wp-field/'.trim(str_replace('\\', '/', dirname($file)), '/').'/';
     }
 }
 
 if (! function_exists('plugin_dir_path')) {
     function plugin_dir_path(string $file): string
     {
-        return dirname($file) . '/';
+        return dirname($file).'/';
     }
 }
 
@@ -193,7 +193,7 @@ if (! function_exists('wp_enqueue_editor')) {
 
 if (! function_exists('wp_enqueue_code_editor')) {
     /**
-     * @param  array<string, mixed> $settings
+     * @param  array<string, mixed>  $settings
      * @return array<string, mixed>
      */
     function wp_enqueue_code_editor(array $settings = []): array
@@ -247,7 +247,7 @@ if (! function_exists('wp_nonce_field')) {
     {
         $nonce = 'test_nonce';
         if ($echo) {
-            echo '<input type="hidden" name="' . $name . '" value="' . $nonce . '" />';
+            echo '<input type="hidden" name="'.$name.'" value="'.$nonce.'" />';
         }
 
         return $nonce;
@@ -299,15 +299,15 @@ if (! function_exists('register_setting')) {
 if (! function_exists('settings_fields')) {
     function settings_fields(string $option_group): void
     {
-        echo '<input type="hidden" name="option_page" value="' . $option_group . '" />';
+        echo '<input type="hidden" name="option_page" value="'.$option_group.'" />';
     }
 }
 
 if (! function_exists('submit_button')) {
     function submit_button(?string $text = null, string $type = 'primary', string $name = 'submit', bool $wrap = true, array $other_attributes = []): void
     {
-        echo '<button type="' . $type . '" name="' . $name . '">' . ($text ?? 'Save Changes') . '</button>';
+        echo '<button type="'.$type.'" name="'.$name.'">'.($text ?? 'Save Changes').'</button>';
     }
 }
 
-require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__.'/../vendor/autoload.php';

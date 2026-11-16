@@ -6,10 +6,10 @@ declare(strict_types=1);
  */
 
 // Загружаем WordPress моки из bootstrap
-require_once __DIR__ . '/../../../tests/bootstrap.php';
+require_once __DIR__.'/../../../tests/bootstrap.php';
 
 // Загружаем класс
-require_once __DIR__ . '/../WP_Field.php';
+require_once __DIR__.'/../WP_Field.php';
 
 class WP_Field_Tests
 {
@@ -68,8 +68,8 @@ class WP_Field_Tests
         echo "Test: Text field rendering\n";
 
         $html = WP_Field::make([
-            'id'    => 'test_text',
-            'type'  => 'text',
+            'id' => 'test_text',
+            'type' => 'text',
             'label' => 'Test Text',
         ], false);
 
@@ -87,9 +87,9 @@ class WP_Field_Tests
         echo "Test: Select field rendering\n";
 
         $html = WP_Field::make([
-            'id'      => 'test_select',
-            'type'    => 'select',
-            'label'   => 'Test Select',
+            'id' => 'test_select',
+            'type' => 'select',
+            'label' => 'Test Select',
             'options' => ['a' => 'Option A', 'b' => 'Option B'],
         ], false);
 
@@ -107,9 +107,9 @@ class WP_Field_Tests
         echo "Test: Dependency evaluation\n";
 
         $field = new WP_Field([
-            'id'         => 'test_dep',
-            'type'       => 'text',
-            'label'      => 'Test Dependency',
+            'id' => 'test_dep',
+            'type' => 'text',
+            'label' => 'Test Dependency',
             'dependency' => [
                 ['other_field', '==', 'value'],
             ],
@@ -137,10 +137,10 @@ class WP_Field_Tests
         echo "Test: Value resolution\n";
 
         $field = new WP_Field([
-            'id'      => 'test_value',
-            'type'    => 'text',
-            'label'   => 'Test Value',
-            'value'   => 'explicit_value',
+            'id' => 'test_value',
+            'type' => 'text',
+            'label' => 'Test Value',
+            'value' => 'explicit_value',
             'default' => 'default_value',
         ], 'options');
 
@@ -164,9 +164,9 @@ class WP_Field_Tests
         echo "Test: Accordion field rendering\n";
 
         $html = WP_Field::make([
-            'id'       => 'test_accordion',
-            'type'     => 'accordion',
-            'label'    => 'Test Accordion',
+            'id' => 'test_accordion',
+            'type' => 'accordion',
+            'label' => 'Test Accordion',
             'sections' => [
                 ['title' => 'Section 1', 'content' => 'Content 1'],
                 ['title' => 'Section 2', 'content' => 'Content 2'],
@@ -187,10 +187,10 @@ class WP_Field_Tests
         echo "Test: Tabbed field rendering\n";
 
         $html = WP_Field::make([
-            'id'    => 'test_tabbed',
-            'type'  => 'tabbed',
+            'id' => 'test_tabbed',
+            'type' => 'tabbed',
             'label' => 'Test Tabbed',
-            'tabs'  => [
+            'tabs' => [
                 ['title' => 'Tab 1', 'content' => 'Content 1'],
                 ['title' => 'Tab 2', 'content' => 'Content 2'],
             ],
@@ -210,8 +210,8 @@ class WP_Field_Tests
         echo "Test: Typography field rendering\n";
 
         $html = WP_Field::make([
-            'id'    => 'test_typography',
-            'type'  => 'typography',
+            'id' => 'test_typography',
+            'type' => 'typography',
             'label' => 'Test Typography',
         ], false);
 
@@ -229,8 +229,8 @@ class WP_Field_Tests
         echo "Test: Spacing field rendering\n";
 
         $html = WP_Field::make([
-            'id'    => 'test_spacing',
-            'type'  => 'spacing',
+            'id' => 'test_spacing',
+            'type' => 'spacing',
             'label' => 'Test Spacing',
         ], false);
 
@@ -248,8 +248,8 @@ class WP_Field_Tests
         echo "Test: Dimensions field rendering\n";
 
         $html = WP_Field::make([
-            'id'    => 'test_dimensions',
-            'type'  => 'dimensions',
+            'id' => 'test_dimensions',
+            'type' => 'dimensions',
             'label' => 'Test Dimensions',
         ], false);
 
@@ -267,8 +267,8 @@ class WP_Field_Tests
         echo "Test: Border field rendering\n";
 
         $html = WP_Field::make([
-            'id'    => 'test_border',
-            'type'  => 'border',
+            'id' => 'test_border',
+            'type' => 'border',
             'label' => 'Test Border',
         ], false);
 
@@ -286,8 +286,8 @@ class WP_Field_Tests
         echo "Test: Background field rendering\n";
 
         $html = WP_Field::make([
-            'id'    => 'test_background',
-            'type'  => 'background',
+            'id' => 'test_background',
+            'type' => 'background',
             'label' => 'Test Background',
         ], false);
 
@@ -305,8 +305,8 @@ class WP_Field_Tests
         echo "Test: Link Color field rendering\n";
 
         $html = WP_Field::make([
-            'id'    => 'test_link_color',
-            'type'  => 'link_color',
+            'id' => 'test_link_color',
+            'type' => 'link_color',
             'label' => 'Test Link Color',
         ], false);
 
@@ -324,8 +324,8 @@ class WP_Field_Tests
         echo "Test: Color Group field rendering\n";
 
         $html = WP_Field::make([
-            'id'    => 'test_color_group',
-            'type'  => 'color_group',
+            'id' => 'test_color_group',
+            'type' => 'color_group',
             'label' => 'Test Color Group',
         ], false);
 
@@ -343,9 +343,9 @@ class WP_Field_Tests
         echo "Test: Image Select field rendering\n";
 
         $html = WP_Field::make([
-            'id'      => 'test_image_select',
-            'type'    => 'image_select',
-            'label'   => 'Test Image Select',
+            'id' => 'test_image_select',
+            'type' => 'image_select',
+            'label' => 'Test Image Select',
             'options' => [
                 'opt1' => ['src' => 'http://example.com/img1.jpg', 'label' => 'Option 1'],
                 'opt2' => ['src' => 'http://example.com/img2.jpg', 'label' => 'Option 2'],

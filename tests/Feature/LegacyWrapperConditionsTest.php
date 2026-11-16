@@ -5,7 +5,7 @@ declare(strict_types=1);
 use WpField\Field\Field;
 
 beforeEach(function (): void {
-    require_once dirname(__DIR__, 2) . '/WP_Field.php';
+    require_once dirname(__DIR__, 2).'/WP_Field.php';
 });
 
 it('maps flat when conditions to legacy dependency', function (): void {
@@ -13,7 +13,7 @@ it('maps flat when conditions to legacy dependency', function (): void {
         ->label('Legacy Select')
         ->attribute('options', [
             'yes' => 'Yes',
-            'no'  => 'No',
+            'no' => 'No',
         ])
         ->when('delivery_type', '==', 'courier')
         ->render();
@@ -29,7 +29,7 @@ it('maps or conditions to legacy dependency relation', function (): void {
         ->label('Legacy Select')
         ->attribute('options', [
             'yes' => 'Yes',
-            'no'  => 'No',
+            'no' => 'No',
         ])
         ->when('field_a', '==', '1')
         ->orWhen('field_b', '==', '2')

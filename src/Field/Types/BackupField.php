@@ -29,7 +29,7 @@ class BackupField extends AbstractField
         $html .= '<div class="wp-field-backup">';
 
         $html .= '<div class="wp-field-backup-section">';
-        $html .= '<h4>' . esc_html__('Export Settings', 'wp-field') . '</h4>';
+        $html .= '<h4>'.esc_html__('Export Settings', 'wp-field').'</h4>';
 
         if ($exportData !== []) {
             $json = function_exists('wp_json_encode')
@@ -41,22 +41,22 @@ class BackupField extends AbstractField
                 '<textarea readonly class="wp-field-backup-export" rows="10" style="width:100%%;">%s</textarea>',
                 htmlspecialchars($jsonString, ENT_QUOTES, 'UTF-8'),
             );
-            $html .= '<button type="button" class="button wp-field-backup-copy">' . esc_html__('Copy to Clipboard', 'wp-field') . '</button>';
-            $html .= '<button type="button" class="button wp-field-backup-download">' . esc_html__('Download JSON', 'wp-field') . '</button>';
+            $html .= '<button type="button" class="button wp-field-backup-copy">'.esc_html__('Copy to Clipboard', 'wp-field').'</button>';
+            $html .= '<button type="button" class="button wp-field-backup-download">'.esc_html__('Download JSON', 'wp-field').'</button>';
         } else {
-            $html .= '<p class="description">' . esc_html__('No data to export', 'wp-field') . '</p>';
+            $html .= '<p class="description">'.esc_html__('No data to export', 'wp-field').'</p>';
         }
 
         $html .= '</div>';
 
         $html .= '<div class="wp-field-backup-section">';
-        $html .= '<h4>' . esc_html__('Import Settings', 'wp-field') . '</h4>';
+        $html .= '<h4>'.esc_html__('Import Settings', 'wp-field').'</h4>';
         $html .= sprintf(
             '<textarea name="%s" class="wp-field-backup-import" rows="10" placeholder="%s" style="width:100%%;"></textarea>',
             $name,
             esc_attr(__('Paste JSON data here...', 'wp-field')),
         );
-        $html .= '<button type="button" class="button button-primary wp-field-backup-validate">' . esc_html__('Validate JSON', 'wp-field') . '</button>';
+        $html .= '<button type="button" class="button button-primary wp-field-backup-validate">'.esc_html__('Validate JSON', 'wp-field').'</button>';
         $html .= '<div class="wp-field-backup-status"></div>';
         $html .= '</div>';
 

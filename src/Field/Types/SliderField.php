@@ -53,7 +53,7 @@ class SliderField extends AbstractField
         $wrapperClass = 'wp-field-slider-wrapper';
         $customClass = $this->getAttribute('class', '');
         if (is_string($customClass) && $customClass !== '') {
-            $wrapperClass .= ' ' . trim($customClass);
+            $wrapperClass .= ' '.trim($customClass);
         }
 
         $html = sprintf('<div class="%s">', esc_attr($wrapperClass));

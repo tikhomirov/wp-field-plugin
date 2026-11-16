@@ -26,12 +26,12 @@ class FlexibleContentField extends AbstractField
     }
 
     /**
-     * @param array<FieldInterface> $fields
+     * @param  array<FieldInterface>  $fields
      */
     public function addLayout(string $name, string $label, array $fields): static
     {
         $this->layouts[$name] = [
-            'label'  => $label,
+            'label' => $label,
             'fields' => $fields,
         ];
 
@@ -77,7 +77,7 @@ class FlexibleContentField extends AbstractField
 
         foreach ($this->layouts as $layoutName => $layout) {
             $array['layouts'][$layoutName] = [
-                'label'  => $layout['label'],
+                'label' => $layout['label'],
                 'fields' => array_map(fn (FieldInterface $field) => $field->toArray(), $layout['fields']),
             ];
         }
@@ -227,7 +227,7 @@ class FlexibleContentField extends AbstractField
     }
 
     /**
-     * @param array<string, mixed> $blockData
+     * @param  array<string, mixed>  $blockData
      */
     protected function renderBlock(int|string $index, string $layoutName, array $blockData): string
     {

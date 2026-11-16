@@ -25,14 +25,14 @@ namespace WpField\UI;
 final class AdminShell
 {
     /**
-     * @param NavItem[]        $nav            Navigation tree (depth ≤ 2).
-     * @param string           $active_segment Active leaf id (resolved from GET by host or passed directly).
-     * @param string           $active_panel   Active panel/tab id within the leaf ('' = first panel).
-     * @param string           $page_title     Page title (already translated).
-     * @param string           $action_url     Form action URL.
-     * @param string           $nonce_field    HTML output of wp_nonce_field().
-     * @param callable         $panel_renderer callable(string $segment_id, string $panel_id): void
-     * @param AdminShellConfig $config         Optional configuration.
+     * @param  NavItem[]  $nav  Navigation tree (depth ≤ 2).
+     * @param  string  $active_segment  Active leaf id (resolved from GET by host or passed directly).
+     * @param  string  $active_panel  Active panel/tab id within the leaf ('' = first panel).
+     * @param  string  $page_title  Page title (already translated).
+     * @param  string  $action_url  Form action URL.
+     * @param  string  $nonce_field  HTML output of wp_nonce_field().
+     * @param  callable  $panel_renderer  callable(string $segment_id, string $panel_id): void
+     * @param  AdminShellConfig  $config  Optional configuration.
      */
     public static function render(
         array $nav,
@@ -60,7 +60,7 @@ final class AdminShell
 
         $nav_json = (string) wp_json_encode(NavItem::toJsonArray($nav), JSON_UNESCAPED_UNICODE);
 
-        $wrapper_class = trim('wp-field-shell ' . $config->wrapper_extra_class);
+        $wrapper_class = trim('wp-field-shell '.$config->wrapper_extra_class);
         ?>
         <div class="<?php echo esc_attr($wrapper_class); ?>">
 
@@ -153,7 +153,7 @@ final class AdminShell
     /**
      * Resolve active segment and panel from GET parameters using the given config.
      *
-     * @param  NavItem[]                             $nav
+     * @param  NavItem[]  $nav
      * @return array{segment: string, panel: string}
      */
     public static function resolveFromRequest(array $nav, AdminShellConfig $config = new AdminShellConfig): array

@@ -83,9 +83,9 @@ it('can get all attributes', function (): void {
     $attributes = $this->instance->getAttributes();
 
     expect($attributes)->toBe([
-        'label'       => 'Label',
+        'label' => 'Label',
         'placeholder' => 'Placeholder',
-        'class'       => 'Class',
+        'class' => 'Class',
     ]);
 });
 

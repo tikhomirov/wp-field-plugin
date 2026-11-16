@@ -14,7 +14,7 @@ class SortableField extends AbstractField
     }
 
     /**
-     * @param array<int|string, mixed> $options
+     * @param  array<int|string, mixed>  $options
      */
     public function options(array $options): static
     {
@@ -101,7 +101,7 @@ class SortableField extends AbstractField
     }
 
     /**
-     * @param  array<string, string> $options
+     * @param  array<string, string>  $options
      * @return array<string, string>
      */
     private function resolveOrderedOptions(array $options, mixed $value): array

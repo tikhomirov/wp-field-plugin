@@ -9,7 +9,7 @@ use WpField\Storage\UserMetaStorage;
 class UserContainer extends AbstractContainer
 {
     /**
-     * @param array<string, mixed> $config
+     * @param  array<string, mixed>  $config
      */
     public function __construct(string $id, array $config = [])
     {
@@ -34,11 +34,11 @@ class UserContainer extends AbstractContainer
 
         $this->loadFieldValues($user_id);
 
-        wp_nonce_field($this->id . '_nonce_action', $this->id . '_nonce');
+        wp_nonce_field($this->id.'_nonce_action', $this->id.'_nonce');
 
         $rawTitle = $this->getConfig('title', 'Additional Information');
         $title = is_string($rawTitle) ? $rawTitle : 'Additional Information';
-        echo '<h2>' . esc_html($title) . '</h2>';
+        echo '<h2>'.esc_html($title).'</h2>';
         echo '<table class="form-table">';
 
         foreach ($this->fields as $field) {
@@ -62,11 +62,11 @@ class UserContainer extends AbstractContainer
     {
         $userId = (int) $id;
 
-        if (! isset($_POST[$this->id . '_nonce'])) {
+        if (! isset($_POST[$this->id.'_nonce'])) {
             return;
         }
 
-        if (! wp_verify_nonce($_POST[$this->id . '_nonce'], $this->id . '_nonce_action')) {
+        if (! wp_verify_nonce($_POST[$this->id.'_nonce'], $this->id.'_nonce_action')) {
             return;
         }
 

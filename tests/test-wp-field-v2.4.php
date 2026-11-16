@@ -10,10 +10,10 @@ declare(strict_types=1);
  */
 
 // Загружаем WordPress моки из bootstrap
-require_once __DIR__ . '/bootstrap.php';
+require_once __DIR__.'/bootstrap.php';
 
 // Загружаем WP_Field класс
-require_once __DIR__ . '/../WP_Field.php';
+require_once __DIR__.'/../WP_Field.php';
 
 class WP_Field_Tests_v2_4
 {
@@ -81,7 +81,7 @@ class WP_Field_Tests_v2_4
                 }
             }
 
-            $this->pass('Registry contains ' . count($types) . ' field types');
+            $this->pass('Registry contains '.count($types).' field types');
         } catch (Exception $e) {
             $this->fail($e->getMessage());
         }
@@ -93,8 +93,8 @@ class WP_Field_Tests_v2_4
 
         try {
             $field = [
-                'id'    => 'test_text',
-                'type'  => 'text',
+                'id' => 'test_text',
+                'type' => 'text',
                 'label' => 'Test Text',
                 'value' => 'test value',
             ];
@@ -123,9 +123,9 @@ class WP_Field_Tests_v2_4
 
         try {
             $field = [
-                'id'      => 'test_select',
-                'type'    => 'select',
-                'label'   => 'Test Select',
+                'id' => 'test_select',
+                'type' => 'select',
+                'label' => 'Test Select',
                 'options' => ['opt1' => 'Option 1', 'opt2' => 'Option 2'],
             ];
 
@@ -153,9 +153,9 @@ class WP_Field_Tests_v2_4
 
         try {
             $field = [
-                'id'         => 'dependent_field',
-                'type'       => 'text',
-                'label'      => 'Dependent',
+                'id' => 'dependent_field',
+                'type' => 'text',
+                'label' => 'Dependent',
                 'dependency' => [
                     ['parent_field', '==', 'value'],
                 ],
@@ -182,8 +182,8 @@ class WP_Field_Tests_v2_4
 
         try {
             $field = [
-                'id'    => 'test_accordion',
-                'type'  => 'accordion',
+                'id' => 'test_accordion',
+                'type' => 'accordion',
                 'label' => 'Test Accordion',
                 'items' => [
                     ['title' => 'Section 1', 'content' => 'Content 1'],
@@ -219,10 +219,10 @@ class WP_Field_Tests_v2_4
 
         try {
             $field = [
-                'id'    => 'test_tabbed',
-                'type'  => 'tabbed',
+                'id' => 'test_tabbed',
+                'type' => 'tabbed',
                 'label' => 'Test Tabbed',
-                'tabs'  => [
+                'tabs' => [
                     ['title' => 'Tab 1', 'content' => 'Content 1'],
                     ['title' => 'Tab 2', 'content' => 'Content 2', 'active' => true],
                 ],
@@ -252,9 +252,9 @@ class WP_Field_Tests_v2_4
 
         try {
             $field = [
-                'id'      => 'test_icon',
-                'type'    => 'icon',
-                'label'   => 'Test Icon',
+                'id' => 'test_icon',
+                'type' => 'icon',
+                'label' => 'Test Icon',
                 'library' => 'dashicons',
             ];
 
@@ -278,9 +278,9 @@ class WP_Field_Tests_v2_4
 
         try {
             $field = [
-                'id'     => 'test_repeater',
-                'type'   => 'repeater',
-                'label'  => 'Test Repeater',
+                'id' => 'test_repeater',
+                'type' => 'repeater',
+                'label' => 'Test Repeater',
                 'fields' => [
                     ['id' => 'name', 'type' => 'text', 'label' => 'Name'],
                     ['id' => 'value', 'type' => 'text', 'label' => 'Value'],
@@ -311,8 +311,8 @@ class WP_Field_Tests_v2_4
 
         try {
             $field = [
-                'id'    => 'test_color',
-                'type'  => 'color',
+                'id' => 'test_color',
+                'type' => 'color',
                 'label' => 'Test Color',
                 'alpha' => true,
             ];
@@ -337,10 +337,10 @@ class WP_Field_Tests_v2_4
 
         try {
             $field = [
-                'id'    => 'test_code',
-                'type'  => 'code_editor',
+                'id' => 'test_code',
+                'type' => 'code_editor',
                 'label' => 'Test Code',
-                'mode'  => 'css',
+                'mode' => 'css',
             ];
 
             ob_start();
@@ -363,9 +363,9 @@ class WP_Field_Tests_v2_4
 
         try {
             $field = [
-                'id'      => 'test_map',
-                'type'    => 'map',
-                'label'   => 'Test Map',
+                'id' => 'test_map',
+                'type' => 'map',
+                'label' => 'Test Map',
                 'api_key' => 'test_key',
             ];
 
@@ -386,9 +386,9 @@ class WP_Field_Tests_v2_4
 
         try {
             $field = [
-                'id'      => 'test_sortable',
-                'type'    => 'sortable',
-                'label'   => 'Test Sortable',
+                'id' => 'test_sortable',
+                'type' => 'sortable',
+                'label' => 'Test Sortable',
                 'options' => ['item1' => 'Item 1', 'item2' => 'Item 2'],
             ];
 
@@ -412,11 +412,11 @@ class WP_Field_Tests_v2_4
 
         try {
             $field = [
-                'id'       => 'test_palette',
-                'type'     => 'palette',
-                'label'    => 'Test Palette',
+                'id' => 'test_palette',
+                'type' => 'palette',
+                'label' => 'Test Palette',
                 'palettes' => [
-                    'blue'  => ['#0073aa', '#005a87'],
+                    'blue' => ['#0073aa', '#005a87'],
                     'green' => ['#28a745', '#218838'],
                 ],
             ];
@@ -441,8 +441,8 @@ class WP_Field_Tests_v2_4
 
         try {
             $field = [
-                'id'    => 'test_accordion_state',
-                'type'  => 'accordion',
+                'id' => 'test_accordion_state',
+                'type' => 'accordion',
                 'label' => 'Test Accordion',
                 'items' => [
                     ['title' => 'Item 1', 'content' => 'Content 1'],
@@ -472,10 +472,10 @@ class WP_Field_Tests_v2_4
 
         try {
             $field = [
-                'id'    => 'test_tabbed_state',
-                'type'  => 'tabbed',
+                'id' => 'test_tabbed_state',
+                'type' => 'tabbed',
                 'label' => 'Test Tabbed',
-                'tabs'  => [
+                'tabs' => [
                     ['title' => 'Tab 1', 'content' => 'Content 1'],
                     ['title' => 'Tab 2', 'content' => 'Content 2'],
                 ],
@@ -525,7 +525,7 @@ class WP_Field_Tests_v2_4
         echo "\n=== Test Results ===\n";
         echo "Passed: {$this->passed}\n";
         echo "Failed: {$this->failed}\n";
-        echo 'Total:  ' . ($this->passed + $this->failed) . "\n";
+        echo 'Total:  '.($this->passed + $this->failed)."\n";
 
         if ($this->failed === 0) {
             echo "\n✓ All tests passed!\n";

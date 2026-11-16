@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 beforeEach(function (): void {
     // Load vanilla WP_Field class for testing
-    require_once __DIR__ . '/../../vanilla/WP_Field.php';
+    require_once __DIR__.'/../../vanilla/WP_Field.php';
 });
 
 it('vanilla WP_Field class is loaded', function (): void {
@@ -23,8 +23,8 @@ it('vanilla WP_Field has field types registry', function (): void {
 
 it('vanilla WP_Field creates text field', function (): void {
     $field = [
-        'id'    => 'test_field',
-        'type'  => 'text',
+        'id' => 'test_field',
+        'type' => 'text',
         'label' => 'Test Field',
         'value' => 'test value',
     ];

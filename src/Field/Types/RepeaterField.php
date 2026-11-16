@@ -28,7 +28,7 @@ class RepeaterField extends AbstractField
     }
 
     /**
-     * @param array<FieldInterface> $fields
+     * @param  array<FieldInterface>  $fields
      */
     public function fields(array $fields): static
     {
@@ -207,7 +207,7 @@ class RepeaterField extends AbstractField
     }
 
     /**
-     * @param array<string, mixed> $rowData
+     * @param  array<string, mixed>  $rowData
      */
     protected function renderRow(int|string $index, array $rowData): string
     {

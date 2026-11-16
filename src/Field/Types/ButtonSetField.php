@@ -32,7 +32,7 @@ class ButtonSetField extends ChoiceField
         $wrapperClass = 'wp-field-button-set';
         $customClass = $this->getAttribute('class', '');
         if (is_string($customClass) && $customClass !== '') {
-            $wrapperClass .= ' ' . trim($customClass);
+            $wrapperClass .= ' '.trim($customClass);
         }
 
         $html = sprintf('<div class="%s">', esc_attr($wrapperClass));
@@ -41,7 +41,7 @@ class ButtonSetField extends ChoiceField
             $keyValue = (string) $key;
             $checked = in_array($keyValue, $selectedValues, true);
             $inputType = $multiple ? 'checkbox' : 'radio';
-            $inputName = $multiple ? $name . '[]' : $name;
+            $inputName = $multiple ? $name.'[]' : $name;
             $itemClass = $checked ? ' active' : '';
 
             $html .= sprintf(

@@ -20,7 +20,7 @@ abstract class AbstractContainer implements ContainerInterface
     protected array $config = [];
 
     /**
-     * @param array<string, mixed> $config
+     * @param  array<string, mixed>  $config
      */
     public function __construct(string $id, StorageInterface $storage, array $config = [])
     {

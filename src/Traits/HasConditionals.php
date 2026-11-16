@@ -12,10 +12,10 @@ trait HasConditionals
     public function when(string $field, string $operator, mixed $value): static
     {
         $this->conditions[] = [
-            'field'    => $field,
+            'field' => $field,
             'operator' => $operator,
-            'value'    => $value,
-            'logic'    => 'AND',
+            'value' => $value,
+            'logic' => 'AND',
         ];
 
         return $this;
@@ -24,10 +24,10 @@ trait HasConditionals
     public function orWhen(string $field, string $operator, mixed $value): static
     {
         $this->conditions[] = [
-            'field'    => $field,
+            'field' => $field,
             'operator' => $operator,
-            'value'    => $value,
-            'logic'    => 'OR',
+            'value' => $value,
+            'logic' => 'OR',
         ];
 
         return $this;

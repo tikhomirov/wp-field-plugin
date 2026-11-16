@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 // Load vanilla WP_Field class for testing
-require_once __DIR__ . '/../../vanilla/WP_Field.php';
+require_once __DIR__.'/../../vanilla/WP_Field.php';
 
 use WpField\Field\Field;
 use WpField\Field\Types\LegacyWrapperField;
@@ -11,7 +11,7 @@ use WpField\Field\Types\LegacyWrapperField;
 beforeEach(function (): void {
     // Ensure WP_Field class is loaded
     if (! class_exists('WP_Field', false)) {
-        require_once __DIR__ . '/../../vanilla/WP_Field.php';
+        require_once __DIR__.'/../../vanilla/WP_Field.php';
     }
 });
 

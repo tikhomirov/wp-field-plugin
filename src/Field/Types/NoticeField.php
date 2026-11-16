@@ -23,7 +23,7 @@ class NoticeField extends AbstractField
         $type = $this->getAttribute('type_notice', $this->getAttribute('notice_type', 'info'));
         $type = is_string($type) ? $type : 'info';
         $safeType = function_exists('sanitize_html_class') ? sanitize_html_class($type) : preg_replace('/[^A-Za-z0-9_-]/', '', $type);
-        $class = 'wp-field-notice wp-field-notice-' . ($safeType ?: 'info');
+        $class = 'wp-field-notice wp-field-notice-'.($safeType ?: 'info');
         $label = $this->getAttribute('label', '');
         $content = function_exists('wp_kses_post') ? wp_kses_post(is_scalar($label) ? (string) $label : '') : (is_scalar($label) ? (string) $label : '');
 

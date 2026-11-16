@@ -18,7 +18,7 @@ if (! defined('ABSPATH')) {
     exit;
 }
 
-require_once dirname(__DIR__) . '/shared-catalog.php';
+require_once dirname(__DIR__).'/shared-catalog.php';
 
 class WP_Field_Components
 {
@@ -67,39 +67,39 @@ class WP_Field_Components
         wp_dequeue_script('wp-field-main');
         wp_dequeue_style('wp-field-main');
 
-        $legacyCssPath = dirname(__DIR__, 2) . '/vanilla/assets/css/wp-field.css';
+        $legacyCssPath = dirname(__DIR__, 2).'/vanilla/assets/css/wp-field.css';
         if (file_exists($legacyCssPath)) {
             wp_enqueue_style(
                 'wp-field-legacy',
-                WP_FIELD_PLUGIN_URL . 'vanilla/assets/css/wp-field.css',
+                WP_FIELD_PLUGIN_URL.'vanilla/assets/css/wp-field.css',
                 [],
                 (string) filemtime($legacyCssPath),
             );
         }
 
-        $cssPath = __DIR__ . '/assets/wp-field-components.css';
+        $cssPath = __DIR__.'/assets/wp-field-components.css';
         if (file_exists($cssPath)) {
             $componentDeps = file_exists($legacyCssPath) ? ['wp-field-legacy'] : [];
             wp_enqueue_style(
                 'wp-field-components',
-                plugin_dir_url(__FILE__) . 'assets/wp-field-components.css',
+                plugin_dir_url(__FILE__).'assets/wp-field-components.css',
                 $componentDeps,
                 (string) filemtime($cssPath),
             );
         }
 
-        $jsPath = __DIR__ . '/assets/wp-field-components.js';
+        $jsPath = __DIR__.'/assets/wp-field-components.js';
         if (file_exists($jsPath)) {
             wp_enqueue_script(
                 'wp-field-components',
-                plugin_dir_url(__FILE__) . 'assets/wp-field-components.js',
+                plugin_dir_url(__FILE__).'assets/wp-field-components.js',
                 [],
                 (string) filemtime($jsPath),
                 true,
             );
         }
 
-        $jsPath = dirname(__DIR__, 2) . '/vanilla/assets/js/wp-field.js';
+        $jsPath = dirname(__DIR__, 2).'/vanilla/assets/js/wp-field.js';
         if (file_exists($jsPath)) {
             wp_enqueue_style('wp-color-picker');
             wp_enqueue_script('wp-color-picker');
@@ -109,7 +109,7 @@ class WP_Field_Components
 
             wp_enqueue_script(
                 'wp-field-main',
-                WP_FIELD_PLUGIN_URL . 'vanilla/assets/js/wp-field.js',
+                WP_FIELD_PLUGIN_URL.'vanilla/assets/js/wp-field.js',
                 ['jquery', 'wp-color-picker', 'jquery-ui-sortable', 'jquery-ui-datepicker', 'media-editor'],
                 (string) filemtime($jsPath),
                 true,
@@ -148,7 +148,7 @@ class WP_Field_Components
 
         $navJson = wp_json_encode(array_map(static function (array $section): array {
             return [
-                'id'    => $section['id'],
+                'id' => $section['id'],
                 'title' => $section['title'],
                 'count' => count($section['fields']),
             ];
@@ -468,7 +468,7 @@ BASH
         if ($props) {
             $propsHtml = '<div class="wfc-card__props">';
             foreach ($props as $prop) {
-                $propsHtml .= '<span class="wfc-card__prop">' . esc_html($prop) . '</span>';
+                $propsHtml .= '<span class="wfc-card__prop">'.esc_html($prop).'</span>';
             }
             $propsHtml .= '</div>';
         }

@@ -12,16 +12,16 @@ class ChoiceFieldsTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        require_once dirname(__DIR__, 2) . '/WP_Field.php';
+        require_once dirname(__DIR__, 2).'/WP_Field.php';
     }
 
     #[Test]
     public function it_renders_select_with_options(): void
     {
         $html = \WP_Field::make([
-            'id'      => 'country',
-            'type'    => 'select',
-            'label'   => 'Country',
+            'id' => 'country',
+            'type' => 'select',
+            'label' => 'Country',
             'options' => [
                 'ru' => 'Russia',
                 'us' => 'USA',
@@ -38,9 +38,9 @@ class ChoiceFieldsTest extends TestCase
     public function it_renders_multiselect(): void
     {
         $html = \WP_Field::make([
-            'id'      => 'features',
-            'type'    => 'multiselect',
-            'label'   => 'Features',
+            'id' => 'features',
+            'type' => 'multiselect',
+            'label' => 'Features',
             'options' => ['a' => 'Feature A', 'b' => 'Feature B'],
         ], false);
 
@@ -53,12 +53,12 @@ class ChoiceFieldsTest extends TestCase
     public function it_renders_radio_with_options(): void
     {
         $html = \WP_Field::make([
-            'id'      => 'delivery',
-            'type'    => 'radio',
-            'label'   => 'Delivery Type',
+            'id' => 'delivery',
+            'type' => 'radio',
+            'label' => 'Delivery Type',
             'options' => [
                 'courier' => 'Courier',
-                'pickup'  => 'Pickup',
+                'pickup' => 'Pickup',
             ],
         ], false);
 
@@ -71,13 +71,13 @@ class ChoiceFieldsTest extends TestCase
     public function it_renders_checkbox_group(): void
     {
         $html = \WP_Field::make([
-            'id'      => 'notifications',
-            'type'    => 'checkbox_group',
-            'label'   => 'Notifications',
+            'id' => 'notifications',
+            'type' => 'checkbox_group',
+            'label' => 'Notifications',
             'options' => [
-                'sms'   => 'SMS',
+                'sms' => 'SMS',
                 'email' => 'Email',
-                'push'  => 'Push',
+                'push' => 'Push',
             ],
         ], false);
 
@@ -91,12 +91,12 @@ class ChoiceFieldsTest extends TestCase
     public function it_renders_select_with_selected_value(): void
     {
         $html = \WP_Field::make([
-            'id'      => 'status',
-            'type'    => 'select',
-            'label'   => 'Status',
-            'value'   => 'active',
+            'id' => 'status',
+            'type' => 'select',
+            'label' => 'Status',
+            'value' => 'active',
             'options' => [
-                'active'   => 'Active',
+                'active' => 'Active',
                 'inactive' => 'Inactive',
             ],
         ], false);
@@ -108,13 +108,13 @@ class ChoiceFieldsTest extends TestCase
     public function it_renders_radio_with_checked_value(): void
     {
         $html = \WP_Field::make([
-            'id'      => 'choice',
-            'type'    => 'radio',
-            'label'   => 'Choice',
-            'value'   => 'yes',
+            'id' => 'choice',
+            'type' => 'radio',
+            'label' => 'Choice',
+            'value' => 'yes',
             'options' => [
                 'yes' => 'Yes',
-                'no'  => 'No',
+                'no' => 'No',
             ],
         ], false);
 
@@ -125,10 +125,10 @@ class ChoiceFieldsTest extends TestCase
     public function it_renders_checkbox_group_with_multiple_values(): void
     {
         $html = \WP_Field::make([
-            'id'      => 'tags',
-            'type'    => 'checkbox_group',
-            'label'   => 'Tags',
-            'value'   => ['tag1', 'tag2'],
+            'id' => 'tags',
+            'type' => 'checkbox_group',
+            'label' => 'Tags',
+            'value' => ['tag1', 'tag2'],
             'options' => [
                 'tag1' => 'Tag 1',
                 'tag2' => 'Tag 2',
@@ -146,11 +146,11 @@ class ChoiceFieldsTest extends TestCase
     public function it_supports_parse_options(): void
     {
         $html = \WP_Field::make([
-            'id'            => 'parsed',
-            'type'          => 'select',
-            'label'         => 'Parsed Options',
+            'id' => 'parsed',
+            'type' => 'select',
+            'label' => 'Parsed Options',
             'parse_options' => true,
-            'options'       => [
+            'options' => [
                 'Option 1:opt1',
                 'Option 2:opt2',
             ],
@@ -164,9 +164,9 @@ class ChoiceFieldsTest extends TestCase
     public function it_renders_radio_group_with_labels(): void
     {
         $html = \WP_Field::make([
-            'id'      => 'type',
-            'type'    => 'radio',
-            'label'   => 'Type',
+            'id' => 'type',
+            'type' => 'radio',
+            'label' => 'Type',
             'options' => [
                 'type_a' => 'Type A',
                 'type_b' => 'Type B',

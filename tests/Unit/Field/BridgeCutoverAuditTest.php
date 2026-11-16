@@ -27,7 +27,7 @@ it('official registry types are routed to native classes, not vanilla wrapper fa
 });
 
 it('no official field type class uses LegacyAdapterBridge anymore', function (): void {
-    $files = glob(__DIR__ . '/../../../src/Field/Types/*.php');
+    $files = glob(__DIR__.'/../../../src/Field/Types/*.php');
     expect($files)->toBeArray()->not->toBeEmpty();
 
     foreach ($files as $file) {

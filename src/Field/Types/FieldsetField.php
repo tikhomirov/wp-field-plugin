@@ -16,7 +16,7 @@ class FieldsetField extends AbstractField
     }
 
     /**
-     * @param array<int|string, mixed> $fields
+     * @param  array<int|string, mixed>  $fields
      */
     public function fields(array $fields): static
     {
@@ -26,7 +26,7 @@ class FieldsetField extends AbstractField
     public function render(): string
     {
         $legend = $this->attributeString('legend', $this->attributeString('label'));
-        $class = trim('wp-field-fieldset ' . $this->attributeString('class'));
+        $class = trim('wp-field-fieldset '.$this->attributeString('class'));
 
         $html = sprintf('<fieldset class="%s">', esc_attr($class));
 

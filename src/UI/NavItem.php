@@ -30,7 +30,7 @@ final class NavItem
 
     /** Leaf node — renders content via panel_renderer.
      *
-     * @param array<int, array{id: string, label: string}>|null $panels
+     * @param  array<int, array{id: string, label: string}>|null  $panels
      */
     public static function leaf(string $id, string $label, ?array $panels = null): self
     {
@@ -39,7 +39,7 @@ final class NavItem
 
     /** Group node — wraps children, no content of its own.
      *
-     * @param array<int, NavItem> $children
+     * @param  array<int, NavItem>  $children
      */
     public static function group(string $id, string $label, array $children): self
     {
@@ -60,7 +60,7 @@ final class NavItem
      * Build a flat depth-1 nav tree from a simple id=>label map.
      * Backward-compatible with current flat sections pattern.
      *
-     * @param  array<string, string> $sections
+     * @param  array<string, string>  $sections
      * @return NavItem[]
      */
     public static function flatSections(array $sections): array
@@ -76,7 +76,7 @@ final class NavItem
     /**
      * Collect all leaves (depth-first) from a nav tree.
      *
-     * @param  NavItem[] $items
+     * @param  NavItem[]  $items
      * @return NavItem[]
      */
     public static function collectLeaves(array $items): array
@@ -98,7 +98,7 @@ final class NavItem
     /**
      * Find the first leaf id in the nav tree.
      *
-     * @param NavItem[] $items
+     * @param  NavItem[]  $items
      */
     public static function firstLeafId(array $items): string
     {
@@ -112,7 +112,7 @@ final class NavItem
     /**
      * Find a leaf by id across the entire tree.
      *
-     * @param NavItem[] $items
+     * @param  NavItem[]  $items
      */
     public static function findLeaf(array $items, string $id): ?self
     {
@@ -128,7 +128,7 @@ final class NavItem
     /**
      * Serialize the tree to a JSON-safe array for the React data attribute.
      *
-     * @param  NavItem[]         $items
+     * @param  NavItem[]  $items
      * @return array<int, mixed>
      */
     public static function toJsonArray(array $items): array

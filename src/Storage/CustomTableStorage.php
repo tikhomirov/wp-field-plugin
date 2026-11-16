@@ -11,7 +11,7 @@ class CustomTableStorage implements StorageInterface
     public function __construct(string $tableName)
     {
         global $wpdb;
-        $this->tableName = $wpdb->prefix . $tableName;
+        $this->tableName = $wpdb->prefix.$tableName;
     }
 
     public function get(string $key, int|string $id): mixed
@@ -39,7 +39,7 @@ class CustomTableStorage implements StorageInterface
             return $wpdb->update(
                 $this->tableName,
                 ['meta_value' => $serializedValue],
-                ['meta_key'   => $key, 'object_id' => (int) $id],
+                ['meta_key' => $key, 'object_id' => (int) $id],
                 ['%s'],
                 ['%s', '%d'],
             ) !== false;
@@ -48,8 +48,8 @@ class CustomTableStorage implements StorageInterface
         return $wpdb->insert(
             $this->tableName,
             [
-                'object_id'  => (int) $id,
-                'meta_key'   => $key,
+                'object_id' => (int) $id,
+                'meta_key' => $key,
                 'meta_value' => $serializedValue,
             ],
             ['%d', '%s', '%s'],

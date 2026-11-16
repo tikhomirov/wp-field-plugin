@@ -71,11 +71,11 @@ it('can get validation rules', function (): void {
 
     expect($rules)->toBe([
         'required' => true,
-        'min'      => 5,
-        'max'      => 100,
-        'pattern'  => '/^[a-z]+$/',
-        'email'    => true,
-        'url'      => true,
+        'min' => 5,
+        'max' => 100,
+        'pattern' => '/^[a-z]+$/',
+        'email' => true,
+        'url' => true,
     ]);
 });
 

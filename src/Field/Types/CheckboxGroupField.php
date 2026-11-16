@@ -32,7 +32,7 @@ class CheckboxGroupField extends ChoiceField
 
         foreach ($this->getOptions() as $value => $optionLabel) {
             $valueStr = (string) $value;
-            $fieldId = esc_attr($this->name . '_' . $valueStr);
+            $fieldId = esc_attr($this->name.'_'.$valueStr);
             $checked = in_array($valueStr, $selectedValues, true) ? ' checked' : '';
 
             $html .= sprintf(

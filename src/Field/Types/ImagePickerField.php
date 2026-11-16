@@ -14,7 +14,7 @@ class ImagePickerField extends AbstractField
     }
 
     /**
-     * @param array<int|string, mixed> $options
+     * @param  array<int|string, mixed>  $options
      */
     public function options(array $options): static
     {

@@ -9,7 +9,7 @@ use WpField\Storage\PostMetaStorage;
 class MetaboxContainer extends AbstractContainer
 {
     /**
-     * @param array<string, mixed> $config
+     * @param  array<string, mixed>  $config
      */
     public function __construct(string $id, array $config = [])
     {
@@ -63,7 +63,7 @@ class MetaboxContainer extends AbstractContainer
 
         $this->loadFieldValues($post->ID);
 
-        wp_nonce_field($this->id . '_nonce_action', $this->id . '_nonce');
+        wp_nonce_field($this->id.'_nonce_action', $this->id.'_nonce');
 
         echo '<div class="wp-field-metabox">';
 
@@ -80,11 +80,11 @@ class MetaboxContainer extends AbstractContainer
     {
         $postId = (int) $id;
 
-        if (! isset($_POST[$this->id . '_nonce'])) {
+        if (! isset($_POST[$this->id.'_nonce'])) {
             return;
         }
 
-        if (! wp_verify_nonce($_POST[$this->id . '_nonce'], $this->id . '_nonce_action')) {
+        if (! wp_verify_nonce($_POST[$this->id.'_nonce'], $this->id.'_nonce_action')) {
             return;
         }
 
