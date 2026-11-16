@@ -54,7 +54,7 @@ class SpinnerField extends AbstractField
         $wrapperClass = 'wp-field-spinner';
         $customClass = $this->getAttribute('class', '');
         if (is_string($customClass) && $customClass !== '') {
-            $wrapperClass .= ' '.trim($customClass);
+            $wrapperClass .= ' ' . mb_trim($customClass);
         }
 
         $html = sprintf('<div class="%s">', esc_attr($wrapperClass));

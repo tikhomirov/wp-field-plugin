@@ -5,15 +5,15 @@ declare(strict_types=1);
 beforeEach(function (): void {
     // Ensure WP_Field class is loaded
     if (! class_exists('WP_Field', false)) {
-        require_once __DIR__.'/../../../vanilla/WP_Field.php';
+        require_once __DIR__ . '/../../../vanilla/WP_Field.php';
     }
 });
 
 describe('WP_Field storage types', function (): void {
     it('supports post storage type', function (): void {
         $field = [
-            'id' => 'test_field',
-            'type' => 'text',
+            'id'    => 'test_field',
+            'type'  => 'text',
             'label' => 'Test Field',
         ];
 
@@ -25,8 +25,8 @@ describe('WP_Field storage types', function (): void {
 
     it('supports options storage type', function (): void {
         $field = [
-            'id' => 'test_field',
-            'type' => 'text',
+            'id'    => 'test_field',
+            'type'  => 'text',
             'label' => 'Test Field',
         ];
 
@@ -37,8 +37,8 @@ describe('WP_Field storage types', function (): void {
 
     it('supports term storage type', function (): void {
         $field = [
-            'id' => 'test_field',
-            'type' => 'text',
+            'id'    => 'test_field',
+            'type'  => 'text',
             'label' => 'Test Field',
         ];
 
@@ -50,8 +50,8 @@ describe('WP_Field storage types', function (): void {
 
     it('supports user storage type', function (): void {
         $field = [
-            'id' => 'test_field',
-            'type' => 'text',
+            'id'    => 'test_field',
+            'type'  => 'text',
             'label' => 'Test Field',
         ];
 
@@ -63,8 +63,8 @@ describe('WP_Field storage types', function (): void {
 
     it('supports comment storage type', function (): void {
         $field = [
-            'id' => 'test_field',
-            'type' => 'text',
+            'id'    => 'test_field',
+            'type'  => 'text',
             'label' => 'Test Field',
         ];
 
@@ -76,8 +76,8 @@ describe('WP_Field storage types', function (): void {
 
     it('supports nav_menu_item storage type', function (): void {
         $field = [
-            'id' => 'test_field',
-            'type' => 'text',
+            'id'    => 'test_field',
+            'type'  => 'text',
             'label' => 'Test Field',
         ];
 
@@ -89,8 +89,8 @@ describe('WP_Field storage types', function (): void {
 
     it('supports site_option storage type', function (): void {
         $field = [
-            'id' => 'test_field',
-            'type' => 'text',
+            'id'    => 'test_field',
+            'type'  => 'text',
             'label' => 'Test Field',
         ];
 
@@ -101,8 +101,8 @@ describe('WP_Field storage types', function (): void {
 
     it('supports attachment storage type', function (): void {
         $field = [
-            'id' => 'test_field',
-            'type' => 'text',
+            'id'    => 'test_field',
+            'type'  => 'text',
             'label' => 'Test Field',
         ];
 
@@ -114,12 +114,12 @@ describe('WP_Field storage types', function (): void {
 
     it('supports custom_table storage type', function (): void {
         $field = [
-            'id' => 'test_field',
-            'type' => 'text',
-            'label' => 'Test Field',
-            'table' => 'wp_custom_meta',
-            'object_id_column' => 'object_id',
-            'meta_key_column' => 'meta_key',
+            'id'                => 'test_field',
+            'type'              => 'text',
+            'label'             => 'Test Field',
+            'table'             => 'wp_custom_meta',
+            'object_id_column'  => 'object_id',
+            'meta_key_column'   => 'meta_key',
             'meta_value_column' => 'meta_value',
         ];
 
@@ -133,8 +133,8 @@ describe('WP_Field storage types', function (): void {
 describe('WP_Field::get_value for different storage types', function (): void {
     it('handles post storage type', function (): void {
         $field = [
-            'id' => 'test_field',
-            'type' => 'text',
+            'id'    => 'test_field',
+            'type'  => 'text',
             'label' => 'Test Field',
         ];
 
@@ -148,8 +148,8 @@ describe('WP_Field::get_value for different storage types', function (): void {
 
     it('handles options storage type', function (): void {
         $field = [
-            'id' => 'test_option',
-            'type' => 'text',
+            'id'    => 'test_option',
+            'type'  => 'text',
             'label' => 'Test Option',
         ];
 
@@ -163,8 +163,8 @@ describe('WP_Field::get_value for different storage types', function (): void {
 
     it('handles term storage type', function (): void {
         $field = [
-            'id' => 'test_term_meta',
-            'type' => 'text',
+            'id'    => 'test_term_meta',
+            'type'  => 'text',
             'label' => 'Test Term Meta',
         ];
 
@@ -178,8 +178,8 @@ describe('WP_Field::get_value for different storage types', function (): void {
 
     it('handles user storage type', function (): void {
         $field = [
-            'id' => 'test_user_meta',
-            'type' => 'text',
+            'id'    => 'test_user_meta',
+            'type'  => 'text',
             'label' => 'Test User Meta',
         ];
 
@@ -193,8 +193,8 @@ describe('WP_Field::get_value for different storage types', function (): void {
 
     it('handles comment storage type', function (): void {
         $field = [
-            'id' => 'test_comment_meta',
-            'type' => 'text',
+            'id'    => 'test_comment_meta',
+            'type'  => 'text',
             'label' => 'Test Comment Meta',
         ];
 
@@ -208,8 +208,8 @@ describe('WP_Field::get_value for different storage types', function (): void {
 
     it('handles site_option storage type', function (): void {
         $field = [
-            'id' => 'test_site_option',
-            'type' => 'text',
+            'id'    => 'test_site_option',
+            'type'  => 'text',
             'label' => 'Test Site Option',
         ];
 
@@ -223,8 +223,8 @@ describe('WP_Field::get_value for different storage types', function (): void {
 
     it('respects wp_field_get_value filter', function (): void {
         $field = [
-            'id' => 'test_field',
-            'type' => 'text',
+            'id'    => 'test_field',
+            'type'  => 'text',
             'label' => 'Test Field',
         ];
 
@@ -251,8 +251,8 @@ describe('WP_Field::get_value for different storage types', function (): void {
 describe('WP_Field custom table storage', function (): void {
     it('uses default table name when not specified', function (): void {
         $field = [
-            'id' => 'test_field',
-            'type' => 'text',
+            'id'    => 'test_field',
+            'type'  => 'text',
             'label' => 'Test Field',
         ];
 
@@ -269,8 +269,8 @@ describe('WP_Field custom table storage', function (): void {
 
     it('uses custom table name when specified', function (): void {
         $field = [
-            'id' => 'test_field',
-            'type' => 'text',
+            'id'    => 'test_field',
+            'type'  => 'text',
             'label' => 'Test Field',
             'table' => 'wp_my_custom_table',
         ];
@@ -282,12 +282,12 @@ describe('WP_Field custom table storage', function (): void {
 
     it('uses custom column names when specified', function (): void {
         $field = [
-            'id' => 'test_field',
-            'type' => 'text',
-            'label' => 'Test Field',
-            'table' => 'wp_custom_table',
-            'object_id_column' => 'custom_id',
-            'meta_key_column' => 'custom_key',
+            'id'                => 'test_field',
+            'type'              => 'text',
+            'label'             => 'Test Field',
+            'table'             => 'wp_custom_table',
+            'object_id_column'  => 'custom_id',
+            'meta_key_column'   => 'custom_key',
             'meta_value_column' => 'custom_value',
         ];
 

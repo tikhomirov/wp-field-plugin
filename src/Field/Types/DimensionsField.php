@@ -16,7 +16,7 @@ class DimensionsField extends AbstractField
     }
 
     /**
-     * @param  array<int, string>  $units
+     * @param array<int, string> $units
      */
     public function units(array $units): static
     {
@@ -62,9 +62,9 @@ class DimensionsField extends AbstractField
         $units = $this->resolveUnits();
 
         return [
-            'width' => $this->sanitizeNumeric($normalized['width']),
+            'width'  => $this->sanitizeNumeric($normalized['width']),
             'height' => $this->sanitizeNumeric($normalized['height']),
-            'unit' => in_array($normalized['unit'], $units, true) ? $normalized['unit'] : $units[0],
+            'unit'   => in_array($normalized['unit'], $units, true) ? $normalized['unit'] : $units[0],
         ];
     }
 
@@ -91,9 +91,9 @@ class DimensionsField extends AbstractField
         }
 
         return [
-            'width' => isset($value['width']) && is_scalar($value['width']) ? (string) $value['width'] : '',
+            'width'  => isset($value['width']) && is_scalar($value['width']) ? (string) $value['width'] : '',
             'height' => isset($value['height']) && is_scalar($value['height']) ? (string) $value['height'] : '',
-            'unit' => isset($value['unit']) && is_scalar($value['unit']) ? (string) $value['unit'] : 'px',
+            'unit'   => isset($value['unit']) && is_scalar($value['unit']) ? (string) $value['unit'] : 'px',
         ];
     }
 
@@ -114,7 +114,7 @@ class DimensionsField extends AbstractField
                 continue;
             }
 
-            $unit = trim((string) $unit);
+            $unit = mb_trim((string) $unit);
             if ($unit !== '') {
                 $normalized[] = $unit;
             }
@@ -125,7 +125,7 @@ class DimensionsField extends AbstractField
 
     private function sanitizeNumeric(string $value): string
     {
-        $value = trim(sanitize_text_field($value));
+        $value = mb_trim(sanitize_text_field($value));
 
         return is_numeric($value) ? $value : '';
     }

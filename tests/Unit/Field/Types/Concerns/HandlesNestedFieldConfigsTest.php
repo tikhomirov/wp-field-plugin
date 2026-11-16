@@ -96,8 +96,8 @@ it('returns null for non-array and non-FieldInterface', function (): void {
 
 it('creates field from array config', function (): void {
     $config = [
-        'type' => 'text',
-        'name' => 'field_name',
+        'type'  => 'text',
+        'name'  => 'field_name',
         'label' => 'Field Label',
     ];
 
@@ -109,7 +109,7 @@ it('creates field from array config', function (): void {
 it('uses id as fallback for name', function (): void {
     $config = [
         'type' => 'text',
-        'id' => 'field_id',
+        'id'   => 'field_id',
     ];
 
     $result = $this->handler->publicNormalizeNestedFieldObject($config);
@@ -139,8 +139,8 @@ it('returns null when name and id are missing', function (): void {
 
 it('sets value from config', function (): void {
     $config = [
-        'type' => 'text',
-        'name' => 'field_name',
+        'type'  => 'text',
+        'name'  => 'field_name',
         'value' => 'test_value',
     ];
 
@@ -151,10 +151,10 @@ it('sets value from config', function (): void {
 
 it('sets custom attributes from config', function (): void {
     $config = [
-        'type' => 'text',
-        'name' => 'field_name',
+        'type'        => 'text',
+        'name'        => 'field_name',
         'placeholder' => 'Enter value',
-        'class' => 'custom-class',
+        'class'       => 'custom-class',
     ];
 
     $result = $this->handler->publicNormalizeNestedFieldObject($config);
@@ -166,7 +166,7 @@ it('skips non-string keys in config', function (): void {
     $config = [
         'type' => 'text',
         'name' => 'field_name',
-        123 => 'invalid_key',
+        123    => 'invalid_key',
     ];
 
     $result = $this->handler->publicNormalizeNestedFieldObject($config);
@@ -178,7 +178,7 @@ it('skips type, id, name keys when setting attributes', function (): void {
     $config = [
         'type' => 'text',
         'name' => 'field_name',
-        'id' => 'field_id',
+        'id'   => 'field_id',
     ];
 
     $result = $this->handler->publicNormalizeNestedFieldObject($config);

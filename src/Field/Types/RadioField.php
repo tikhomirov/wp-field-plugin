@@ -21,7 +21,7 @@ class RadioField extends ChoiceField
         $html = '';
         $label = $this->attributeString('label');
         if ($label !== '') {
-            $html .= sprintf('<label for="%s">%s</label>', $id.'-0', esc_html($label));
+            $html .= sprintf('<label for="%s">%s</label>', $id . '-0', esc_html($label));
         }
 
         $html .= '<div class="wp-field-radio-group">';

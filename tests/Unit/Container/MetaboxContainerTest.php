@@ -14,7 +14,7 @@ class TestMetaboxField extends AbstractField
 
     public function render(): string
     {
-        return '<input type="text" name="'.$this->name.'">';
+        return '<input type="text" name="' . $this->name . '">';
     }
 
     public function sanitize(mixed $value): mixed
@@ -39,9 +39,9 @@ class TestMetaboxField extends AbstractField
 beforeEach(function (): void {
     $this->container = new MetaboxContainer('test_metabox', [
         'post_types' => ['post', 'page'],
-        'title' => 'Test Metabox',
-        'context' => 'normal',
-        'priority' => 'high',
+        'title'      => 'Test Metabox',
+        'context'    => 'normal',
+        'priority'   => 'high',
     ]);
 });
 
@@ -172,7 +172,7 @@ it('addMetaBox uses default values when config not provided', function (): void 
 it('addMetaBox validates priority to allowed values', function (): void {
     $container = new MetaboxContainer('test_metabox', [
         'post_types' => ['post'],
-        'priority' => 'invalid',
+        'priority'   => 'invalid',
     ]);
 
     global $wp_test_meta_boxes;

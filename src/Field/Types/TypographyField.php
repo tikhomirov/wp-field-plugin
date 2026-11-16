@@ -22,7 +22,7 @@ class TypographyField extends AbstractField
     }
 
     /**
-     * @param  array<int|string, mixed>  $options
+     * @param array<int|string, mixed> $options
      */
     public function options(array $options): static
     {
@@ -30,7 +30,7 @@ class TypographyField extends AbstractField
     }
 
     /**
-     * @param  array<int|string, mixed>  $default
+     * @param array<int|string, mixed> $default
      */
     public function defaultValue(array $default): static
     {
@@ -77,13 +77,13 @@ class TypographyField extends AbstractField
         $normalized = $this->normalizeValue($value);
 
         return [
-            'font_family' => in_array($normalized['font_family'], self::FONT_FAMILIES, true) ? $normalized['font_family'] : '',
-            'font_size' => $this->sanitizeNumeric($normalized['font_size']),
-            'font_weight' => in_array($normalized['font_weight'], self::FONT_WEIGHTS, true) ? $normalized['font_weight'] : '',
-            'line_height' => $this->sanitizeNumeric($normalized['line_height']),
-            'text_align' => in_array($normalized['text_align'], self::TEXT_ALIGNS, true) ? $normalized['text_align'] : '',
+            'font_family'    => in_array($normalized['font_family'], self::FONT_FAMILIES, true) ? $normalized['font_family'] : '',
+            'font_size'      => $this->sanitizeNumeric($normalized['font_size']),
+            'font_weight'    => in_array($normalized['font_weight'], self::FONT_WEIGHTS, true) ? $normalized['font_weight'] : '',
+            'line_height'    => $this->sanitizeNumeric($normalized['line_height']),
+            'text_align'     => in_array($normalized['text_align'], self::TEXT_ALIGNS, true) ? $normalized['text_align'] : '',
             'text_transform' => in_array($normalized['text_transform'], self::TEXT_TRANSFORMS, true) ? $normalized['text_transform'] : '',
-            'color' => trim(sanitize_text_field($normalized['color'])),
+            'color'          => mb_trim(sanitize_text_field($normalized['color'])),
         ];
     }
 
@@ -110,29 +110,29 @@ class TypographyField extends AbstractField
     {
         if (! is_array($value)) {
             return [
-                'font_family' => '',
-                'font_size' => '',
-                'font_weight' => '',
-                'line_height' => '',
-                'text_align' => '',
+                'font_family'    => '',
+                'font_size'      => '',
+                'font_weight'    => '',
+                'line_height'    => '',
+                'text_align'     => '',
                 'text_transform' => '',
-                'color' => '',
+                'color'          => '',
             ];
         }
 
         return [
-            'font_family' => isset($value['font_family']) && is_scalar($value['font_family']) ? (string) $value['font_family'] : '',
-            'font_size' => isset($value['font_size']) && is_scalar($value['font_size']) ? (string) $value['font_size'] : '',
-            'font_weight' => isset($value['font_weight']) && is_scalar($value['font_weight']) ? (string) $value['font_weight'] : '',
-            'line_height' => isset($value['line_height']) && is_scalar($value['line_height']) ? (string) $value['line_height'] : '',
-            'text_align' => isset($value['text_align']) && is_scalar($value['text_align']) ? (string) $value['text_align'] : '',
+            'font_family'    => isset($value['font_family']) && is_scalar($value['font_family']) ? (string) $value['font_family'] : '',
+            'font_size'      => isset($value['font_size']) && is_scalar($value['font_size']) ? (string) $value['font_size'] : '',
+            'font_weight'    => isset($value['font_weight']) && is_scalar($value['font_weight']) ? (string) $value['font_weight'] : '',
+            'line_height'    => isset($value['line_height']) && is_scalar($value['line_height']) ? (string) $value['line_height'] : '',
+            'text_align'     => isset($value['text_align']) && is_scalar($value['text_align']) ? (string) $value['text_align'] : '',
             'text_transform' => isset($value['text_transform']) && is_scalar($value['text_transform']) ? (string) $value['text_transform'] : '',
-            'color' => isset($value['color']) && is_scalar($value['color']) ? (string) $value['color'] : '',
+            'color'          => isset($value['color']) && is_scalar($value['color']) ? (string) $value['color'] : '',
         ];
     }
 
     /**
-     * @param  array<int, string>  $options
+     * @param array<int, string> $options
      */
     private function renderSelect(string $name, string $key, string $label, array $options, string $selectedValue, bool $withDefault = false): string
     {
@@ -154,7 +154,7 @@ class TypographyField extends AbstractField
     }
 
     /**
-     * @param  array<string, string>  $attrs
+     * @param array<string, string> $attrs
      */
     private function renderNumberInput(string $name, string $key, string $label, string $value, array $attrs = []): string
     {
@@ -174,7 +174,7 @@ class TypographyField extends AbstractField
     }
 
     /**
-     * @param  array<int, string>  $allowed
+     * @param array<int, string> $allowed
      */
     private function isAllowedOrEmpty(string $value, array $allowed): bool
     {
@@ -188,7 +188,7 @@ class TypographyField extends AbstractField
 
     private function sanitizeNumeric(string $value): string
     {
-        $value = trim(sanitize_text_field($value));
+        $value = mb_trim(sanitize_text_field($value));
 
         return is_numeric($value) ? $value : '';
     }

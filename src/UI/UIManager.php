@@ -105,7 +105,7 @@ class UIManager
     }
 
     /**
-     * @param  array<int, string>  $dependencies
+     * @param array<int, string> $dependencies
      */
     protected static function enqueueScript(
         string $pluginUrl,
@@ -115,7 +115,7 @@ class UIManager
         array $dependencies,
         bool $module,
     ): void {
-        $fullPath = $pluginPath.'/'.$relativePath;
+        $fullPath = $pluginPath . '/' . $relativePath;
         if (! file_exists($fullPath)) {
             return;
         }
@@ -123,7 +123,7 @@ class UIManager
         $version = filemtime($fullPath);
         wp_enqueue_script(
             $handle,
-            $pluginUrl.$relativePath,
+            $pluginUrl . $relativePath,
             $dependencies,
             $version === false ? false : (string) $version,
             true,
@@ -136,7 +136,7 @@ class UIManager
 
     protected static function enqueueStyle(string $pluginUrl, string $pluginPath, string $handle, string $relativePath): void
     {
-        $fullPath = $pluginPath.'/'.$relativePath;
+        $fullPath = $pluginPath . '/' . $relativePath;
         if (! file_exists($fullPath)) {
             return;
         }
@@ -144,7 +144,7 @@ class UIManager
         $version = filemtime($fullPath);
         wp_enqueue_style(
             $handle,
-            $pluginUrl.$relativePath,
+            $pluginUrl . $relativePath,
             [],
             $version === false ? false : (string) $version,
         );

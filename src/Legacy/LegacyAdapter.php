@@ -10,7 +10,7 @@ use WpField\Field\FieldInterface;
 class LegacyAdapter
 {
     /**
-     * @param  array<string, mixed>  $config
+     * @param array<string, mixed> $config
      */
     public static function make(array $config): FieldInterface
     {
@@ -102,7 +102,7 @@ class LegacyAdapter
     }
 
     /**
-     * @param  array<string, mixed>|string  $validation
+     * @param array<string, mixed>|string $validation
      */
     protected static function applyValidation(FieldInterface $field, array|string $validation): void
     {
@@ -132,17 +132,17 @@ class LegacyAdapter
 
         match ($ruleName) {
             'required' => $field->required(),
-            'email' => $field->email(),
-            'url' => $field->url(),
-            'min' => is_numeric($ruleValue) ? $field->min((int) $ruleValue) : null,
-            'max' => is_numeric($ruleValue) ? $field->max((int) $ruleValue) : null,
-            'pattern' => is_string($ruleValue) ? $field->pattern($ruleValue) : null,
-            default => null,
+            'email'    => $field->email(),
+            'url'      => $field->url(),
+            'min'      => is_numeric($ruleValue) ? $field->min((int) $ruleValue) : null,
+            'max'      => is_numeric($ruleValue) ? $field->max((int) $ruleValue) : null,
+            'pattern'  => is_string($ruleValue) ? $field->pattern($ruleValue) : null,
+            default    => null,
         };
     }
 
     /**
-     * @param  array<array<string, mixed>>  $conditions
+     * @param array<array<string, mixed>> $conditions
      */
     protected static function applyConditionalLogic(FieldInterface $field, array $conditions): void
     {
@@ -158,7 +158,7 @@ class LegacyAdapter
     }
 
     /**
-     * @param  array<array<string, mixed>>  $fields
+     * @param  array<array<string, mixed>> $fields
      * @return array<FieldInterface>
      */
     public static function makeMultiple(array $fields): array
@@ -174,7 +174,7 @@ class LegacyAdapter
     }
 
     /**
-     * @param  array<string, mixed>  $config
+     * @param array<string, mixed> $config
      */
     public static function render(array $config): string
     {
@@ -184,7 +184,7 @@ class LegacyAdapter
     }
 
     /**
-     * @param  array<array<string, mixed>>  $fields
+     * @param array<array<string, mixed>> $fields
      */
     public static function renderMultiple(array $fields): string
     {
