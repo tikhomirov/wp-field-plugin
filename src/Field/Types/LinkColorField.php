@@ -16,7 +16,7 @@ class LinkColorField extends AbstractField
     }
 
     /**
-     * @param  array<int, string>  $states
+     * @param array<int, string> $states
      */
     public function states(array $states): static
     {
@@ -63,7 +63,7 @@ class LinkColorField extends AbstractField
         $sanitized = [];
 
         foreach ($this->resolveStates() as $state) {
-            $sanitized[$state] = trim(sanitize_text_field($normalized[$state] ?? ''));
+            $sanitized[$state] = mb_trim(sanitize_text_field($normalized[$state] ?? ''));
         }
 
         return $sanitized;
@@ -94,7 +94,7 @@ class LinkColorField extends AbstractField
         if (! is_array($value)) {
             return [
                 'normal' => '',
-                'hover' => '',
+                'hover'  => '',
                 'active' => '',
             ];
         }
@@ -132,7 +132,7 @@ class LinkColorField extends AbstractField
                 continue;
             }
 
-            $state = strtolower(trim((string) $state));
+            $state = mb_strtolower(mb_trim((string) $state));
             if ($state !== '') {
                 $normalized[] = $state;
             }

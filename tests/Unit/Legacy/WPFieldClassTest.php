@@ -5,7 +5,7 @@ declare(strict_types=1);
 beforeEach(function (): void {
     // Ensure WP_Field class is loaded
     if (! class_exists('WP_Field', false)) {
-        require_once __DIR__.'/../../../vanilla/WP_Field.php';
+        require_once __DIR__ . '/../../../vanilla/WP_Field.php';
     }
 });
 
@@ -58,8 +58,8 @@ describe('WP_Field::init_field_types', function (): void {
 describe('WP_Field constructor', function (): void {
     it('creates instance with valid field data', function (): void {
         $field = [
-            'id' => 'test_field',
-            'type' => 'text',
+            'id'    => 'test_field',
+            'type'  => 'text',
             'label' => 'Test Field',
         ];
 
@@ -74,11 +74,11 @@ describe('WP_Field constructor', function (): void {
 
     it('normalizes field aliases', function (): void {
         $field = [
-            'id' => 'test_field',
-            'type' => 'text',
+            'id'    => 'test_field',
+            'type'  => 'text',
             'title' => 'Test Title',
-            'val' => 'test_value',
-            'attr' => ['data-test' => 'value'],
+            'val'   => 'test_value',
+            'attr'  => ['data-test' => 'value'],
         ];
 
         $wpField = new WP_Field($field);
@@ -90,8 +90,8 @@ describe('WP_Field constructor', function (): void {
 
     it('sets default storage type to post', function (): void {
         $field = [
-            'id' => 'test_field',
-            'type' => 'text',
+            'id'    => 'test_field',
+            'type'  => 'text',
             'label' => 'Test Field',
         ];
 
@@ -102,8 +102,8 @@ describe('WP_Field constructor', function (): void {
 
     it('accepts custom storage type', function (): void {
         $field = [
-            'id' => 'test_field',
-            'type' => 'text',
+            'id'    => 'test_field',
+            'type'  => 'text',
             'label' => 'Test Field',
         ];
 
@@ -123,8 +123,8 @@ describe('WP_Field constructor', function (): void {
 
     it('handles object field data', function (): void {
         $fieldObject = (object) [
-            'id' => 'test_field',
-            'type' => 'text',
+            'id'    => 'test_field',
+            'type'  => 'text',
             'label' => 'Test Field',
         ];
 
@@ -147,7 +147,7 @@ describe('WP_Field constructor', function (): void {
 
     it('returns error for missing label on required fields', function (): void {
         $field = [
-            'id' => 'test_field',
+            'id'   => 'test_field',
             'type' => 'text',
             // Missing label
         ];
@@ -159,7 +159,7 @@ describe('WP_Field constructor', function (): void {
 
     it('allows missing label for fieldset', function (): void {
         $field = [
-            'id' => 'test_fieldset',
+            'id'   => 'test_fieldset',
             'type' => 'fieldset',
             // Missing label - allowed for fieldset
         ];
@@ -172,8 +172,8 @@ describe('WP_Field constructor', function (): void {
 
     it('allows missing label for content field', function (): void {
         $field = [
-            'id' => 'test_content',
-            'type' => 'content',
+            'id'      => 'test_content',
+            'type'    => 'content',
             'content' => 'Some content',
         ];
 
@@ -187,8 +187,8 @@ describe('WP_Field constructor', function (): void {
 describe('WP_Field::get_value', function (): void {
     it('returns empty string for non-existent post meta', function (): void {
         $field = [
-            'id' => 'non_existent_field',
-            'type' => 'text',
+            'id'    => 'non_existent_field',
+            'type'  => 'text',
             'label' => 'Test Field',
         ];
 
@@ -201,11 +201,11 @@ describe('WP_Field::get_value', function (): void {
 
     it('returns default value when field value is empty', function (): void {
         $field = [
-            'id' => 'test_field',
-            'type' => 'text',
-            'label' => 'Test Field',
+            'id'      => 'test_field',
+            'type'    => 'text',
+            'label'   => 'Test Field',
             'default' => 'default_value',
-            'value' => '', // Explicit empty value
+            'value'   => '', // Explicit empty value
         ];
 
         $wpField = new WP_Field($field, 'post', 99999);
@@ -222,8 +222,8 @@ describe('WP_Field::get_value', function (): void {
 
     it('uses provided value over database value', function (): void {
         $field = [
-            'id' => 'test_field',
-            'type' => 'text',
+            'id'    => 'test_field',
+            'type'  => 'text',
             'label' => 'Test Field',
             'value' => 'provided_value',
         ];
@@ -243,8 +243,8 @@ describe('WP_Field::get_value', function (): void {
 describe('WP_Field::render', function (): void {
     it('returns HTML when output is false', function (): void {
         $field = [
-            'id' => 'test_field',
-            'type' => 'text',
+            'id'    => 'test_field',
+            'type'  => 'text',
             'label' => 'Test Field',
         ];
 
@@ -259,8 +259,8 @@ describe('WP_Field::render', function (): void {
 
     it('outputs HTML when output is true', function (): void {
         $field = [
-            'id' => 'test_field',
-            'type' => 'text',
+            'id'    => 'test_field',
+            'type'  => 'text',
             'label' => 'Test Field',
         ];
 
@@ -289,8 +289,8 @@ describe('WP_Field::render', function (): void {
 
     it('includes field type in wrapper class', function (): void {
         $field = [
-            'id' => 'test_field',
-            'type' => 'textarea',
+            'id'    => 'test_field',
+            'type'  => 'textarea',
             'label' => 'Test Field',
         ];
 

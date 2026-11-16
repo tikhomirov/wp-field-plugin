@@ -18,7 +18,7 @@ class SpacingField extends AbstractField
     }
 
     /**
-     * @param  array<int, string>  $units
+     * @param array<int, string> $units
      */
     public function units(array $units): static
     {
@@ -26,7 +26,7 @@ class SpacingField extends AbstractField
     }
 
     /**
-     * @param  array<int, string>  $sides
+     * @param array<int, string> $sides
      */
     public function sides(array $sides): static
     {
@@ -130,11 +130,11 @@ class SpacingField extends AbstractField
         }
 
         return [
-            'top' => isset($value['top']) && is_scalar($value['top']) ? (string) $value['top'] : '',
-            'right' => isset($value['right']) && is_scalar($value['right']) ? (string) $value['right'] : '',
+            'top'    => isset($value['top']) && is_scalar($value['top']) ? (string) $value['top'] : '',
+            'right'  => isset($value['right']) && is_scalar($value['right']) ? (string) $value['right'] : '',
             'bottom' => isset($value['bottom']) && is_scalar($value['bottom']) ? (string) $value['bottom'] : '',
-            'left' => isset($value['left']) && is_scalar($value['left']) ? (string) $value['left'] : '',
-            'unit' => isset($value['unit']) && is_scalar($value['unit']) ? (string) $value['unit'] : 'px',
+            'left'   => isset($value['left']) && is_scalar($value['left']) ? (string) $value['left'] : '',
+            'unit'   => isset($value['unit']) && is_scalar($value['unit']) ? (string) $value['unit'] : 'px',
         ];
     }
 
@@ -155,7 +155,7 @@ class SpacingField extends AbstractField
                 continue;
             }
 
-            $side = strtolower(trim((string) $side));
+            $side = mb_strtolower(mb_trim((string) $side));
             if (in_array($side, self::DEFAULT_SIDES, true)) {
                 $normalized[] = $side;
             }
@@ -181,7 +181,7 @@ class SpacingField extends AbstractField
                 continue;
             }
 
-            $unit = trim((string) $unit);
+            $unit = mb_trim((string) $unit);
             if ($unit !== '') {
                 $normalized[] = $unit;
             }
@@ -192,7 +192,7 @@ class SpacingField extends AbstractField
 
     private function sanitizeNumeric(string $value): string
     {
-        $value = trim(sanitize_text_field($value));
+        $value = mb_trim(sanitize_text_field($value));
 
         return is_numeric($value) ? $value : '';
     }

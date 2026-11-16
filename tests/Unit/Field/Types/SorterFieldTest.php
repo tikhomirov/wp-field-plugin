@@ -95,7 +95,7 @@ it('renders hidden inputs for each item', function (): void {
 
 it('sanitizes array value', function (): void {
     $input = [
-        'enabled' => ['opt1', 'opt2'],
+        'enabled'  => ['opt1', 'opt2'],
         'disabled' => ['opt3'],
     ];
 
@@ -129,7 +129,7 @@ it('sanitizes filters non-scalar items', function (): void {
 it('sanitizes filters non-string groups', function (): void {
     $input = [
         'enabled' => ['opt1'],
-        123 => ['opt2'],
+        123       => ['opt2'],
     ];
 
     $sanitized = $this->field->sanitize($input);

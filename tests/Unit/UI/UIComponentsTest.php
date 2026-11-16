@@ -11,7 +11,7 @@ use WpField\UI\Wizard;
 use WpField\UI\WizardConfig;
 
 beforeEach(function (): void {
-    require_once dirname(__DIR__, 2).'/bootstrap.php';
+    require_once dirname(__DIR__, 2) . '/bootstrap.php';
     $reflection = new ReflectionClass(UIManager::class);
     $reflection->getProperty('mode')->setValue(null, 'vanilla');
     $reflection->getProperty('assetsEnqueued')->setValue(null, false);
@@ -76,7 +76,7 @@ it('admin shell renders and resolves request', function (): void {
         'https://example.com/save',
         '<input type="hidden" name="nonce" value="123">',
         static function (string $segment, string $panel): void {
-            echo '<span data-rendered="'.$segment.'-'.$panel.'"></span>';
+            echo '<span data-rendered="' . $segment . '-' . $panel . '"></span>';
         },
         $config,
     );
@@ -116,7 +116,7 @@ it('admin shell renders leaf without panels', function (): void {
         'https://example.com/save',
         '<input type="hidden" name="nonce" value="123">',
         static function (string $segment, string $panel): void {
-            echo '<span data-rendered="'.$segment.'-'.$panel.'"></span>';
+            echo '<span data-rendered="' . $segment . '-' . $panel . '"></span>';
         },
         $config,
     );
@@ -156,7 +156,7 @@ it('wizard renders and resolves request', function (): void {
         'https://example.com/wizard',
         '<input type="hidden" name="nonce" value="456">',
         static function (string $step_id): void {
-            echo '<div data-step-render="'.$step_id.'"></div>';
+            echo '<div data-step-render="' . $step_id . '"></div>';
         },
         $config,
     );

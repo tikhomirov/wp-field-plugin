@@ -14,7 +14,7 @@ class ColorGroupField extends AbstractField
     }
 
     /**
-     * @param  array<int|string, mixed>  $options
+     * @param array<int|string, mixed> $options
      */
     public function options(array $options): static
     {
@@ -72,7 +72,7 @@ class ColorGroupField extends AbstractField
                 continue;
             }
 
-            $sanitized[(string) $key] = trim(sanitize_text_field((string) $item));
+            $sanitized[(string) $key] = mb_trim(sanitize_text_field((string) $item));
         }
 
         return $sanitized;

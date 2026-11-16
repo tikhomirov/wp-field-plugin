@@ -20,7 +20,7 @@ class GroupField extends AbstractField
     }
 
     /**
-     * @param  array<int, FieldInterface>  $fields
+     * @param array<int, FieldInterface> $fields
      */
     public function fields(array $fields): static
     {
@@ -103,7 +103,7 @@ class GroupField extends AbstractField
         $wrapperClass = 'wp-field-group';
         $customClass = $this->getAttribute('class', '');
         if (is_string($customClass) && $customClass !== '') {
-            $wrapperClass .= ' '.trim($customClass);
+            $wrapperClass .= ' ' . mb_trim($customClass);
         }
 
         $name = esc_attr($this->name);

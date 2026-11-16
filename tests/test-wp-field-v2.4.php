@@ -10,10 +10,10 @@ declare(strict_types=1);
  */
 
 // Загружаем WordPress моки из bootstrap
-require_once __DIR__.'/bootstrap.php';
+require_once __DIR__ . '/bootstrap.php';
 
 // Загружаем WP_Field класс
-require_once __DIR__.'/../WP_Field.php';
+require_once __DIR__ . '/../WP_Field.php';
 
 class WP_Field_Tests_v2_4
 {
@@ -81,7 +81,7 @@ class WP_Field_Tests_v2_4
                 }
             }
 
-            $this->pass('Registry contains '.count($types).' field types');
+            $this->pass('Registry contains ' . count($types) . ' field types');
         } catch (Exception $e) {
             $this->fail($e->getMessage());
         }
@@ -93,8 +93,8 @@ class WP_Field_Tests_v2_4
 
         try {
             $field = [
-                'id' => 'test_text',
-                'type' => 'text',
+                'id'    => 'test_text',
+                'type'  => 'text',
                 'label' => 'Test Text',
                 'value' => 'test value',
             ];
@@ -103,11 +103,11 @@ class WP_Field_Tests_v2_4
             WP_Field::make($field, true, 'options');
             $output = ob_get_clean();
 
-            if (strpos($output, 'test_text') === false) {
+            if (mb_strpos($output, 'test_text') === false) {
                 throw new Exception('Field ID not found in output');
             }
 
-            if (strpos($output, 'Test Text') === false) {
+            if (mb_strpos($output, 'Test Text') === false) {
                 throw new Exception('Field label not found in output');
             }
 
@@ -123,9 +123,9 @@ class WP_Field_Tests_v2_4
 
         try {
             $field = [
-                'id' => 'test_select',
-                'type' => 'select',
-                'label' => 'Test Select',
+                'id'      => 'test_select',
+                'type'    => 'select',
+                'label'   => 'Test Select',
                 'options' => ['opt1' => 'Option 1', 'opt2' => 'Option 2'],
             ];
 
@@ -133,11 +133,11 @@ class WP_Field_Tests_v2_4
             WP_Field::make($field, true, 'options');
             $output = ob_get_clean();
 
-            if (strpos($output, 'test_select') === false) {
+            if (mb_strpos($output, 'test_select') === false) {
                 throw new Exception('Select field not rendered');
             }
 
-            if (strpos($output, 'Option 1') === false) {
+            if (mb_strpos($output, 'Option 1') === false) {
                 throw new Exception('Select options not found');
             }
 
@@ -153,9 +153,9 @@ class WP_Field_Tests_v2_4
 
         try {
             $field = [
-                'id' => 'dependent_field',
-                'type' => 'text',
-                'label' => 'Dependent',
+                'id'         => 'dependent_field',
+                'type'       => 'text',
+                'label'      => 'Dependent',
                 'dependency' => [
                     ['parent_field', '==', 'value'],
                 ],
@@ -166,7 +166,7 @@ class WP_Field_Tests_v2_4
             WP_Field::make($field, true, 'options');
             $output = ob_get_clean();
 
-            if (strpos($output, 'dependent_field') === false) {
+            if (mb_strpos($output, 'dependent_field') === false) {
                 throw new Exception('Dependent field not rendered');
             }
 
@@ -182,8 +182,8 @@ class WP_Field_Tests_v2_4
 
         try {
             $field = [
-                'id' => 'test_accordion',
-                'type' => 'accordion',
+                'id'    => 'test_accordion',
+                'type'  => 'accordion',
                 'label' => 'Test Accordion',
                 'items' => [
                     ['title' => 'Section 1', 'content' => 'Content 1'],
@@ -195,15 +195,15 @@ class WP_Field_Tests_v2_4
             WP_Field::make($field, true, 'options');
             $output = ob_get_clean();
 
-            if (strpos($output, 'wp-field-accordion') === false) {
+            if (mb_strpos($output, 'wp-field-accordion') === false) {
                 throw new Exception('Accordion container not found');
             }
 
-            if (strpos($output, 'Section 1') === false) {
+            if (mb_strpos($output, 'Section 1') === false) {
                 throw new Exception('Accordion items not rendered');
             }
 
-            if (strpos($output, 'is-open') === false) {
+            if (mb_strpos($output, 'is-open') === false) {
                 throw new Exception('Open state not applied');
             }
 
@@ -219,10 +219,10 @@ class WP_Field_Tests_v2_4
 
         try {
             $field = [
-                'id' => 'test_tabbed',
-                'type' => 'tabbed',
+                'id'    => 'test_tabbed',
+                'type'  => 'tabbed',
                 'label' => 'Test Tabbed',
-                'tabs' => [
+                'tabs'  => [
                     ['title' => 'Tab 1', 'content' => 'Content 1'],
                     ['title' => 'Tab 2', 'content' => 'Content 2', 'active' => true],
                 ],
@@ -232,11 +232,11 @@ class WP_Field_Tests_v2_4
             WP_Field::make($field, true, 'options');
             $output = ob_get_clean();
 
-            if (strpos($output, 'wp-field-tabbed') === false) {
+            if (mb_strpos($output, 'wp-field-tabbed') === false) {
                 throw new Exception('Tabbed container not found');
             }
 
-            if (strpos($output, 'Tab 1') === false) {
+            if (mb_strpos($output, 'Tab 1') === false) {
                 throw new Exception('Tabbed items not rendered');
             }
 
@@ -252,9 +252,9 @@ class WP_Field_Tests_v2_4
 
         try {
             $field = [
-                'id' => 'test_icon',
-                'type' => 'icon',
-                'label' => 'Test Icon',
+                'id'      => 'test_icon',
+                'type'    => 'icon',
+                'label'   => 'Test Icon',
                 'library' => 'dashicons',
             ];
 
@@ -262,7 +262,7 @@ class WP_Field_Tests_v2_4
             WP_Field::make($field, true, 'options');
             $output = ob_get_clean();
 
-            if (strpos($output, 'wp-field-icon') === false) {
+            if (mb_strpos($output, 'wp-field-icon') === false) {
                 throw new Exception('Icon picker not rendered');
             }
 
@@ -278,9 +278,9 @@ class WP_Field_Tests_v2_4
 
         try {
             $field = [
-                'id' => 'test_repeater',
-                'type' => 'repeater',
-                'label' => 'Test Repeater',
+                'id'     => 'test_repeater',
+                'type'   => 'repeater',
+                'label'  => 'Test Repeater',
                 'fields' => [
                     ['id' => 'name', 'type' => 'text', 'label' => 'Name'],
                     ['id' => 'value', 'type' => 'text', 'label' => 'Value'],
@@ -291,11 +291,11 @@ class WP_Field_Tests_v2_4
             WP_Field::make($field, true, 'options');
             $output = ob_get_clean();
 
-            if (strpos($output, 'wp-field-repeater') === false) {
+            if (mb_strpos($output, 'wp-field-repeater') === false) {
                 throw new Exception('Repeater container not found');
             }
 
-            if (strpos($output, 'wp-field-repeater-add') === false) {
+            if (mb_strpos($output, 'wp-field-repeater-add') === false) {
                 throw new Exception('Add button not found');
             }
 
@@ -311,8 +311,8 @@ class WP_Field_Tests_v2_4
 
         try {
             $field = [
-                'id' => 'test_color',
-                'type' => 'color',
+                'id'    => 'test_color',
+                'type'  => 'color',
                 'label' => 'Test Color',
                 'alpha' => true,
             ];
@@ -321,7 +321,7 @@ class WP_Field_Tests_v2_4
             WP_Field::make($field, true, 'options');
             $output = ob_get_clean();
 
-            if (strpos($output, 'test_color') === false) {
+            if (mb_strpos($output, 'test_color') === false) {
                 throw new Exception('Color picker not rendered');
             }
 
@@ -337,17 +337,17 @@ class WP_Field_Tests_v2_4
 
         try {
             $field = [
-                'id' => 'test_code',
-                'type' => 'code_editor',
+                'id'    => 'test_code',
+                'type'  => 'code_editor',
                 'label' => 'Test Code',
-                'mode' => 'css',
+                'mode'  => 'css',
             ];
 
             ob_start();
             WP_Field::make($field, true, 'options');
             $output = ob_get_clean();
 
-            if (strpos($output, 'test_code') === false) {
+            if (mb_strpos($output, 'test_code') === false) {
                 throw new Exception('Code editor not rendered');
             }
 
@@ -363,9 +363,9 @@ class WP_Field_Tests_v2_4
 
         try {
             $field = [
-                'id' => 'test_map',
-                'type' => 'map',
-                'label' => 'Test Map',
+                'id'      => 'test_map',
+                'type'    => 'map',
+                'label'   => 'Test Map',
                 'api_key' => 'test_key',
             ];
 
@@ -386,9 +386,9 @@ class WP_Field_Tests_v2_4
 
         try {
             $field = [
-                'id' => 'test_sortable',
-                'type' => 'sortable',
-                'label' => 'Test Sortable',
+                'id'      => 'test_sortable',
+                'type'    => 'sortable',
+                'label'   => 'Test Sortable',
                 'options' => ['item1' => 'Item 1', 'item2' => 'Item 2'],
             ];
 
@@ -396,7 +396,7 @@ class WP_Field_Tests_v2_4
             WP_Field::make($field, true, 'options');
             $output = ob_get_clean();
 
-            if (strpos($output, 'wp-field-sortable') === false) {
+            if (mb_strpos($output, 'wp-field-sortable') === false) {
                 throw new Exception('Sortable field not rendered');
             }
 
@@ -412,11 +412,11 @@ class WP_Field_Tests_v2_4
 
         try {
             $field = [
-                'id' => 'test_palette',
-                'type' => 'palette',
-                'label' => 'Test Palette',
+                'id'       => 'test_palette',
+                'type'     => 'palette',
+                'label'    => 'Test Palette',
                 'palettes' => [
-                    'blue' => ['#0073aa', '#005a87'],
+                    'blue'  => ['#0073aa', '#005a87'],
                     'green' => ['#28a745', '#218838'],
                 ],
             ];
@@ -425,7 +425,7 @@ class WP_Field_Tests_v2_4
             WP_Field::make($field, true, 'options');
             $output = ob_get_clean();
 
-            if (strpos($output, 'wp-field-palette') === false) {
+            if (mb_strpos($output, 'wp-field-palette') === false) {
                 throw new Exception('Palette field not rendered');
             }
 
@@ -441,8 +441,8 @@ class WP_Field_Tests_v2_4
 
         try {
             $field = [
-                'id' => 'test_accordion_state',
-                'type' => 'accordion',
+                'id'    => 'test_accordion_state',
+                'type'  => 'accordion',
                 'label' => 'Test Accordion',
                 'items' => [
                     ['title' => 'Item 1', 'content' => 'Content 1'],
@@ -455,7 +455,7 @@ class WP_Field_Tests_v2_4
             $output = ob_get_clean();
 
             // Проверяем, что JavaScript для localStorage присутствует
-            if (strpos($output, 'localStorage') === false && strpos($output, 'wp-field-accordion') !== false) {
+            if (mb_strpos($output, 'localStorage') === false && mb_strpos($output, 'wp-field-accordion') !== false) {
                 // localStorage может быть в отдельном файле JS
                 $this->pass('Accordion field structure supports state persistence');
             } else {
@@ -472,10 +472,10 @@ class WP_Field_Tests_v2_4
 
         try {
             $field = [
-                'id' => 'test_tabbed_state',
-                'type' => 'tabbed',
+                'id'    => 'test_tabbed_state',
+                'type'  => 'tabbed',
                 'label' => 'Test Tabbed',
-                'tabs' => [
+                'tabs'  => [
                     ['title' => 'Tab 1', 'content' => 'Content 1'],
                     ['title' => 'Tab 2', 'content' => 'Content 2'],
                 ],
@@ -485,7 +485,7 @@ class WP_Field_Tests_v2_4
             WP_Field::make($field, true, 'options');
             $output = ob_get_clean();
 
-            if (strpos($output, 'wp-field-tabbed') === false) {
+            if (mb_strpos($output, 'wp-field-tabbed') === false) {
                 throw new Exception('Tabbed field not rendered');
             }
 
@@ -525,7 +525,7 @@ class WP_Field_Tests_v2_4
         echo "\n=== Test Results ===\n";
         echo "Passed: {$this->passed}\n";
         echo "Failed: {$this->failed}\n";
-        echo 'Total:  '.($this->passed + $this->failed)."\n";
+        echo 'Total:  ' . ($this->passed + $this->failed) . "\n";
 
         if ($this->failed === 0) {
             echo "\n✓ All tests passed!\n";

@@ -47,7 +47,7 @@ class TextareaField extends AbstractField
 
         $rawLabel = $this->getAttribute('label');
         if ($rawLabel !== null && is_string($rawLabel)) {
-            $html = sprintf('<label for="%s">%s</label>', $id, esc_html($rawLabel)).$html;
+            $html = sprintf('<label for="%s">%s</label>', $id, esc_html($rawLabel)) . $html;
         }
 
         $rawDescription = $this->getAttribute('description');
