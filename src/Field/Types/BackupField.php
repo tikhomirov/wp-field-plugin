@@ -76,7 +76,7 @@ class BackupField extends AbstractField
             return '';
         }
 
-        return mb_trim((string) $value);
+        return trim((string) $value);
     }
 
     public function validate(mixed $value): bool
@@ -85,7 +85,7 @@ class BackupField extends AbstractField
             return false;
         }
 
-        $json = mb_trim((string) $value);
+        $json = trim((string) $value);
         if ($json === '') {
             return true;
         }

@@ -60,7 +60,7 @@ final class AdminShell
 
         $nav_json = (string) wp_json_encode(NavItem::toJsonArray($nav), JSON_UNESCAPED_UNICODE);
 
-        $wrapper_class = mb_trim('wp-field-shell ' . $config->wrapper_extra_class);
+        $wrapper_class = trim('wp-field-shell ' . $config->wrapper_extra_class);
         ?>
         <div class="<?php echo esc_attr($wrapper_class); ?>">
 

@@ -114,7 +114,7 @@ class LegacyWrapperField extends AbstractField
             restore_error_handler();
         }
 
-        $html = mb_trim((string) ob_get_clean());
+        $html = trim((string) ob_get_clean());
 
         if ($hasRuntimeError) {
             return '';
@@ -166,7 +166,7 @@ class LegacyWrapperField extends AbstractField
             $html .= '</select>';
         } else {
             $inputValue = is_scalar($value) ? (string) $value : '';
-            $inputClass = mb_trim('regular-text ' . $class);
+            $inputClass = trim('regular-text ' . $class);
 
             $html .= sprintf(
                 '<input type="text" id="%s" name="%s" value="%s" class="%s" placeholder="%s"%s%s%s>',

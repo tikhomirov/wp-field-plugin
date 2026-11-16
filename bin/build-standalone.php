@@ -54,7 +54,7 @@ function detectVersion(string $pluginFile): ?string
         return null;
     }
 
-    return mb_trim($matches[1]);
+    return trim($matches[1]);
 }
 
 function recreateDirectory(string $directory): void

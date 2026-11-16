@@ -32,7 +32,7 @@ class ButtonSetField extends ChoiceField
         $wrapperClass = 'wp-field-button-set';
         $customClass = $this->getAttribute('class', '');
         if (is_string($customClass) && $customClass !== '') {
-            $wrapperClass .= ' ' . mb_trim($customClass);
+            $wrapperClass .= ' ' . trim($customClass);
         }
 
         $html = sprintf('<div class="%s">', esc_attr($wrapperClass));

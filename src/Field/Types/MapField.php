@@ -146,7 +146,7 @@ class MapField extends AbstractField
 
     private function sanitizeCoordinate(string $value, float $min, float $max): string
     {
-        $value = mb_trim(sanitize_text_field($value));
+        $value = trim(sanitize_text_field($value));
         if ($value === '' || ! is_numeric($value)) {
             return '';
         }

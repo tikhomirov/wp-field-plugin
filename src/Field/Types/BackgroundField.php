@@ -91,8 +91,8 @@ class BackgroundField extends AbstractField
         $normalized = $this->normalizeValue($value);
 
         return [
-            'color'      => mb_trim(sanitize_text_field($normalized['color'])),
-            'image'      => mb_trim(sanitize_text_field($normalized['image'])),
+            'color'      => trim(sanitize_text_field($normalized['color'])),
+            'image'      => trim(sanitize_text_field($normalized['image'])),
             'position'   => in_array($normalized['position'], self::DEFAULT_POSITION, true) ? $normalized['position'] : 'center center',
             'size'       => in_array($normalized['size'], self::DEFAULT_SIZE, true) ? $normalized['size'] : 'cover',
             'repeat'     => in_array($normalized['repeat'], self::DEFAULT_REPEAT, true) ? $normalized['repeat'] : 'no-repeat',

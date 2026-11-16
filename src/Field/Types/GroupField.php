@@ -103,7 +103,7 @@ class GroupField extends AbstractField
         $wrapperClass = 'wp-field-group';
         $customClass = $this->getAttribute('class', '');
         if (is_string($customClass) && $customClass !== '') {
-            $wrapperClass .= ' ' . mb_trim($customClass);
+            $wrapperClass .= ' ' . trim($customClass);
         }
 
         $name = esc_attr($this->name);

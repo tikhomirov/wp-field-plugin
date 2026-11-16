@@ -83,7 +83,7 @@ class TypographyField extends AbstractField
             'line_height'    => $this->sanitizeNumeric($normalized['line_height']),
             'text_align'     => in_array($normalized['text_align'], self::TEXT_ALIGNS, true) ? $normalized['text_align'] : '',
             'text_transform' => in_array($normalized['text_transform'], self::TEXT_TRANSFORMS, true) ? $normalized['text_transform'] : '',
-            'color'          => mb_trim(sanitize_text_field($normalized['color'])),
+            'color'          => trim(sanitize_text_field($normalized['color'])),
         ];
     }
 
@@ -188,7 +188,7 @@ class TypographyField extends AbstractField
 
     private function sanitizeNumeric(string $value): string
     {
-        $value = mb_trim(sanitize_text_field($value));
+        $value = trim(sanitize_text_field($value));
 
         return is_numeric($value) ? $value : '';
     }

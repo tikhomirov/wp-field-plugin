@@ -63,7 +63,7 @@ class LinkColorField extends AbstractField
         $sanitized = [];
 
         foreach ($this->resolveStates() as $state) {
-            $sanitized[$state] = mb_trim(sanitize_text_field($normalized[$state] ?? ''));
+            $sanitized[$state] = trim(sanitize_text_field($normalized[$state] ?? ''));
         }
 
         return $sanitized;
@@ -132,7 +132,7 @@ class LinkColorField extends AbstractField
                 continue;
             }
 
-            $state = mb_strtolower(mb_trim((string) $state));
+            $state = mb_strtolower(trim((string) $state));
             if ($state !== '') {
                 $normalized[] = $state;
             }

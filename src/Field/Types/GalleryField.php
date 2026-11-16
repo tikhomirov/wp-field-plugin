@@ -103,7 +103,7 @@ class GalleryField extends AbstractField
                 continue;
             }
 
-            $id = mb_trim((string) $item);
+            $id = trim((string) $item);
             if ($id === '') {
                 continue;
             }

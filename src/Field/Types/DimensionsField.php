@@ -114,7 +114,7 @@ class DimensionsField extends AbstractField
                 continue;
             }
 
-            $unit = mb_trim((string) $unit);
+            $unit = trim((string) $unit);
             if ($unit !== '') {
                 $normalized[] = $unit;
             }
@@ -125,7 +125,7 @@ class DimensionsField extends AbstractField
 
     private function sanitizeNumeric(string $value): string
     {
-        $value = mb_trim(sanitize_text_field($value));
+        $value = trim(sanitize_text_field($value));
 
         return is_numeric($value) ? $value : '';
     }

@@ -89,6 +89,6 @@ class MediaField extends AbstractField
             return '';
         }
 
-        return mb_trim(sanitize_text_field((string) $value));
+        return trim(sanitize_text_field((string) $value));
     }
 }

@@ -144,7 +144,7 @@ if (! function_exists('add_action')) {
 if (! function_exists('plugin_dir_url')) {
     function plugin_dir_url(string $file): string
     {
-        return 'http://example.com/wp-field/' . mb_trim(str_replace('\\', '/', dirname($file)), '/') . '/';
+        return 'http://example.com/wp-field/' . trim(str_replace('\\', '/', dirname($file)), '/') . '/';
     }
 }
 

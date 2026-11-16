@@ -34,7 +34,7 @@ namespace {
             if (! is_string($data)) {
                 return false;
             }
-            $data = mb_trim($data);
+            $data = trim($data);
             if ($data === 'N;') {
                 return true;
             }

@@ -23,7 +23,7 @@ class ImageSelectField extends ChoiceField
         $wrapperClass = 'wp-field-image-select';
         $customClass = $this->getAttribute('class', '');
         if (is_string($customClass) && $customClass !== '') {
-            $wrapperClass .= ' ' . mb_trim($customClass);
+            $wrapperClass .= ' ' . trim($customClass);
         }
 
         $html = '';

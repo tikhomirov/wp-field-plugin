@@ -26,7 +26,7 @@ class FieldsetField extends AbstractField
     public function render(): string
     {
         $legend = $this->attributeString('legend', $this->attributeString('label'));
-        $class = mb_trim('wp-field-fieldset ' . $this->attributeString('class'));
+        $class = trim('wp-field-fieldset ' . $this->attributeString('class'));
 
         $html = sprintf('<fieldset class="%s">', esc_attr($class));
 

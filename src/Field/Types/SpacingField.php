@@ -155,7 +155,7 @@ class SpacingField extends AbstractField
                 continue;
             }
 
-            $side = mb_strtolower(mb_trim((string) $side));
+            $side = mb_strtolower(trim((string) $side));
             if (in_array($side, self::DEFAULT_SIDES, true)) {
                 $normalized[] = $side;
             }
@@ -181,7 +181,7 @@ class SpacingField extends AbstractField
                 continue;
             }
 
-            $unit = mb_trim((string) $unit);
+            $unit = trim((string) $unit);
             if ($unit !== '') {
                 $normalized[] = $unit;
             }
@@ -192,7 +192,7 @@ class SpacingField extends AbstractField
 
     private function sanitizeNumeric(string $value): string
     {
-        $value = mb_trim(sanitize_text_field($value));
+        $value = trim(sanitize_text_field($value));
 
         return is_numeric($value) ? $value : '';
     }

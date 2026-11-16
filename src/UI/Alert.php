@@ -18,7 +18,7 @@ final class Alert
         $allowed_tones = ['neutral', 'success', 'warning', 'error'];
         $resolved_tone = in_array($tone, $allowed_tones, true) ? $tone : 'neutral';
         $role = $attributes['role'] ?? ($resolved_tone === 'error' ? 'alert' : 'status');
-        $class = mb_trim('wp-field-alert wp-field-alert--' . $resolved_tone . ' ' . ($attributes['class'] ?? ''));
+        $class = trim('wp-field-alert wp-field-alert--' . $resolved_tone . ' ' . ($attributes['class'] ?? ''));
 
         $attribute_string = self::buildAttributes(array_merge($attributes, [
             'class' => $class,

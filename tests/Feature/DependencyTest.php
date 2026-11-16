@@ -69,11 +69,11 @@ it('handles multiple dependencies with and', function (): void {
 
 it('supports named conditions key without treating it as a condition row', function (): void {
     $html = WP_Field::make([
-        'id' => 'field_with_named_conditions',
-        'type' => 'text',
-        'label' => 'Field',
+        'id'         => 'field_with_named_conditions',
+        'type'       => 'text',
+        'label'      => 'Field',
         'dependency' => [
-            'relation' => 'AND',
+            'relation'   => 'AND',
             'conditions' => [
                 ['other_field', '==', 'value'],
                 ['third_field', '!=', 'x'],

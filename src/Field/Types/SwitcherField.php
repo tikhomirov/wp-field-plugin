@@ -53,7 +53,7 @@ class SwitcherField extends AbstractField
         $wrapperClass = 'wp-field-switcher';
         $customClass = $this->getAttribute('class', '');
         if (is_string($customClass) && $customClass !== '') {
-            $wrapperClass .= ' ' . mb_trim($customClass);
+            $wrapperClass .= ' ' . trim($customClass);
         }
 
         $html = sprintf(
