@@ -3,14 +3,14 @@
 declare(strict_types=1);
 
 beforeEach(function (): void {
-    require_once dirname(__DIR__, 2).'/WP_Field.php';
+    require_once dirname(__DIR__, 2) . '/WP_Field.php';
 });
 
 it('hides field when dependency not met', function (): void {
     $html = WP_Field::make([
-        'id' => 'dependent_field',
-        'type' => 'text',
-        'label' => 'Dependent Field',
+        'id'         => 'dependent_field',
+        'type'       => 'text',
+        'label'      => 'Dependent Field',
         'dependency' => [
             ['other_field', '==', 'value'],
         ],
@@ -23,10 +23,10 @@ it('shows field when dependency met', function (): void {
     // For testing we will just check that dependency data is printed correctly
     // and the field does not crash, since getting actual values requires DB/WP setup.
     $html = WP_Field::make([
-        'id' => 'dependent_field',
-        'type' => 'text',
-        'label' => 'Dependent Field',
-        'value' => 'value',
+        'id'         => 'dependent_field',
+        'type'       => 'text',
+        'label'      => 'Dependent Field',
+        'value'      => 'value',
         'dependency' => [
             ['dependent_field', '==', 'value'],
         ],
@@ -39,9 +39,9 @@ it('shows field when dependency met', function (): void {
 
 it('renders dependency data attribute', function (): void {
     $html = WP_Field::make([
-        'id' => 'field_with_dep',
-        'type' => 'text',
-        'label' => 'Field',
+        'id'         => 'field_with_dep',
+        'type'       => 'text',
+        'label'      => 'Field',
         'dependency' => [
             ['other_field', '==', 'value'],
         ],
@@ -52,9 +52,9 @@ it('renders dependency data attribute', function (): void {
 
 it('handles multiple dependencies with and', function (): void {
     $html = WP_Field::make([
-        'id' => 'field_with_deps',
-        'type' => 'text',
-        'label' => 'Field',
+        'id'         => 'field_with_deps',
+        'type'       => 'text',
+        'label'      => 'Field',
         'dependency' => [
             ['field1', '==', 'value1'],
             ['field2', '!=', 'value2'],
@@ -89,9 +89,9 @@ it('supports named conditions key without treating it as a condition row', funct
 
 it('handles multiple dependencies with or', function (): void {
     $html = WP_Field::make([
-        'id' => 'field_with_deps',
-        'type' => 'text',
-        'label' => 'Field',
+        'id'         => 'field_with_deps',
+        'type'       => 'text',
+        'label'      => 'Field',
         'dependency' => [
             ['field1', '==', 'value1'],
             ['field2', '==', 'value2'],
@@ -106,9 +106,9 @@ it('handles multiple dependencies with or', function (): void {
 
 it('supports in operator', function (): void {
     $html = WP_Field::make([
-        'id' => 'field_with_in',
-        'type' => 'text',
-        'label' => 'Field',
+        'id'         => 'field_with_in',
+        'type'       => 'text',
+        'label'      => 'Field',
         'dependency' => [
             ['field', 'in', ['a', 'b', 'c']],
         ],
@@ -119,9 +119,9 @@ it('supports in operator', function (): void {
 
 it('supports contains operator', function (): void {
     $html = WP_Field::make([
-        'id' => 'field_with_contains',
-        'type' => 'text',
-        'label' => 'Field',
+        'id'         => 'field_with_contains',
+        'type'       => 'text',
+        'label'      => 'Field',
         'dependency' => [
             ['field', 'contains', 'text'],
         ],
@@ -132,9 +132,9 @@ it('supports contains operator', function (): void {
 
 it('supports empty operator', function (): void {
     $html = WP_Field::make([
-        'id' => 'field_with_empty',
-        'type' => 'text',
-        'label' => 'Field',
+        'id'         => 'field_with_empty',
+        'type'       => 'text',
+        'label'      => 'Field',
         'dependency' => [
             ['field', 'empty', null],
         ],
@@ -148,9 +148,9 @@ it('supports comparison operators', function (): void {
 
     foreach ($operators as $op) {
         $html = WP_Field::make([
-            'id' => 'field_with_op',
-            'type' => 'text',
-            'label' => 'Field',
+            'id'         => 'field_with_op',
+            'type'       => 'text',
+            'label'      => 'Field',
             'dependency' => [
                 ['field', $op, 'value'],
             ],

@@ -16,7 +16,7 @@ class BorderField extends AbstractField
     }
 
     /**
-     * @param  array<int, string>  $styles
+     * @param array<int, string> $styles
      */
     public function styles(array $styles): static
     {
@@ -77,7 +77,7 @@ class BorderField extends AbstractField
         return [
             'style' => in_array($normalized['style'], $styles, true) ? $normalized['style'] : $styles[0],
             'width' => $this->sanitizeNumeric($normalized['width']),
-            'color' => trim(sanitize_text_field($normalized['color'])),
+            'color' => mb_trim(sanitize_text_field($normalized['color'])),
         ];
     }
 
@@ -126,7 +126,7 @@ class BorderField extends AbstractField
                 continue;
             }
 
-            $style = trim((string) $style);
+            $style = mb_trim((string) $style);
             if ($style !== '') {
                 $normalized[] = $style;
             }
@@ -137,7 +137,7 @@ class BorderField extends AbstractField
 
     private function sanitizeNumeric(string $value): string
     {
-        $value = trim(sanitize_text_field($value));
+        $value = mb_trim(sanitize_text_field($value));
 
         return is_numeric($value) ? $value : '';
     }

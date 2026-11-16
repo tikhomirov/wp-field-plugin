@@ -20,10 +20,10 @@ it('can add when condition with AND logic', function (): void {
 
     expect($conditions)->toHaveCount(1)
         ->and($conditions[0])->toBe([
-            'field' => 'field_name',
+            'field'    => 'field_name',
             'operator' => '=',
-            'value' => 'value',
-            'logic' => 'AND',
+            'value'    => 'value',
+            'logic'    => 'AND',
         ]);
 });
 
@@ -34,10 +34,10 @@ it('can add orWhen condition with OR logic', function (): void {
 
     expect($conditions)->toHaveCount(1)
         ->and($conditions[0])->toBe([
-            'field' => 'field_name',
+            'field'    => 'field_name',
             'operator' => '!=',
-            'value' => 'value',
-            'logic' => 'OR',
+            'value'    => 'value',
+            'logic'    => 'OR',
         ]);
 });
 

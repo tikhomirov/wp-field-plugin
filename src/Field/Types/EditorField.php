@@ -50,11 +50,11 @@ class EditorField extends AbstractField
         if (function_exists('wp_editor')) {
             ob_start();
             wp_editor($value, $id, [
-                'wpautop' => (bool) $this->getAttribute('wpautop', false),
+                'wpautop'       => (bool) $this->getAttribute('wpautop', false),
                 'media_buttons' => (bool) $this->getAttribute('media_buttons', false),
                 'textarea_name' => $name,
                 'textarea_rows' => $rows,
-                'teeny' => (bool) $this->getAttribute('teeny', false),
+                'teeny'         => (bool) $this->getAttribute('teeny', false),
             ]);
             $html .= (string) ob_get_clean();
         } else {
@@ -89,6 +89,6 @@ class EditorField extends AbstractField
             return '';
         }
 
-        return trim(sanitize_text_field((string) $value));
+        return mb_trim(sanitize_text_field((string) $value));
     }
 }

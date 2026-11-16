@@ -19,7 +19,7 @@ class MapField extends AbstractField
     }
 
     /**
-     * @param  array{lat?: float|int|string, lng?: float|int|string}  $center
+     * @param array{lat?: float|int|string, lng?: float|int|string} $center
      */
     public function center(array $center): static
     {
@@ -44,7 +44,7 @@ class MapField extends AbstractField
         $center = $this->normalizeCenter($this->getAttribute('center', []));
         $zoomAttr = $this->getAttribute('zoom', 12);
         $zoom = max(1, is_numeric($zoomAttr) ? (int) $zoomAttr : 12);
-        $provider = strtolower($this->attributeString('provider', 'google'));
+        $provider = mb_strtolower($this->attributeString('provider', 'google'));
         $apiKey = $this->attributeString('api_key');
 
         $html = '';
@@ -146,7 +146,7 @@ class MapField extends AbstractField
 
     private function sanitizeCoordinate(string $value, float $min, float $max): string
     {
-        $value = trim(sanitize_text_field($value));
+        $value = mb_trim(sanitize_text_field($value));
         if ($value === '' || ! is_numeric($value)) {
             return '';
         }

@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 if (! class_exists('WP_Field')) {
-    require_once __DIR__.'/WP_Field.php';
+    require_once __DIR__ . '/WP_Field.php';
 }
 
 // Legacy fallback assets bootstrap.
@@ -19,8 +19,8 @@ if (function_exists('add_action')) {
         $css_rel = 'vanilla/assets/css/wp-field.css';
         $js_rel = 'vanilla/assets/js/wp-field.js';
 
-        $css_ver = file_exists($base_dir.$css_rel) ? (string) filemtime($base_dir.$css_rel) : '4.0.1';
-        $js_ver = file_exists($base_dir.$js_rel) ? (string) filemtime($base_dir.$js_rel) : '4.0.1';
+        $css_ver = file_exists($base_dir . $css_rel) ? (string) filemtime($base_dir . $css_rel) : '4.0.0';
+        $js_ver = file_exists($base_dir . $js_rel) ? (string) filemtime($base_dir . $js_rel) : '4.0.0';
 
         wp_enqueue_script('jquery');
         wp_enqueue_script('jquery-ui-datepicker');
@@ -32,7 +32,7 @@ if (function_exists('add_action')) {
         if (! wp_script_is('wp-field-main', 'enqueued')) {
             wp_enqueue_script(
                 'wp-field-main',
-                $base_url.$js_rel,
+                $base_url . $js_rel,
                 ['jquery'],
                 $js_ver,
                 true,
@@ -42,7 +42,7 @@ if (function_exists('add_action')) {
         if (! wp_style_is('wp-field-main', 'enqueued')) {
             wp_enqueue_style(
                 'wp-field-main',
-                $base_url.$css_rel,
+                $base_url . $css_rel,
                 [],
                 $css_ver,
             );

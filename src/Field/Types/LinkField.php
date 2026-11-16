@@ -67,8 +67,8 @@ class LinkField extends AbstractField
         $normalized = $this->normalizeValue($value);
 
         return [
-            'url' => filter_var($normalized['url'], FILTER_SANITIZE_URL) ?: '',
-            'text' => sanitize_text_field($normalized['text']),
+            'url'    => filter_var($normalized['url'], FILTER_SANITIZE_URL) ?: '',
+            'text'   => sanitize_text_field($normalized['text']),
             'target' => $normalized['target'] === '_blank' ? '_blank' : '_self',
         ];
     }
@@ -87,8 +87,8 @@ class LinkField extends AbstractField
         $target = isset($value['target']) && is_scalar($value['target']) ? (string) $value['target'] : '_self';
 
         return [
-            'url' => $url,
-            'text' => $text,
+            'url'    => $url,
+            'text'   => $text,
             'target' => $target,
         ];
     }

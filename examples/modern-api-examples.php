@@ -19,17 +19,17 @@ if (! defined('ABSPATH')) {
     exit;
 }
 
-require_once __DIR__.'/../vendor/autoload.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 
 UIManager::init();
 UIManager::setMode('react');
 
 add_action('init', function (): void {
     $metabox = new MetaboxContainer('product_details', [
-        'title' => 'Product Details',
+        'title'      => 'Product Details',
         'post_types' => ['product'],
-        'context' => 'normal',
-        'priority' => 'high',
+        'context'    => 'normal',
+        'priority'   => 'high',
     ]);
 
     $metabox->addField(
@@ -111,7 +111,7 @@ add_action('init', function (): void {
         'page_title' => 'Plugin Settings',
         'menu_title' => 'My Plugin',
         'capability' => 'manage_options',
-        'icon' => 'dashicons-admin-generic',
+        'icon'       => 'dashicons-admin-generic',
     ]);
 
     $settings->addField(
@@ -136,12 +136,12 @@ add_action('init', function (): void {
 
 add_action('init', function (): void {
     $legacyField = LegacyAdapter::make([
-        'id' => 'legacy_field',
-        'type' => 'text',
-        'label' => 'Legacy Field',
-        'placeholder' => 'Using old API',
-        'required' => true,
-        'validation' => 'required|email',
+        'id'                => 'legacy_field',
+        'type'              => 'text',
+        'label'             => 'Legacy Field',
+        'placeholder'       => 'Using old API',
+        'required'          => true,
+        'validation'        => 'required|email',
         'conditional_logic' => [
             ['field' => 'some_field', 'operator' => '==', 'value' => 'yes'],
         ],

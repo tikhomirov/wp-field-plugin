@@ -18,7 +18,7 @@ trait HandlesNestedFieldConfigs
     }
 
     /**
-     * @param  array<int, mixed>  $fields
+     * @param array<int, mixed> $fields
      */
     protected function renderNestedFields(array $fields): string
     {

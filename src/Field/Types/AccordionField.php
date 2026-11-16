@@ -18,7 +18,7 @@ class AccordionField extends AbstractField
     }
 
     /**
-     * @param  array<int|string, mixed>  $sections
+     * @param array<int|string, mixed> $sections
      */
     public function sections(array $sections): static
     {
@@ -26,7 +26,7 @@ class AccordionField extends AbstractField
     }
 
     /**
-     * @param  array<int|string, mixed>  $items
+     * @param array<int|string, mixed> $items
      */
     public function items(array $items): static
     {
@@ -52,7 +52,7 @@ class AccordionField extends AbstractField
         $html .= sprintf('<div class="wp-field-accordion" data-field-id="%s">', $fieldId);
 
         foreach ($items as $index => $item) {
-            $title = isset($item['title']) && is_scalar($item['title']) ? (string) $item['title'] : 'Item '.($index + 1);
+            $title = isset($item['title']) && is_scalar($item['title']) ? (string) $item['title'] : 'Item ' . ($index + 1);
             $content = isset($item['content']) && is_scalar($item['content']) ? (string) $item['content'] : '';
             $isOpen = ! empty($item['open']);
             $panelId = sprintf('%s-accordion-panel-%d', $fieldId, $index);

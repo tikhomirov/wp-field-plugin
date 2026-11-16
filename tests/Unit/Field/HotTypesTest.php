@@ -34,24 +34,24 @@ namespace {
             if (! is_string($data)) {
                 return false;
             }
-            $data = trim($data);
+            $data = mb_trim($data);
             if ($data === 'N;') {
                 return true;
             }
-            if (strlen($data) < 4) {
+            if (mb_strlen($data) < 4) {
                 return false;
             }
             if ($data[1] !== ':') {
                 return false;
             }
             if ($strict) {
-                $lastc = substr($data, -1);
+                $lastc = mb_substr($data, -1);
                 if ($lastc !== ';' && $lastc !== '}') {
                     return false;
                 }
             } else {
-                $semicolon = strpos($data, ';');
-                $brace = strpos($data, '}');
+                $semicolon = mb_strpos($data, ';');
+                $brace = mb_strpos($data, '}');
                 if ($semicolon === false && $brace === false) {
                     return false;
                 }
@@ -66,10 +66,10 @@ namespace {
             switch ($token) {
                 case 's':
                     if ($strict) {
-                        if (substr($data, -2, 1) !== '"') {
+                        if (mb_substr($data, -2, 1) !== '"') {
                             return false;
                         }
-                    } elseif (strpos($data, '"') === false) {
+                    } elseif (mb_strpos($data, '"') === false) {
                         return false;
                     }
                 case 'a':

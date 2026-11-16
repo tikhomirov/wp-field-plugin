@@ -185,14 +185,14 @@ class WP_Field
         }
 
         if (empty($field) || ! isset($field['id'], $field['type']) || ! is_array($field)) {
-            trigger_error('!!! Incorrect field data '.print_r($field, true));
+            trigger_error('!!! Incorrect field data ' . print_r($field, true));
 
             return 'Incorrect field data';
         }
 
         // label required for most fields but not all (e.g. fieldset has legend)
         if (! isset($field['label']) && ! in_array($field['type'], ['fieldset', 'content', 'notice', 'heading', 'subheading'], true)) {
-            trigger_error('!!! Incorrect field data (missing label) '.print_r($field, true));
+            trigger_error('!!! Incorrect field data (missing label) ' . print_r($field, true));
 
             return 'Incorrect field data';
         }
@@ -249,7 +249,7 @@ class WP_Field
         // Наш JS для зависимостей и инициализации
         wp_enqueue_script(
             'wp-field-main',
-            $this->url.'vanilla/assets/js/wp-field.js',
+            $this->url . 'vanilla/assets/js/wp-field.js',
             ['jquery'],
             $this->ver,
             true,
@@ -258,7 +258,7 @@ class WP_Field
         // Наш CSS
         wp_enqueue_style(
             'wp-field-main',
-            $this->url.'vanilla/assets/css/wp-field.css',
+            $this->url . 'vanilla/assets/css/wp-field.css',
             [],
             $this->ver,
         );
@@ -329,8 +329,8 @@ class WP_Field
     /**
      * Получить значение поля из БД по типу хранилища
      *
-     * @param  string  $key  - option|meta name
-     * @param  int  $id  - object ID
+     * @param string $key - option|meta name
+     * @param int    $id  - object ID
      */
     public function get_value(string $key, $id = null)
     {
@@ -389,7 +389,7 @@ class WP_Field
     {
         global $wpdb;
 
-        $table_name = $this->field['table'] ?? $wpdb->prefix.'custom_meta';
+        $table_name = $this->field['table'] ?? $wpdb->prefix . 'custom_meta';
         $object_id_column = $this->field['object_id_column'] ?? 'object_id';
         $meta_key_column = $this->field['meta_key_column'] ?? 'meta_key';
         $meta_value_column = $this->field['meta_value_column'] ?? 'meta_value';
@@ -418,7 +418,7 @@ class WP_Field
                     continue;
                 }
 
-                $attributes[] = esc_attr($attr).'="'.esc_attr((string) $val).'"';
+                $attributes[] = esc_attr($attr) . '="' . esc_attr((string) $val) . '"';
             }
         }
 
@@ -469,9 +469,9 @@ class WP_Field
             esc_attr($field['id']),
             esc_attr($field['name'] ?? $field['id']),
             esc_attr((string) $this->get_field_value($field)),
-            isset($field['min']) ? 'min="'.esc_attr((string) $field['min']).'"' : '',
-            isset($field['max']) ? 'max="'.esc_attr((string) $field['max']).'"' : '',
-            isset($field['step']) ? 'step="'.esc_attr((string) $field['step']).'"' : '',
+            isset($field['min']) ? 'min="' . esc_attr((string) $field['min']) . '"' : '',
+            isset($field['max']) ? 'max="' . esc_attr((string) $field['max']) . '"' : '',
+            isset($field['step']) ? 'step="' . esc_attr((string) $field['step']) . '"' : '',
             $this->get_field_attributes($field),
             $this->get_readonly_disabled($field),
         );
@@ -608,7 +608,7 @@ class WP_Field
             $i++;
         }
 
-        echo '<div class="wp-field-radio-group">'.implode('', $output).'</div>';
+        echo '<div class="wp-field-radio-group">' . implode('', $output) . '</div>';
 
         $this->render_description($field);
     }
@@ -674,7 +674,7 @@ class WP_Field
             $i++;
         }
 
-        echo '<div class="wp-field-checkbox-group">'.implode('', $output).'</div>';
+        echo '<div class="wp-field-checkbox-group">' . implode('', $output) . '</div>';
 
         $this->render_description($field);
     }
@@ -688,11 +688,11 @@ class WP_Field
 
         if (function_exists('wp_editor')) {
             wp_editor($this->get_field_value($field), $field['id'], [
-                'wpautop' => ! empty($field['wpautop']),
+                'wpautop'       => ! empty($field['wpautop']),
                 'media_buttons' => ! empty($field['media_buttons']),
                 'textarea_name' => $field['name'] ?? $field['id'],
                 'textarea_rows' => function_exists('absint') ? absint($field['rows'] ?? 10) : (int) ($field['rows'] ?? 10),
-                'teeny' => ! empty($field['teeny']),
+                'teeny'         => ! empty($field['teeny']),
             ]);
         } else {
             // Fallback for tests or outside WP
@@ -768,7 +768,7 @@ class WP_Field
             }
 
             echo '<div class="wp-field-media-preview">';
-            if (strpos($mime_type, 'image') !== false || (! $mime_type && preg_match('/\.(jpg|jpeg|png|gif|webp|svg)$/i', $file_url))) {
+            if (mb_strpos($mime_type, 'image') !== false || (! $mime_type && preg_match('/\.(jpg|jpeg|png|gif|webp|svg)$/i', $file_url))) {
                 printf('<img src="%s" alt="">', esc_url($file_url));
             } else {
                 printf('<span class="wp-field-media-filename">%s</span>', esc_html($file_name));
@@ -1041,7 +1041,7 @@ class WP_Field
     /**
      * Рендер поля с wrapper'ом
      *
-     * @param  bool  $output  выводить HTML или вернуть строку
+     * @param  bool              $output выводить HTML или вернуть строку
      * @return false|string|void
      */
     public function render($output = true)
@@ -1071,7 +1071,7 @@ class WP_Field
             $hidden_class,
             esc_attr($this->field['id']),
             esc_attr($this->field['type']),
-            $dependency_data ? ' data-dependency=\''.esc_attr($dependency_data).'\'' : '',
+            $dependency_data ? ' data-dependency=\'' . esc_attr($dependency_data) . '\'' : '',
         );
 
         // Рендерим поле через реестр
@@ -1177,19 +1177,19 @@ class WP_Field
     private function evaluate_condition($field_value, string $operator, $compare_value): bool
     {
         return match ($operator) {
-            '==' => $field_value == $compare_value,
-            '!=' => $field_value != $compare_value,
-            '>' => $field_value > $compare_value,
-            '>=' => $field_value >= $compare_value,
-            '<' => $field_value < $compare_value,
-            '<=' => $field_value <= $compare_value,
-            'in' => is_array($compare_value) && in_array($field_value, $compare_value, true),
-            'not_in' => is_array($compare_value) && ! in_array($field_value, $compare_value, true),
-            'contains' => is_string($field_value) && str_contains($field_value, (string) $compare_value),
+            '=='           => $field_value == $compare_value,
+            '!='           => $field_value != $compare_value,
+            '>'            => $field_value > $compare_value,
+            '>='           => $field_value >= $compare_value,
+            '<'            => $field_value < $compare_value,
+            '<='           => $field_value <= $compare_value,
+            'in'           => is_array($compare_value) && in_array($field_value, $compare_value, true),
+            'not_in'       => is_array($compare_value) && ! in_array($field_value, $compare_value, true),
+            'contains'     => is_string($field_value) && str_contains($field_value, (string) $compare_value),
             'not_contains' => is_string($field_value) && ! str_contains($field_value, (string) $compare_value),
-            'empty' => empty($field_value),
-            'not_empty' => ! empty($field_value),
-            default => false,
+            'empty'        => empty($field_value),
+            'not_empty'    => ! empty($field_value),
+            default        => false,
         };
     }
 
@@ -1248,7 +1248,7 @@ class WP_Field
         $min = function_exists('absint') ? absint($field['min'] ?? 0) : (int) ($field['min'] ?? 0);
         $max = function_exists('absint') ? absint($field['max'] ?? 0) : (int) ($field['max'] ?? 0);
 
-        echo '<div class="wp-field-repeater" data-field-id="'.esc_attr($field['id']).'" data-min="'.$min.'" data-max="'.$max.'">';
+        echo '<div class="wp-field-repeater" data-field-id="' . esc_attr($field['id']) . '" data-min="' . $min . '" data-max="' . $max . '">';
 
         // Рендерим существующие элементы
         if (! empty($values)) {
@@ -1498,7 +1498,7 @@ class WP_Field
             esc_attr((string) $step),
             $this->get_field_attributes($field),
             $this->get_readonly_disabled($field),
-            $show_value ? '<span class="wp-field-slider-value">'.esc_html((string) $value).'</span>' : '',
+            $show_value ? '<span class="wp-field-slider-value">' . esc_html((string) $value) . '</span>' : '',
         );
 
         $this->render_description($field);
@@ -1546,7 +1546,7 @@ class WP_Field
     private function render_notice(array $field): void
     {
         $type = $field['type_notice'] ?? $field['notice_type'] ?? 'info';
-        $class = 'wp-field-notice wp-field-notice-'.esc_attr($type);
+        $class = 'wp-field-notice wp-field-notice-' . esc_attr($type);
 
         printf(
             '<div class="%s">%s</div>',
@@ -1587,7 +1587,7 @@ class WP_Field
         if (! empty($field['fields']) && is_array($field['fields'])) {
             foreach ($field['fields'] as $nested_field) {
                 if (is_array($nested_field)) {
-                    WP_Field::make($nested_field, true);
+                    self::make($nested_field, true);
                 }
             }
         }
@@ -1598,8 +1598,8 @@ class WP_Field
     /**
      * Make new filed
      *
-     * @param  array  $params  data, type, id,
-     * @param  bool  $output  html|string
+     * @param  array             $params data, type, id,
+     * @param  bool              $output html|string
      * @return false|string|null
      */
     public static function make(array $params, bool $output = true)
@@ -1629,10 +1629,10 @@ class WP_Field
             return;
         }
 
-        echo '<div class="wp-field-accordion" data-field-id="'.esc_attr($field['id']).'">';
+        echo '<div class="wp-field-accordion" data-field-id="' . esc_attr($field['id']) . '">';
 
         foreach ($items as $index => $item) {
-            $title = $item['title'] ?? 'Item '.($index + 1);
+            $title = $item['title'] ?? 'Item ' . ($index + 1);
             $content = $item['content'] ?? '';
             $fields = $item['fields'] ?? [];
             $open = ! empty($item['open']);
@@ -1692,11 +1692,11 @@ class WP_Field
             }
         }
 
-        echo '<div class="wp-field-tabbed" data-field-id="'.$field_id.'" data-default-tab="'.$default_active_index.'">';
+        echo '<div class="wp-field-tabbed" data-field-id="' . $field_id . '" data-default-tab="' . $default_active_index . '">';
         echo '<div class="wp-field-tabbed-nav">';
 
         foreach ($field['tabs'] as $index => $tab) {
-            $title = $tab['title'] ?? 'Tab '.($index + 1);
+            $title = $tab['title'] ?? 'Tab ' . ($index + 1);
             $icon = $tab['icon'] ?? '';
             $active = $index === $default_active_index ? 'active' : '';
 
@@ -1707,7 +1707,7 @@ class WP_Field
                 $active,
                 $field_id,
                 $index,
-                $icon ? '<span class="wp-field-tabbed-icon">'.esc_html($icon).'</span>' : '',
+                $icon ? '<span class="wp-field-tabbed-icon">' . esc_html($icon) . '</span>' : '',
                 esc_html($title),
             );
         }
@@ -1755,13 +1755,13 @@ class WP_Field
         $name = $field['name'] ?? $field['id'];
 
         $defaults = [
-            'font_family' => $value['font_family'] ?? '',
-            'font_size' => $value['font_size'] ?? '',
-            'font_weight' => $value['font_weight'] ?? '',
-            'line_height' => $value['line_height'] ?? '',
-            'text_align' => $value['text_align'] ?? '',
+            'font_family'    => $value['font_family'] ?? '',
+            'font_size'      => $value['font_size'] ?? '',
+            'font_weight'    => $value['font_weight'] ?? '',
+            'line_height'    => $value['line_height'] ?? '',
+            'text_align'     => $value['text_align'] ?? '',
             'text_transform' => $value['text_transform'] ?? '',
-            'color' => $value['color'] ?? '',
+            'color'          => $value['color'] ?? '',
         ];
 
         echo '<div class="wp-field-typography">';
@@ -1890,11 +1890,11 @@ class WP_Field
         $type = $field['spacing_type'] ?? 'margin'; // margin или padding
 
         $defaults = [
-            'top' => $value['top'] ?? '',
-            'right' => $value['right'] ?? '',
+            'top'    => $value['top'] ?? '',
+            'right'  => $value['right'] ?? '',
             'bottom' => $value['bottom'] ?? '',
-            'left' => $value['left'] ?? '',
-            'unit' => $value['unit'] ?? 'px',
+            'left'   => $value['left'] ?? '',
+            'unit'   => $value['unit'] ?? 'px',
         ];
 
         echo '<div class="wp-field-spacing">';
@@ -1942,7 +1942,7 @@ class WP_Field
         );
 
         // Center label
-        echo '<div class="wp-field-spacing-center">'.esc_html($type).'</div>';
+        echo '<div class="wp-field-spacing-center">' . esc_html($type) . '</div>';
 
         echo '</div>'; // .wp-field-spacing-visual
 
@@ -1979,9 +1979,9 @@ class WP_Field
         $name = $field['name'] ?? $field['id'];
 
         $defaults = [
-            'width' => $value['width'] ?? '',
+            'width'  => $value['width'] ?? '',
             'height' => $value['height'] ?? '',
-            'unit' => $value['unit'] ?? 'px',
+            'unit'   => $value['unit'] ?? 'px',
         ];
 
         echo '<div class="wp-field-dimensions">';
@@ -2105,11 +2105,11 @@ class WP_Field
         $name = $field['name'] ?? $field['id'];
 
         $defaults = [
-            'color' => $value['color'] ?? '',
-            'image' => $value['image'] ?? '',
-            'position' => $value['position'] ?? 'center center',
-            'size' => $value['size'] ?? 'cover',
-            'repeat' => $value['repeat'] ?? 'no-repeat',
+            'color'      => $value['color'] ?? '',
+            'image'      => $value['image'] ?? '',
+            'position'   => $value['position'] ?? 'center center',
+            'size'       => $value['size'] ?? 'cover',
+            'repeat'     => $value['repeat'] ?? 'no-repeat',
             'attachment' => $value['attachment'] ?? 'scroll',
         ];
 
@@ -2229,7 +2229,7 @@ class WP_Field
 
         $defaults = [
             'normal' => $value['normal'] ?? '',
-            'hover' => $value['hover'] ?? '',
+            'hover'  => $value['hover'] ?? '',
             'active' => $value['active'] ?? '',
         ];
 
@@ -2402,7 +2402,7 @@ class WP_Field
         // Modal с иконками
         echo '<div class="wp-field-icon-modal" style="display:none;">';
         echo '<div class="wp-field-icon-modal-header">';
-        echo '<input type="text" class="wp-field-icon-search" placeholder="'.(function_exists('esc_attr__') ? esc_attr__('Search icons...', 'wp-field') : 'Search icons...').'">';
+        echo '<input type="text" class="wp-field-icon-search" placeholder="' . (function_exists('esc_attr__') ? esc_attr__('Search icons...', 'wp-field') : 'Search icons...') . '">';
         echo '<button type="button" class="button wp-field-icon-close">×</button>';
         echo '</div>';
         echo '<div class="wp-field-icon-grid">';
@@ -2465,13 +2465,13 @@ class WP_Field
         $value = $this->get_field_value($field);
         $value = is_array($value) ? $value : ['lat' => '', 'lng' => ''];
         $api_key = $field['api_key'] ?? '';
-        $provider = strtolower((string) ($field['provider'] ?? 'google'));
+        $provider = mb_strtolower((string) ($field['provider'] ?? 'google'));
         $name = $field['name'] ?? $field['id'];
 
-        echo '<div class="wp-field-map-wrapper" data-map-provider="'.esc_attr($provider).'" data-api-key="'.esc_attr($api_key).'">';
+        echo '<div class="wp-field-map-wrapper" data-map-provider="' . esc_attr($provider) . '" data-api-key="' . esc_attr($api_key) . '">';
 
         if ($provider === 'google' && empty($api_key)) {
-            echo '<p class="description">'.esc_html__('Google Maps API key required', 'wp-field').'</p>';
+            echo '<p class="description">' . esc_html__('Google Maps API key required', 'wp-field') . '</p>';
             $this->render_description($field);
 
             echo '</div>';
@@ -2484,13 +2484,13 @@ class WP_Field
             if (function_exists('wp_enqueue_script')) {
                 wp_enqueue_script(
                     'google-maps-api',
-                    'https://maps.googleapis.com/maps/api/js?key='.urlencode($api_key),
+                    'https://maps.googleapis.com/maps/api/js?key=' . urlencode($api_key),
                     [],
                     null,
                     true,
                 );
             } else {
-                echo '<script src="https://maps.googleapis.com/maps/api/js?key='.urlencode($api_key).'"></script>';
+                echo '<script src="https://maps.googleapis.com/maps/api/js?key=' . urlencode($api_key) . '"></script>';
             }
         } else {
             if (function_exists('wp_enqueue_script')) {
@@ -2550,7 +2550,7 @@ class WP_Field
         $name = $field['name'] ?? $field['id'];
 
         if (empty($options)) {
-            echo '<p class="description">'.esc_html__('No options provided', 'wp-field').'</p>';
+            echo '<p class="description">' . esc_html__('No options provided', 'wp-field') . '</p>';
 
             return;
         }
@@ -2604,7 +2604,7 @@ class WP_Field
         $name = $field['name'] ?? $field['id'];
 
         if (empty($options)) {
-            echo '<p class="description">'.esc_html__('No options provided', 'wp-field').'</p>';
+            echo '<p class="description">' . esc_html__('No options provided', 'wp-field') . '</p>';
 
             return;
         }
@@ -2632,7 +2632,7 @@ class WP_Field
 
         // Enabled
         echo '<div class="wp-field-sorter-column">';
-        echo '<h4>'.esc_html__('Enabled', 'wp-field').'</h4>';
+        echo '<h4>' . esc_html__('Enabled', 'wp-field') . '</h4>';
         echo '<ul class="wp-field-sorter-list" data-type="enabled">';
 
         foreach ($enabled_items as $key => $label) {
@@ -2653,7 +2653,7 @@ class WP_Field
 
         // Disabled
         echo '<div class="wp-field-sorter-column">';
-        echo '<h4>'.esc_html__('Disabled', 'wp-field').'</h4>';
+        echo '<h4>' . esc_html__('Disabled', 'wp-field') . '</h4>';
         echo '<ul class="wp-field-sorter-list" data-type="disabled">';
 
         foreach ($disabled_items as $key => $label) {
@@ -2687,7 +2687,7 @@ class WP_Field
         $name = $field['name'] ?? $field['id'];
 
         if (empty($palettes)) {
-            echo '<p class="description">'.esc_html__('No palettes provided', 'wp-field').'</p>';
+            echo '<p class="description">' . esc_html__('No palettes provided', 'wp-field') . '</p>';
 
             return;
         }
@@ -2795,7 +2795,7 @@ class WP_Field
 
         // Export
         echo '<div class="wp-field-backup-section">';
-        echo '<h4>'.esc_html__('Export Settings', 'wp-field').'</h4>';
+        echo '<h4>' . esc_html__('Export Settings', 'wp-field') . '</h4>';
 
         if (! empty($export_data)) {
             $json_data = function_exists('wp_json_encode') ? wp_json_encode($export_data, JSON_PRETTY_PRINT) : json_encode($export_data, JSON_PRETTY_PRINT);
@@ -2803,17 +2803,17 @@ class WP_Field
                 '<textarea readonly class="wp-field-backup-export" rows="10" style="width:100%%;">%s</textarea>',
                 function_exists('esc_textarea') ? esc_textarea($json_data) : htmlspecialchars($json_data, ENT_QUOTES),
             );
-            echo '<button type="button" class="button wp-field-backup-copy">'.esc_html__('Copy to Clipboard', 'wp-field').'</button>';
-            echo '<button type="button" class="button wp-field-backup-download">'.esc_html__('Download JSON', 'wp-field').'</button>';
+            echo '<button type="button" class="button wp-field-backup-copy">' . esc_html__('Copy to Clipboard', 'wp-field') . '</button>';
+            echo '<button type="button" class="button wp-field-backup-download">' . esc_html__('Download JSON', 'wp-field') . '</button>';
         } else {
-            echo '<p class="description">'.esc_html__('No data to export', 'wp-field').'</p>';
+            echo '<p class="description">' . esc_html__('No data to export', 'wp-field') . '</p>';
         }
 
         echo '</div>';
 
         // Import
         echo '<div class="wp-field-backup-section">';
-        echo '<h4>'.esc_html__('Import Settings', 'wp-field').'</h4>';
+        echo '<h4>' . esc_html__('Import Settings', 'wp-field') . '</h4>';
 
         printf(
             '<textarea name="%s" class="wp-field-backup-import" rows="10" placeholder="%s" style="width:100%%;"></textarea>',
@@ -2821,7 +2821,7 @@ class WP_Field
             esc_attr__('Paste JSON data here...', 'wp-field'),
         );
 
-        echo '<button type="button" class="button button-primary wp-field-backup-validate">'.esc_html__('Validate JSON', 'wp-field').'</button>';
+        echo '<button type="button" class="button button-primary wp-field-backup-validate">' . esc_html__('Validate JSON', 'wp-field') . '</button>';
         echo '<div class="wp-field-backup-status"></div>';
 
         echo '</div></div>';

@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 // Load plugin file to test constants and autoloading
-require_once __DIR__.'/../../wp-field.php';
+require_once __DIR__ . '/../../wp-field.php';
 
 it('defines WP_FIELD_PLUGIN_FILE constant', function (): void {
     expect(defined('WP_FIELD_PLUGIN_FILE'))->toBeTrue();

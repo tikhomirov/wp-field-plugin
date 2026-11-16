@@ -44,14 +44,14 @@ class WP_Field_UI_Demo
 
         wp_enqueue_style('wp-color-picker');
 
-        $wpfield_css = $base_path.'vanilla/assets/css/wp-field.css';
+        $wpfield_css = $base_path . 'vanilla/assets/css/wp-field.css';
         if (file_exists($wpfield_css)) {
-            wp_enqueue_style('wp-field-main', $base_url.'vanilla/assets/css/wp-field.css', [], (string) filemtime($wpfield_css));
+            wp_enqueue_style('wp-field-main', $base_url . 'vanilla/assets/css/wp-field.css', [], (string) filemtime($wpfield_css));
         }
 
-        $shell_css = $base_path.'assets/css/admin-shell.css';
+        $shell_css = $base_path . 'assets/css/admin-shell.css';
         if (file_exists($shell_css)) {
-            wp_enqueue_style('iiko-admin-shell', $base_url.'assets/css/admin-shell.css', ['wp-field-main'], (string) filemtime($shell_css));
+            wp_enqueue_style('iiko-admin-shell', $base_url . 'assets/css/admin-shell.css', ['wp-field-main'], (string) filemtime($shell_css));
         }
 
         wp_add_inline_style('iiko-admin-shell', '
@@ -416,7 +416,7 @@ class WP_Field_UI_Demo
                     <div style="display:flex;gap:20px;flex-wrap:wrap;">
                         <?php foreach (['Small', 'Medium', 'Large', 'XL'] as $s) { ?>
                         <label style="display:flex;align-items:center;gap:7px;cursor:pointer;font-size:13.5px;color:#374151;">
-                            <input type="radio" name="size" value="<?php echo strtolower($s); ?>" <?php echo $s === 'Medium' ? 'checked' : ''; ?>>
+                            <input type="radio" name="size" value="<?php echo mb_strtolower($s); ?>" <?php echo $s === 'Medium' ? 'checked' : ''; ?>>
                             <?php echo esc_html($s); ?>
                         </label>
                         <?php } ?>
@@ -607,7 +607,7 @@ class WP_Field_UI_Demo
                     <div class="wp-field-button-set">
                         <?php foreach (['Day', 'Week', 'Month', 'Year'] as $i => $opt) { ?>
                         <label class="wp-field-button-set-item <?php echo $i === 1 ? 'active' : ''; ?>">
-                            <input type="radio" name="period" value="<?php echo strtolower($opt); ?>" <?php echo $i === 1 ? 'checked' : ''; ?>>
+                            <input type="radio" name="period" value="<?php echo mb_strtolower($opt); ?>" <?php echo $i === 1 ? 'checked' : ''; ?>>
                             <span><?php echo esc_html($opt); ?></span>
                         </label>
                         <?php } ?>

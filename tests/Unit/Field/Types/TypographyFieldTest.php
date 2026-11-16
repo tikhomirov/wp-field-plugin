@@ -64,13 +64,13 @@ it('renders typography field with description', function (): void {
 
 it('renders typography field with values', function (): void {
     $this->field->value([
-        'font_family' => 'Arial',
-        'font_size' => '16',
-        'font_weight' => '400',
-        'line_height' => '1.5',
-        'text_align' => 'center',
+        'font_family'    => 'Arial',
+        'font_size'      => '16',
+        'font_weight'    => '400',
+        'line_height'    => '1.5',
+        'text_align'     => 'center',
         'text_transform' => 'uppercase',
-        'color' => '#ff0000',
+        'color'          => '#ff0000',
     ]);
     $html = $this->field->render();
 
@@ -83,13 +83,13 @@ it('renders typography field with values', function (): void {
 
 it('sanitizes typography array', function (): void {
     $input = [
-        'font_family' => 'Arial',
-        'font_size' => '16',
-        'font_weight' => '400',
-        'line_height' => '1.5',
-        'text_align' => 'center',
+        'font_family'    => 'Arial',
+        'font_size'      => '16',
+        'font_weight'    => '400',
+        'line_height'    => '1.5',
+        'text_align'     => 'center',
         'text_transform' => 'uppercase',
-        'color' => '#ff0000',
+        'color'          => '#ff0000',
     ];
 
     $sanitized = $this->field->sanitize($input);
@@ -189,11 +189,11 @@ it('sanitizes non-array value to defaults', function (): void {
 
 it('validates valid typography array', function (): void {
     $input = [
-        'font_family' => 'Arial',
-        'font_size' => '16',
-        'font_weight' => '400',
-        'line_height' => '1.5',
-        'text_align' => 'center',
+        'font_family'    => 'Arial',
+        'font_size'      => '16',
+        'font_weight'    => '400',
+        'line_height'    => '1.5',
+        'text_align'     => 'center',
         'text_transform' => 'uppercase',
     ];
 

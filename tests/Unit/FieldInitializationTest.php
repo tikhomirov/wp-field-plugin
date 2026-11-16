@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 beforeEach(function (): void {
-    require_once dirname(__DIR__, 2).'/WP_Field.php';
+    require_once dirname(__DIR__, 2) . '/WP_Field.php';
 });
 
 it('initializes field types registry', function (): void {
@@ -24,8 +24,8 @@ it('initializes field types registry', function (): void {
 
 it('supports field aliases', function (): void {
     $field = new WP_Field([
-        'id' => 'test',
-        'type' => 'text',
+        'id'    => 'test',
+        'type'  => 'text',
         'title' => 'Test Field',  // alias для label
     ], 'options');
 
@@ -34,10 +34,10 @@ it('supports field aliases', function (): void {
 
 it('supports value alias', function (): void {
     $field = new WP_Field([
-        'id' => 'test',
-        'type' => 'text',
+        'id'    => 'test',
+        'type'  => 'text',
         'label' => 'Test',
-        'val' => 'test value',  // alias для value
+        'val'   => 'test value',  // alias для value
     ], 'options');
 
     expect($field->field['value'])->toBe('test value');
@@ -45,9 +45,9 @@ it('supports value alias', function (): void {
 
 it('supports custom attributes aliases', function (): void {
     $field = new WP_Field([
-        'id' => 'test',
-        'type' => 'text',
-        'label' => 'Test',
+        'id'         => 'test',
+        'type'       => 'text',
+        'label'      => 'Test',
         'attributes' => ['data-test' => 'value'],  // alias для custom_attributes
     ], 'options');
 
@@ -56,8 +56,8 @@ it('supports custom attributes aliases', function (): void {
 
 it('creates field with static make', function (): void {
     $html = WP_Field::make([[
-        'id' => 'test',
-        'type' => 'text',
+        'id'    => 'test',
+        'type'  => 'text',
         'label' => 'Test',
     ], 'options'], false);
 
@@ -69,8 +69,8 @@ it('creates field with static make', function (): void {
 it('creates field with make and output', function (): void {
     ob_start();
     $result = WP_Field::make([[
-        'id' => 'test',
-        'type' => 'text',
+        'id'    => 'test',
+        'type'  => 'text',
         'label' => 'Test',
     ], 'options'], true);
     $output = ob_get_clean();
@@ -83,8 +83,8 @@ it('creates field with make and output', function (): void {
 
 it('sets default storage type', function (): void {
     $field = new WP_Field([
-        'id' => 'test',
-        'type' => 'text',
+        'id'    => 'test',
+        'type'  => 'text',
         'label' => 'Test',
     ], 'post', 1);
 
@@ -96,8 +96,8 @@ it('supports different storage types', function (): void {
 
     foreach ($types as $type) {
         $field = new WP_Field([
-            'id' => 'test',
-            'type' => 'text',
+            'id'    => 'test',
+            'type'  => 'text',
             'label' => 'Test',
         ], $type, 1);
 
@@ -107,9 +107,9 @@ it('supports different storage types', function (): void {
 
 it('handles field with default value', function (): void {
     $field = new WP_Field([
-        'id' => 'test',
-        'type' => 'text',
-        'label' => 'Test',
+        'id'      => 'test',
+        'type'    => 'text',
+        'label'   => 'Test',
         'default' => 'default value',
     ], 'options');
 
@@ -118,8 +118,8 @@ it('handles field with default value', function (): void {
 
 it('handles field with explicit value', function (): void {
     $field = new WP_Field([
-        'id' => 'test',
-        'type' => 'text',
+        'id'    => 'test',
+        'type'  => 'text',
         'label' => 'Test',
         'value' => 'explicit value',
     ], 'options');
@@ -129,9 +129,9 @@ it('handles field with explicit value', function (): void {
 
 it('supports field with options', function (): void {
     $field = new WP_Field([
-        'id' => 'test',
-        'type' => 'select',
-        'label' => 'Test',
+        'id'      => 'test',
+        'type'    => 'select',
+        'label'   => 'Test',
         'options' => ['a' => 'Option A', 'b' => 'Option B'],
     ], 'options');
 
@@ -140,9 +140,9 @@ it('supports field with options', function (): void {
 
 it('supports field with nested fields', function (): void {
     $field = new WP_Field([
-        'id' => 'test',
-        'type' => 'group',
-        'label' => 'Test',
+        'id'     => 'test',
+        'type'   => 'group',
+        'label'  => 'Test',
         'fields' => [
             ['id' => 'sub1', 'type' => 'text', 'label' => 'Sub 1'],
             ['id' => 'sub2', 'type' => 'text', 'label' => 'Sub 2'],

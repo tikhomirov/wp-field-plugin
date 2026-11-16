@@ -14,7 +14,7 @@ class PaletteField extends AbstractField
     }
 
     /**
-     * @param  array<int|string, mixed>  $options
+     * @param array<int|string, mixed> $options
      */
     public function options(array $options): static
     {
@@ -22,7 +22,7 @@ class PaletteField extends AbstractField
     }
 
     /**
-     * @param  array<int|string, mixed>  $palettes
+     * @param array<int|string, mixed> $palettes
      */
     public function palettes(array $palettes): static
     {

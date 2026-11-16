@@ -3,14 +3,14 @@
 declare(strict_types=1);
 
 beforeEach(function (): void {
-    require_once dirname(__DIR__, 2).'/WP_Field.php';
+    require_once dirname(__DIR__, 2) . '/WP_Field.php';
 });
 
 it('renders group field', function (): void {
     $html = WP_Field::make([
-        'id' => 'address',
-        'type' => 'group',
-        'label' => 'Address',
+        'id'     => 'address',
+        'type'   => 'group',
+        'label'  => 'Address',
         'fields' => [
             ['id' => 'city', 'type' => 'text', 'label' => 'City'],
             ['id' => 'street', 'type' => 'text', 'label' => 'Street'],
@@ -25,11 +25,11 @@ it('renders group field', function (): void {
 
 it('renders repeater field', function (): void {
     $html = WP_Field::make([
-        'id' => 'work_times',
-        'type' => 'repeater',
-        'label' => 'Work Times',
-        'min' => 1,
-        'max' => 7,
+        'id'     => 'work_times',
+        'type'   => 'repeater',
+        'label'  => 'Work Times',
+        'min'    => 1,
+        'max'    => 7,
         'fields' => [
             ['id' => 'day', 'type' => 'select', 'label' => 'Day', 'options' => ['mon' => 'Monday']],
             ['id' => 'from', 'type' => 'time', 'label' => 'From'],
@@ -44,11 +44,11 @@ it('renders repeater field', function (): void {
 
 it('renders repeater with min max', function (): void {
     $html = WP_Field::make([
-        'id' => 'items',
-        'type' => 'repeater',
-        'label' => 'Items',
-        'min' => 2,
-        'max' => 5,
+        'id'     => 'items',
+        'type'   => 'repeater',
+        'label'  => 'Items',
+        'min'    => 2,
+        'max'    => 5,
         'fields' => [
             ['id' => 'name', 'type' => 'text', 'label' => 'Name'],
         ],
@@ -61,11 +61,11 @@ it('renders repeater with min max', function (): void {
 
 it('renders repeater add button', function (): void {
     $html = WP_Field::make([
-        'id' => 'items',
-        'type' => 'repeater',
-        'label' => 'Items',
+        'id'       => 'items',
+        'type'     => 'repeater',
+        'label'    => 'Items',
         'add_text' => 'Add Item',
-        'fields' => [
+        'fields'   => [
             ['id' => 'name', 'type' => 'text', 'label' => 'Name'],
         ],
     ], false);
@@ -77,9 +77,9 @@ it('renders repeater add button', function (): void {
 
 it('renders group with nested fields', function (): void {
     $html = WP_Field::make([
-        'id' => 'contact',
-        'type' => 'group',
-        'label' => 'Contact',
+        'id'     => 'contact',
+        'type'   => 'group',
+        'label'  => 'Contact',
         'fields' => [
             ['id' => 'name', 'type' => 'text', 'label' => 'Name'],
             ['id' => 'email', 'type' => 'email', 'label' => 'Email'],
@@ -96,14 +96,14 @@ it('renders group with nested fields', function (): void {
 
 it('renders repeater with select options', function (): void {
     $html = WP_Field::make([
-        'id' => 'schedule',
-        'type' => 'repeater',
-        'label' => 'Schedule',
+        'id'     => 'schedule',
+        'type'   => 'repeater',
+        'label'  => 'Schedule',
         'fields' => [
             [
-                'id' => 'day',
-                'type' => 'select',
-                'label' => 'Day',
+                'id'      => 'day',
+                'type'    => 'select',
+                'label'   => 'Day',
                 'options' => ['mon' => 'Monday', 'tue' => 'Tuesday'],
             ],
         ],
