@@ -49,7 +49,7 @@ class GalleryField extends AbstractField
 
         $html .= '<div class="wp-field-gallery-preview">';
         if ($ids === []) {
-            $html .= '<div class="wp-field-gallery-placeholder">'.esc_html__('No images selected', 'wp-field').'</div>';
+            $html .= '<div class="wp-field-gallery-placeholder">' . esc_html__('No images selected', 'wp-field') . '</div>';
         }
         foreach ($ids as $galleryId) {
             $html .= sprintf('<div class="wp-field-gallery-item" data-id="%s"><span class="wp-field-gallery-remove" data-id="%s">×</span></div>', esc_attr($galleryId), esc_attr($galleryId));

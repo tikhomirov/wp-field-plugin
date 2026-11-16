@@ -14,7 +14,7 @@ class TestTaxonomyField extends AbstractField
 
     public function render(): string
     {
-        return '<input type="text" name="'.$this->name.'">';
+        return '<input type="text" name="' . $this->name . '">';
     }
 
     public function sanitize(mixed $value): mixed

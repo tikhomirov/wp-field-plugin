@@ -44,14 +44,14 @@ class WP_Field_UI_Demo
 
         wp_enqueue_style('wp-color-picker');
 
-        $wpfield_css = $base_path.'vanilla/assets/css/wp-field.css';
+        $wpfield_css = $base_path . 'vanilla/assets/css/wp-field.css';
         if (file_exists($wpfield_css)) {
-            wp_enqueue_style('wp-field-main', $base_url.'vanilla/assets/css/wp-field.css', [], (string) filemtime($wpfield_css));
+            wp_enqueue_style('wp-field-main', $base_url . 'vanilla/assets/css/wp-field.css', [], (string) filemtime($wpfield_css));
         }
 
-        $shell_css = $base_path.'assets/css/admin-shell.css';
+        $shell_css = $base_path . 'assets/css/admin-shell.css';
         if (file_exists($shell_css)) {
-            wp_enqueue_style('iiko-admin-shell', $base_url.'assets/css/admin-shell.css', ['wp-field-main'], (string) filemtime($shell_css));
+            wp_enqueue_style('iiko-admin-shell', $base_url . 'assets/css/admin-shell.css', ['wp-field-main'], (string) filemtime($shell_css));
         }
 
         wp_add_inline_style('iiko-admin-shell', '

@@ -22,7 +22,7 @@ class BackgroundField extends AbstractField
     }
 
     /**
-     * @param  array<int|string, mixed>  $fields
+     * @param array<int|string, mixed> $fields
      */
     public function backgroundFields(array $fields): static
     {
@@ -56,7 +56,7 @@ class BackgroundField extends AbstractField
                 esc_attr($value['image']),
                 $name,
                 esc_html__('Choose Image', 'wp-field'),
-                $value['image'] !== '' ? sprintf('<img src="%s" alt="" class="wp-field-background-image-preview-img">', esc_url($value['image'])) : '<span class="description">'.esc_html__('Image is not selected yet.', 'wp-field').'</span>',
+                $value['image'] !== '' ? sprintf('<img src="%s" alt="" class="wp-field-background-image-preview-img">', esc_url($value['image'])) : '<span class="description">' . esc_html__('Image is not selected yet.', 'wp-field') . '</span>',
             );
         }
 
@@ -91,11 +91,11 @@ class BackgroundField extends AbstractField
         $normalized = $this->normalizeValue($value);
 
         return [
-            'color' => trim(sanitize_text_field($normalized['color'])),
-            'image' => trim(sanitize_text_field($normalized['image'])),
-            'position' => in_array($normalized['position'], self::DEFAULT_POSITION, true) ? $normalized['position'] : 'center center',
-            'size' => in_array($normalized['size'], self::DEFAULT_SIZE, true) ? $normalized['size'] : 'cover',
-            'repeat' => in_array($normalized['repeat'], self::DEFAULT_REPEAT, true) ? $normalized['repeat'] : 'no-repeat',
+            'color'      => trim(sanitize_text_field($normalized['color'])),
+            'image'      => trim(sanitize_text_field($normalized['image'])),
+            'position'   => in_array($normalized['position'], self::DEFAULT_POSITION, true) ? $normalized['position'] : 'center center',
+            'size'       => in_array($normalized['size'], self::DEFAULT_SIZE, true) ? $normalized['size'] : 'cover',
+            'repeat'     => in_array($normalized['repeat'], self::DEFAULT_REPEAT, true) ? $normalized['repeat'] : 'no-repeat',
             'attachment' => in_array($normalized['attachment'], self::DEFAULT_ATTACHMENT, true) ? $normalized['attachment'] : 'scroll',
         ];
     }
@@ -121,21 +121,21 @@ class BackgroundField extends AbstractField
     {
         if (! is_array($value)) {
             return [
-                'color' => '',
-                'image' => '',
-                'position' => 'center center',
-                'size' => 'cover',
-                'repeat' => 'no-repeat',
+                'color'      => '',
+                'image'      => '',
+                'position'   => 'center center',
+                'size'       => 'cover',
+                'repeat'     => 'no-repeat',
                 'attachment' => 'scroll',
             ];
         }
 
         return [
-            'color' => isset($value['color']) && is_scalar($value['color']) ? (string) $value['color'] : '',
-            'image' => isset($value['image']) && is_scalar($value['image']) ? (string) $value['image'] : '',
-            'position' => isset($value['position']) && is_scalar($value['position']) ? (string) $value['position'] : 'center center',
-            'size' => isset($value['size']) && is_scalar($value['size']) ? (string) $value['size'] : 'cover',
-            'repeat' => isset($value['repeat']) && is_scalar($value['repeat']) ? (string) $value['repeat'] : 'no-repeat',
+            'color'      => isset($value['color']) && is_scalar($value['color']) ? (string) $value['color'] : '',
+            'image'      => isset($value['image']) && is_scalar($value['image']) ? (string) $value['image'] : '',
+            'position'   => isset($value['position']) && is_scalar($value['position']) ? (string) $value['position'] : 'center center',
+            'size'       => isset($value['size']) && is_scalar($value['size']) ? (string) $value['size'] : 'cover',
+            'repeat'     => isset($value['repeat']) && is_scalar($value['repeat']) ? (string) $value['repeat'] : 'no-repeat',
             'attachment' => isset($value['attachment']) && is_scalar($value['attachment']) ? (string) $value['attachment'] : 'scroll',
         ];
     }
@@ -146,11 +146,11 @@ class BackgroundField extends AbstractField
     private function resolveEnabledFields(): array
     {
         $defaults = [
-            'color' => true,
-            'image' => true,
-            'position' => true,
-            'size' => true,
-            'repeat' => true,
+            'color'      => true,
+            'image'      => true,
+            'position'   => true,
+            'size'       => true,
+            'repeat'     => true,
             'attachment' => true,
         ];
 
@@ -169,7 +169,7 @@ class BackgroundField extends AbstractField
     }
 
     /**
-     * @param  array<int, string>  $options
+     * @param array<int, string> $options
      */
     private function renderSelect(string $label, string $name, string $key, array $options, string $selectedValue): string
     {

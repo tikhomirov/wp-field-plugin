@@ -19,7 +19,7 @@ class MapField extends AbstractField
     }
 
     /**
-     * @param  array{lat?: float|int|string, lng?: float|int|string}  $center
+     * @param array{lat?: float|int|string, lng?: float|int|string} $center
      */
     public function center(array $center): static
     {

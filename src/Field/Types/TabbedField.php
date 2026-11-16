@@ -18,7 +18,7 @@ class TabbedField extends AbstractField
     }
 
     /**
-     * @param  array<int|string, mixed>  $tabs
+     * @param array<int|string, mixed> $tabs
      */
     public function tabs(array $tabs): static
     {
@@ -46,7 +46,7 @@ class TabbedField extends AbstractField
         $html .= '<div class="wp-field-tabbed-nav" role="tablist">';
 
         foreach ($tabs as $index => $tab) {
-            $title = isset($tab['title']) && is_scalar($tab['title']) ? (string) $tab['title'] : 'Tab '.($index + 1);
+            $title = isset($tab['title']) && is_scalar($tab['title']) ? (string) $tab['title'] : 'Tab ' . ($index + 1);
             $icon = isset($tab['icon']) && is_scalar($tab['icon']) ? (string) $tab['icon'] : '';
             $isActive = $index === $activeIndex;
             $tabId = sprintf('%s-%d', $fieldId, $index);
@@ -122,7 +122,7 @@ class TabbedField extends AbstractField
     }
 
     /**
-     * @param  array<int, array<string, mixed>>  $tabs
+     * @param array<int, array<string, mixed>> $tabs
      */
     private function resolveActiveIndex(array $tabs): int
     {

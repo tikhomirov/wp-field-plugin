@@ -26,19 +26,19 @@ if (! defined('WP_FIELD_PLUGIN_FILE')) {
     define('WP_FIELD_PLUGIN_FILE', __FILE__);
 }
 if (! defined('WP_FIELD_PLUGIN_DIR')) {
-    define('WP_FIELD_PLUGIN_DIR', __DIR__.'/');
+    define('WP_FIELD_PLUGIN_DIR', __DIR__ . '/');
 }
 if (! defined('WP_FIELD_PLUGIN_URL')) {
     define('WP_FIELD_PLUGIN_URL', plugin_dir_url(__FILE__));
 }
 
-if (file_exists(WP_FIELD_PLUGIN_DIR.'vendor/autoload.php')) {
-    require_once WP_FIELD_PLUGIN_DIR.'vendor/autoload.php';
+if (file_exists(WP_FIELD_PLUGIN_DIR . 'vendor/autoload.php')) {
+    require_once WP_FIELD_PLUGIN_DIR . 'vendor/autoload.php';
 } else {
     // Fallback autoloader for environments without Composer
     spl_autoload_register(function ($class): void {
         $prefix = 'WpField\\';
-        $base_dir = WP_FIELD_PLUGIN_DIR.'src/';
+        $base_dir = WP_FIELD_PLUGIN_DIR . 'src/';
 
         $len = mb_strlen($prefix);
         if (strncmp($prefix, $class, $len) !== 0) {
@@ -46,7 +46,7 @@ if (file_exists(WP_FIELD_PLUGIN_DIR.'vendor/autoload.php')) {
         }
 
         $relative_class = mb_substr($class, $len);
-        $file = $base_dir.str_replace('\\', '/', $relative_class).'.php';
+        $file = $base_dir . str_replace('\\', '/', $relative_class) . '.php';
 
         if (file_exists($file)) {
             require $file;
@@ -64,16 +64,16 @@ $is_components_page = function_exists('is_admin') && is_admin()
 
 if ($legacy_enabled && ! $is_components_page) {
     // Legacy class + isolated vanilla bootstrap.
-    require_once WP_FIELD_PLUGIN_DIR.'vanilla/bootstrap.php';
+    require_once WP_FIELD_PLUGIN_DIR . 'vanilla/bootstrap.php';
 }
 
 // Loading demo pages strictly within WordPress admin debug context.
 if (function_exists('is_admin') && is_admin() && defined('WP_DEBUG') && WP_DEBUG) {
     if ($legacy_enabled) {
-        require_once WP_FIELD_PLUGIN_DIR.'vanilla/example.php';
+        require_once WP_FIELD_PLUGIN_DIR . 'vanilla/example.php';
     }
 
     // Modern demos: wp-field-components (React docs) + wp-field-ui-demo (Flux UI showcase).
-    require_once WP_FIELD_PLUGIN_DIR.'examples/components/index.php';
-    require_once WP_FIELD_PLUGIN_DIR.'examples/ui-demo/index.php';
+    require_once WP_FIELD_PLUGIN_DIR . 'examples/components/index.php';
+    require_once WP_FIELD_PLUGIN_DIR . 'examples/ui-demo/index.php';
 }

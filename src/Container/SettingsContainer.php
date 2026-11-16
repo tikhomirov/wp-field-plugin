@@ -9,7 +9,7 @@ use WpField\Storage\OptionStorage;
 class SettingsContainer extends AbstractContainer
 {
     /**
-     * @param  array<string, mixed>  $config
+     * @param array<string, mixed> $config
      */
     public function __construct(string $id, array $config = [])
     {
@@ -87,7 +87,7 @@ class SettingsContainer extends AbstractContainer
         echo '<div class="wrap">';
         $rawPageTitle = $this->getConfig('page_title', 'Settings');
         $pageTitle = is_string($rawPageTitle) ? $rawPageTitle : 'Settings';
-        echo '<h1>'.esc_html($pageTitle).'</h1>';
+        echo '<h1>' . esc_html($pageTitle) . '</h1>';
         echo '<form method="post" action="options.php">';
 
         settings_fields($this->id);

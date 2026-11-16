@@ -3,11 +3,11 @@
 declare(strict_types=1);
 
 $root = dirname(__DIR__);
-$distDir = $root.'/dist';
+$distDir = $root . '/dist';
 $pluginSlug = 'wp-field-vanilla';
-$pluginDir = $distDir.'/'.$pluginSlug;
-$zipPath = $distDir.'/'.$pluginSlug.'.zip';
-$version = detectVersion($root.'/wp-field.php') ?? '4.0.0';
+$pluginDir = $distDir . '/' . $pluginSlug;
+$zipPath = $distDir . '/' . $pluginSlug . '.zip';
+$version = detectVersion($root . '/wp-field.php') ?? '4.0.0';
 
 $filesToCopy = [
     'vanilla/bootstrap.php',
@@ -30,8 +30,8 @@ foreach ($filesToCopy as $relativePath) {
     copyFile($root, $pluginDir, $relativePath);
 }
 
-writeStandaloneBootstrap($pluginDir.'/'.$pluginSlug.'.php', $version);
-writeReadme($pluginDir.'/README.txt', $version);
+writeStandaloneBootstrap($pluginDir . '/' . $pluginSlug . '.php', $version);
+writeReadme($pluginDir . '/README.txt', $version);
 createZipArchive($pluginDir, $zipPath, $pluginSlug);
 
 fwrite(STDOUT, "Standalone vanilla plugin built successfully.\n");
@@ -80,7 +80,7 @@ function deleteDirectory(string $directory): void
             continue;
         }
 
-        $path = $directory.'/'.$item;
+        $path = $directory . '/' . $item;
 
         if (is_dir($path) && ! is_link($path)) {
             deleteDirectory($path);
@@ -100,8 +100,8 @@ function deleteDirectory(string $directory): void
 
 function copyFile(string $root, string $pluginDir, string $relativePath): void
 {
-    $source = $root.'/'.$relativePath;
-    $target = $pluginDir.'/'.$relativePath;
+    $source = $root . '/' . $relativePath;
+    $target = $pluginDir . '/' . $relativePath;
     $targetDirectory = dirname($target);
 
     if (! is_file($source)) {
@@ -161,7 +161,7 @@ add_action('plugins_loaded', static function (): void {
 require_once __DIR__.'/vanilla/bootstrap.php';
 PHP;
 
-    if (file_put_contents($targetFile, $bootstrap.PHP_EOL) === false) {
+    if (file_put_contents($targetFile, $bootstrap . PHP_EOL) === false) {
         throw new RuntimeException("Failed to write bootstrap file: {$targetFile}");
     }
 }
@@ -208,7 +208,7 @@ The generated plugin loads the wp-field text domain from the lang/ directory and
 * Initial standalone vanilla export.
 TXT;
 
-    if (file_put_contents($targetFile, $readme.PHP_EOL) === false) {
+    if (file_put_contents($targetFile, $readme . PHP_EOL) === false) {
         throw new RuntimeException("Failed to write README.txt file: {$targetFile}");
     }
 }
@@ -234,7 +234,7 @@ function createZipArchive(string $pluginDir, string $zipPath, string $pluginSlug
     foreach ($iterator as $item) {
         $filePath = $item->getPathname();
         $relativePath = mb_substr($filePath, mb_strlen($pluginDir) + 1);
-        $archivePath = $pluginSlug.'/'.$relativePath;
+        $archivePath = $pluginSlug . '/' . $relativePath;
 
         if ($item->isDir()) {
             $zip->addEmptyDir($archivePath);

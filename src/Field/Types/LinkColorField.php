@@ -16,7 +16,7 @@ class LinkColorField extends AbstractField
     }
 
     /**
-     * @param  array<int, string>  $states
+     * @param array<int, string> $states
      */
     public function states(array $states): static
     {
@@ -94,7 +94,7 @@ class LinkColorField extends AbstractField
         if (! is_array($value)) {
             return [
                 'normal' => '',
-                'hover' => '',
+                'hover'  => '',
                 'active' => '',
             ];
         }

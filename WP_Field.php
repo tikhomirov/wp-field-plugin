@@ -10,22 +10,22 @@ if (defined('ABSPATH') && ! defined('WP_FIELD_PLUGIN_FILE') && function_exists('
 }
 
 if (! defined('WP_FIELD_PLUGIN_FILE')) {
-    define('WP_FIELD_PLUGIN_FILE', __DIR__.'/wp-field.php');
+    define('WP_FIELD_PLUGIN_FILE', __DIR__ . '/wp-field.php');
 }
 if (! defined('WP_FIELD_PLUGIN_DIR')) {
-    define('WP_FIELD_PLUGIN_DIR', __DIR__.'/');
+    define('WP_FIELD_PLUGIN_DIR', __DIR__ . '/');
 }
 if (! defined('WP_FIELD_PLUGIN_URL')) {
     define('WP_FIELD_PLUGIN_URL', function_exists('plugin_dir_url') ? plugin_dir_url(WP_FIELD_PLUGIN_FILE) : '/wp-content/plugins/wp-field-plugin/');
 }
 
-if (file_exists(WP_FIELD_PLUGIN_DIR.'vendor/autoload.php')) {
-    require_once WP_FIELD_PLUGIN_DIR.'vendor/autoload.php';
+if (file_exists(WP_FIELD_PLUGIN_DIR . 'vendor/autoload.php')) {
+    require_once WP_FIELD_PLUGIN_DIR . 'vendor/autoload.php';
 } else {
     // Fallback autoloader for environments without Composer.
     spl_autoload_register(function ($class): void {
         $prefix = 'WpField\\';
-        $baseDir = WP_FIELD_PLUGIN_DIR.'src/';
+        $baseDir = WP_FIELD_PLUGIN_DIR . 'src/';
 
         $len = mb_strlen($prefix);
         if (strncmp($prefix, $class, $len) !== 0) {
@@ -33,7 +33,7 @@ if (file_exists(WP_FIELD_PLUGIN_DIR.'vendor/autoload.php')) {
         }
 
         $relativeClass = mb_substr($class, $len);
-        $file = $baseDir.str_replace('\\', '/', $relativeClass).'.php';
+        $file = $baseDir . str_replace('\\', '/', $relativeClass) . '.php';
 
         if (file_exists($file)) {
             require $file;
@@ -41,4 +41,4 @@ if (file_exists(WP_FIELD_PLUGIN_DIR.'vendor/autoload.php')) {
     });
 }
 
-require_once WP_FIELD_PLUGIN_DIR.'vanilla/WP_Field.php';
+require_once WP_FIELD_PLUGIN_DIR . 'vanilla/WP_Field.php';

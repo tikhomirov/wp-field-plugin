@@ -9,7 +9,7 @@ use WpField\Storage\TermMetaStorage;
 class TaxonomyContainer extends AbstractContainer
 {
     /**
-     * @param  array<string, mixed>  $config
+     * @param array<string, mixed> $config
      */
     public function __construct(string $id, array $config = [])
     {
@@ -33,7 +33,7 @@ class TaxonomyContainer extends AbstractContainer
 
     public function renderAddForm(): void
     {
-        wp_nonce_field($this->id.'_nonce_action', $this->id.'_nonce');
+        wp_nonce_field($this->id . '_nonce_action', $this->id . '_nonce');
 
         foreach ($this->fields as $field) {
             echo '<div class="form-field">';
@@ -46,7 +46,7 @@ class TaxonomyContainer extends AbstractContainer
     {
         $this->loadFieldValues($term->term_id);
 
-        wp_nonce_field($this->id.'_nonce_action', $this->id.'_nonce');
+        wp_nonce_field($this->id . '_nonce_action', $this->id . '_nonce');
 
         foreach ($this->fields as $field) {
             echo '<tr class="form-field">';
@@ -72,11 +72,11 @@ class TaxonomyContainer extends AbstractContainer
     {
         $termId = (int) $id;
 
-        if (! isset($_POST[$this->id.'_nonce'])) {
+        if (! isset($_POST[$this->id . '_nonce'])) {
             return;
         }
 
-        if (! wp_verify_nonce($_POST[$this->id.'_nonce'], $this->id.'_nonce_action')) {
+        if (! wp_verify_nonce($_POST[$this->id . '_nonce'], $this->id . '_nonce_action')) {
             return;
         }
 

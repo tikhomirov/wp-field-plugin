@@ -16,7 +16,7 @@ class BorderField extends AbstractField
     }
 
     /**
-     * @param  array<int, string>  $styles
+     * @param array<int, string> $styles
      */
     public function styles(array $styles): static
     {

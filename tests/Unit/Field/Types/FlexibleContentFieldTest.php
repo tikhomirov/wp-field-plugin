@@ -67,7 +67,7 @@ it('sanitizes array of blocks with valid layout', function (): void {
     $input = [
         [
             'acf_fc_layout' => 'layout1',
-            'text' => 'value',
+            'text'          => 'value',
         ],
     ];
 

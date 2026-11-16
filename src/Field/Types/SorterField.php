@@ -14,7 +14,7 @@ class SorterField extends AbstractField
     }
 
     /**
-     * @param  array<int|string, mixed>  $options
+     * @param array<int|string, mixed> $options
      */
     public function options(array $options): static
     {
@@ -22,7 +22,7 @@ class SorterField extends AbstractField
     }
 
     /**
-     * @param  array<int|string, mixed>  $groups
+     * @param array<int|string, mixed> $groups
      */
     public function groups(array $groups): static
     {
@@ -134,7 +134,7 @@ class SorterField extends AbstractField
         $groups = $this->getAttribute('groups', []);
         if (! is_array($groups) || $groups === []) {
             return [
-                'enabled' => (string) esc_html__('Enabled', 'wp-field'),
+                'enabled'  => (string) esc_html__('Enabled', 'wp-field'),
                 'disabled' => (string) esc_html__('Disabled', 'wp-field'),
             ];
         }
@@ -158,15 +158,15 @@ class SorterField extends AbstractField
 
         return $columns === []
             ? [
-                'enabled' => (string) esc_html__('Enabled', 'wp-field'),
+                'enabled'  => (string) esc_html__('Enabled', 'wp-field'),
                 'disabled' => (string) esc_html__('Disabled', 'wp-field'),
             ]
             : $columns;
     }
 
     /**
-     * @param  array<string, string>  $columns
-     * @param  array<string, string>  $options
+     * @param  array<string, string>                                             $columns
+     * @param  array<string, string>                                             $options
      * @return array<string, array{label: string, items: array<string, string>}>
      */
     private function resolveSortedColumns(array $columns, array $options, mixed $value): array
